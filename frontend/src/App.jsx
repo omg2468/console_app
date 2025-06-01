@@ -1,46 +1,52 @@
-import { useState } from "react";
-import logo from "./assets/images/logo-universal.png";
+import { useState, useEffect } from "react";
 import "./App.css";
-import { Greet , ShowInfoDialog} from "../wailsjs/go/main/App";
+import Main from "./screens/Main";
+import Login from "./screens/login";
 
 function App() {
-  const [resultText, setResultText] = useState(
-    "Please enter your name below 👇"
-  );
-  const [name, setName] = useState("");
-  const updateName = (e) => setName(e.target.value);
-  const updateResultText = (result) => setResultText(result);
+  const [currentScreen, setCurrentScreen] = useState("login");
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userData, setUserData] = useState(null);
 
-  function greet() {
-    Greet(name).then(updateResultText);
-  }
+  // Check sessionStorage instead of localStorage
+  useEffect(() => {
+    const savedUserData = sessionStorage.getItem('userData');
+    const savedLoginStatus = sessionStorage.getItem('isLoggedIn');
+    
+    if (savedLoginStatus === 'true' && savedUserData) {
+      setIsLoggedIn(true);
+      setUserData(JSON.parse(savedUserData));
+      setCurrentScreen("main");
+    }
+  }, []);
 
-  function handleKeyPress() {
-    ShowInfoDialog("Hello", "This is a dialog box");
-  }
+  const navigateToMain = (username) => {
+    const userData = { username, loginTime: new Date().toISOString() };
+    
+    setIsLoggedIn(true);
+    setUserData(userData);
+    setCurrentScreen("main");
+    
+    // Save to sessionStorage instead of localStorage
+    sessionStorage.setItem('isLoggedIn', 'true');
+    sessionStorage.setItem('userData', JSON.stringify(userData));
+  };
 
+  const navigateToLogin = () => {
+    setIsLoggedIn(false);
+    setUserData(null);
+    setCurrentScreen("login");
+    
+    // Clear sessionStorage
+    sessionStorage.removeItem('isLoggedIn');
+    sessionStorage.removeItem('userData');
+  };
+
+  console.log("Current screen:", currentScreen);
   return (
     <div id="App">
-      <img src={logo} id="logo" alt="logo" />
-      <div id="result" className="result">
-        {resultText}
-      </div>
-      <div id="input" className="input-box">
-        <input
-          id="name"
-          className="input"
-          onChange={updateName}
-          autoComplete="off"
-          name="input"
-          type="text"
-        />
-        <button className="btn" onClick={greet}>
-          Greet
-        </button>
-        <button className="btn" onClick={handleKeyPress}>
-          Get
-        </button>
-      </div>
+      {currentScreen === "login" && <Login onLoginSuccess={navigateToMain} />}
+      {currentScreen === "main" && <Main onLogout={navigateToLogin} userData={userData} />}
     </div>
   );
 }

@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/wailsapp/wails/v2/pkg/runtime"
+	// "github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
 // App struct
@@ -36,9 +36,9 @@ func (a *App) GetContext() string {
 
 func (a *App) ShowInfoDialog() {
 	fmt.Println("Showing info dialog")
-	runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
-		Title:   "Thông báo",
-		Message: "Đây là một thông báo thông tin từ Wails!",
-		Type:    runtime.InfoDialog,
-	})
+	// runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
+	// 	Title:   "Thông báo",
+	// 	Message: "Đây là một thông báo thông tin từ Wails!",
+	// 	Type:    runtime.InfoDialog,
+	// })
 }
