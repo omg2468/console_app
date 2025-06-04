@@ -1,12 +1,18 @@
 import "./App.css";
-import FileTree from "../component/FileTree";
+import { useState } from "react";
+import Login from "./screens/Login";
+import Main from "./screens/Main";
 
 function App() {
-
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   return (
     <div id="App">
-      <FileTree />
+      {!isLoggedIn ? (
+        <Login onLoginSuccess={() => setIsLoggedIn(true)} />
+      ) : (
+        <Main onLoginOut={() => setIsLoggedIn(false)}/>
+      )}
     </div>
   );
 }
