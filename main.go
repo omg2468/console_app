@@ -2,6 +2,11 @@ package main
 
 import (
 	"embed"
+	"myproject/backend/user"
+	"myproject/backend/workspace"
+	"myproject/backend/auth"
+
+
 
 	"github.com/wailsapp/wails/v2"
 	"github.com/wailsapp/wails/v2/pkg/options"
@@ -14,6 +19,9 @@ var assets embed.FS
 func main() {
 	// Create an instance of the app structure
 	app := NewApp()
+	authService := auth.NewAuthService()
+	userService := user.NewUserService()
+	workspaceService := workspace.NewWorkspaceService()
 
 	// Create application with options
 	err := wails.Run(&options.App{
@@ -27,6 +35,9 @@ func main() {
 		OnStartup:        app.startup,
 		Bind: []interface{}{
 			app,
+			userService,
+			workspaceService,
+			authService,
 		},
 	})
 
