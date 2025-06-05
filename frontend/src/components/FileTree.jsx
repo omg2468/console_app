@@ -4,49 +4,101 @@ import {
   ShowInExplorer,
   GetWorkspacePath,
   CreateFolder,
-  NewProject
+  NewProject,
 } from "../../wailsjs/go/workspace/WorkspaceService";
 
 import ContextMenu from "./ContextMenu";
 
-const TreeNode = ({ node }) => {
+// Helper: kiểm tra node có children không
+const hasChildren = (node) =>
+  Array.isArray(node.children) && node.children.length > 0;
+
+const TreeNode = ({ node, level = 0, isRoot = false }) => {
   const [expanded, setExpanded] = useState(false);
 
-  const toggle = () => {
-    if (node.type === "folder") {
+  const toggle = (e) => {
+    e.stopPropagation();
+    if (node.type === "folder" && hasChildren(node)) {
       setExpanded(!expanded);
     }
   };
 
+  // Nếu là node root (level === 0), luôn render placeholder mũi tên để căn chỉnh
+  const showArrowPlaceholder = isRoot || node.type === "folder";
+
   return (
-    <div className="ml-4">
+    <>
       <div
+        className={`
+          flex items-center gap-2 cursor-pointer select-none rounded-lg px-3 py-1.5 transition
+          ${
+            node.type === "folder"
+              ? "font-semibold text-slate-800"
+              : "text-slate-600"
+          }
+          ${
+            expanded
+              ? "bg-blue-100/90 shadow-inner"
+              : "hover:bg-blue-50 hover:shadow"
+          }
+          group
+        `}
+        style={{
+          paddingLeft: `calc(${level} * 20px)`,
+          minHeight: "36px",
+          fontSize: "15.5px",
+          letterSpacing: "0.01em",
+          transition: "background 0.18s, box-shadow 0.18s",
+        }}
         onClick={toggle}
-        className={`flex items-center gap-1 select-none text-black ${
-          node.type === "folder" ? "cursor-pointer" : ""
-        } ${expanded ? "text-lime-500" : ""}`}
       >
+        <div
+          style={{ width: "18px", height: "18px" }}
+          className='flex justify-center items-center text-base text-blue-400 group-hover:text-blue-600 transition'
+        >
+          {node.type === "folder" && hasChildren(node) ? (
+            expanded ? (
+              <span className='transition'>▾</span>
+            ) : (
+              <span className='transition'>▸</span>
+            )
+          ) : showArrowPlaceholder ? (
+            " "
+          ) : null}
+        </div>
+
+        {/* Icon */}
         {node.type === "folder" ? (
-          <>
-            <span>{expanded ? "🔽" : "▶️"}</span>
-            <Folder size={16} />
-          </>
+          <Folder
+            size={20}
+            className={`transition drop-shadow-sm ${
+              expanded
+                ? "text-blue-600"
+                : "text-blue-400 group-hover:text-blue-600"
+            }`}
+          />
         ) : (
-          <File size={16} />
+          <File
+            size={19}
+            className='text-slate-400 group-hover:text-blue-400 transition'
+          />
         )}
 
-        <span>{node.name}</span>
+        {/* Tên file/folder */}
+        <span className='truncate text-[15.5px] font-medium'>{node.name}</span>
 
-        {node.modified && (
-          <span className="ml-2 text-xs text-black">({node.modified})</span>
-        )}
+        {/* {node.modified && (
+          <span className="ml-2 text-xs text-gray-400">({node.modified})</span>
+        )} */}
       </div>
 
+      {/* Children */}
       {expanded &&
-        node.children?.map((child, index) => (
-          <TreeNode key={index} node={child} />
+        hasChildren(node) &&
+        node.children.map((child, index) => (
+          <TreeNode key={index} node={child} level={level + 1} />
         ))}
-    </div>
+    </>
   );
 };
 
@@ -56,11 +108,6 @@ const FileTree = ({ treeData, refreshFileList, handleImport }) => {
 
   const handleContextMenu = (e) => {
     e.preventDefault();
-
-    if (e.target.closest(".tree-node-header")) {
-      return;
-    }
-
     setContextMenu({ x: e.pageX, y: e.pageY });
     setShowMenu(true);
   };
@@ -80,7 +127,6 @@ const FileTree = ({ treeData, refreshFileList, handleImport }) => {
         const workspaceFolder = await GetWorkspacePath();
         await ShowInExplorer(workspaceFolder);
         break;
-
       case "import":
         await handleImport();
         break;
@@ -96,9 +142,9 @@ const FileTree = ({ treeData, refreshFileList, handleImport }) => {
       case "paste":
         console.log("Paste action ở:", action);
         break;
-
       default:
-        console.warn("Action chưa được hỗ trợ:", action);
+        // ...
+        break;
     }
     refreshFileList();
   };
@@ -112,17 +158,20 @@ const FileTree = ({ treeData, refreshFileList, handleImport }) => {
 
   return (
     <div
-      className="p-4 bg-white rounded shadow-sm max-w-[400px]"
+      className='p-4 bg-white rounded shadow-sm max-w-[400px]'
       onContextMenu={handleContextMenu}
     >
-
-      {treeData.length === 0 && (
-        <p className="text-black">Không có file nào.</p>
+      {(!treeData || treeData.length === 0) && (
+        <p className='text-black'>Không có file nào.</p>
       )}
 
-      {treeData.map((node, idx) => (
-        <TreeNode key={idx} node={node} />
-      ))}
+      <div className='flex flex-col gap-0.5'>
+        {treeData
+          ? treeData.map((node, idx) => (
+              <TreeNode key={idx} node={node} isRoot={true} />
+            ))
+          : null}
+      </div>
 
       {showMenu && contextMenu && (
         <ContextMenu
