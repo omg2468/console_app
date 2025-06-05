@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { Folder, File } from "lucide-react";
 import {
-  ListFiles,
   ShowInExplorer,
-  GetWorkspacePath 
-} from "../wailsjs/go/workspace/WorkspaceService";
+  GetWorkspacePath,
+  CreateFolder,
+  NewProject
+} from "../../wailsjs/go/workspace/WorkspaceService";
 
 import ContextMenu from "./ContextMenu";
 
@@ -18,12 +19,12 @@ const TreeNode = ({ node }) => {
   };
 
   return (
-    <div className="tree-node">
+    <div className="ml-4">
       <div
         onClick={toggle}
-        className={`tree-node-header ${
-          node.type === "folder" ? "folder" : ""
-        } ${expanded ? "expanded" : ""}`}
+        className={`flex items-center gap-1 select-none text-black ${
+          node.type === "folder" ? "cursor-pointer" : ""
+        } ${expanded ? "text-lime-500" : ""}`}
       >
         {node.type === "folder" ? (
           <>
@@ -37,7 +38,7 @@ const TreeNode = ({ node }) => {
         <span>{node.name}</span>
 
         {node.modified && (
-          <span className="modified-date">({node.modified})</span>
+          <span className="ml-2 text-xs text-black">({node.modified})</span>
         )}
       </div>
 
@@ -49,19 +50,9 @@ const TreeNode = ({ node }) => {
   );
 };
 
-const FileTree = () => {
-  const [treeData, setTreeData] = useState([]);
-  const [contextMenu, setContextMenu] = useState(null); // { x, y } or null
+const FileTree = ({ treeData, refreshFileList, handleImport }) => {
+  const [contextMenu, setContextMenu] = useState(null); // { x: 0, y: 0 }
   const [showMenu, setShowMenu] = useState(false);
-
-  useEffect(() => {
-    ListFiles()
-      .then((nodes) => {
-        console.log("Đã load cây file:", nodes);
-        setTreeData(nodes);
-      })
-      .catch((err) => console.error("Lỗi khi load cây file:", err));
-  }, []);
 
   const handleContextMenu = (e) => {
     e.preventDefault();
@@ -91,18 +82,25 @@ const FileTree = () => {
         break;
 
       case "import":
-        // TODO: xử lý import file
-        console.log("Import file:", action);
+        await handleImport();
         break;
 
-      case "create":
-        // TODO: xử lý tạo folder mới
-        console.log("Create new folder ở:", action);
+      case "newGroup":
+        await CreateFolder("New Folder");
+        break;
+
+      case "newProject":
+        await NewProject("new-project.json");
+        break;
+
+      case "paste":
+        console.log("Paste action ở:", action);
         break;
 
       default:
         console.warn("Action chưa được hỗ trợ:", action);
     }
+    refreshFileList();
   };
 
   useEffect(() => {
@@ -113,11 +111,13 @@ const FileTree = () => {
   }, [showMenu]);
 
   return (
-    <div className="file-tree-container" onContextMenu={handleContextMenu}>
-      <h2 className="file-tree-title">Cây thư mục Workspace</h2>
+    <div
+      className="p-4 bg-white rounded shadow-sm max-w-[400px]"
+      onContextMenu={handleContextMenu}
+    >
 
       {treeData.length === 0 && (
-        <p className="file-tree-empty">Không có file nào.</p>
+        <p className="text-black">Không có file nào.</p>
       )}
 
       {treeData.map((node, idx) => (

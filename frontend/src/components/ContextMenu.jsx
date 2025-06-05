@@ -9,9 +9,16 @@ const ContextMenu = ({ x, y, visible, options = [], onSelect, onClose }) => {
   };
 
   return (
-    <ul className="context-menu" style={{ top: y, left: x }}>
+    <ul
+      className="absolute bg-white border border-gray-300 shadow-md min-w-[160px] text-sm rounded z-[1000] py-1"
+      style={{ top: y, left: x }}
+    >
       {options.map((option, index) => (
-        <li key={index} onClick={() => handleClick(option.action)}>
+        <li
+          key={index}
+          onClick={() => handleClick(option.action)}
+          className="px-3 py-1.5 cursor-pointer hover:bg-gray-100"
+        >
           {option.label}
         </li>
       ))}

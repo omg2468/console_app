@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import * as AuthService from "../wailsjs/go/auth/AuthService";
+import * as AuthService from "../../wailsjs/go/auth/AuthService";
 
 function ConnectComponent() {
   const [ports, setPorts] = useState([]);
