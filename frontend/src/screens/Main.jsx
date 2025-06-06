@@ -54,6 +54,18 @@ export default function Main({ onLoginOut }) {
     refreshFileList();
   }, []);
 
+  const centerList = [
+    { label: "System", value: "system" },
+    { label: "Ftp", value: "ftp" },
+    { label: "Control", value: "control" },
+    { label: "Di", value: "di" },
+    { label: "Do", value: "do" },
+    { label: "Tag", value: "tag" },
+    { label: "Program", value: "program" },
+    { label: "Timer", value: "timer" },
+    { label: "Modbus", value: "modbus" },
+  ];
+
   return (
     <div
       style={{
@@ -123,8 +135,8 @@ export default function Main({ onLoginOut }) {
           Log Out
         </button>
       </div>
-      <div className='flex-1 mt-2 w-1/4 overflow-hidden flex flex-col h-[calc(100vh-60px)]'>
-        <div className='flex flex-col h-full flex-1'>
+      <div className='flex-1 mt-2 w-full overflow-hidden flex flex-row h-[calc(100vh-60px)]'>
+        <div className='w-1/4 flex flex-col h-full'>
           <div className='flex'>
             {tabsLeft.map((tab, index) => (
               <div
@@ -141,7 +153,11 @@ export default function Main({ onLoginOut }) {
           <div className='flex-1 w-auto h-0 bg-white flex flex-col'>
             {leftTab === "Workspace" ? (
               <div className='p-2 flex-1 flex flex-col'>
-                <FileTree treeData={treeData} refreshFileList={refreshFileList} handleImport={handleImport}/>
+                <FileTree
+                  treeData={treeData}
+                  refreshFileList={refreshFileList}
+                  handleImport={handleImport}
+                />
               </div>
             ) : (
               <div className='p-4 flex-1 flex flex-col'>
@@ -152,6 +168,23 @@ export default function Main({ onLoginOut }) {
               </div>
             )}
           </div>
+        </div>
+        <div className='w-1/4 flex flex-row h-full bg-blue pl-2'>
+          <div className='flex flex-col justify-start items-center h-full border-r border-b border-gray-300'>
+            {centerList.map((item, index) => (
+              <span
+                className='py-3 px-0.2  border border-gray-300 text-gray-700 hover:bg-blue-50  text-center'
+                key={index}
+                style={{
+                  writingMode: "sideways-lr",
+                  cursor: "pointer",
+                }}
+              >
+                {item.label}
+              </span>
+            ))}
+          </div>
+          <div className='flex-1 h-full bg-blue'></div>
         </div>
       </div>
     </div>
