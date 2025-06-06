@@ -12,6 +12,7 @@ import (
 	"path/filepath"
 	"runtime"
 	"strings"
+	"myproject/backend/auth"
 )
 
 //go:embed test.json
@@ -21,6 +22,7 @@ type WorkspaceService struct {
 	basePath  string
 	ctx       context.Context
 	clipboard *Clipboard
+	authService *auth.AuthService
 }
 
 type FileNode struct {
@@ -41,8 +43,9 @@ type Clipboard struct {
 	Action     ClipboardAction
 }
 
-func NewWorkspaceService() *WorkspaceService {
+func NewWorkspaceService(authService *auth.AuthService) *WorkspaceService {
 	return &WorkspaceService{
+		authService: authService,
 		basePath: "./workspace",
 	}
 }

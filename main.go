@@ -20,8 +20,8 @@ func main() {
 	// Create an instance of the app structure
 	app := NewApp()
 	authService := auth.NewAuthService()
-	userService := user.NewUserService()
-	workspaceService := workspace.NewWorkspaceService()
+	userService := user.NewUserService(authService)
+	workspaceService := workspace.NewWorkspaceService(authService)
 
 	// Create application with options
 	err := wails.Run(&options.App{

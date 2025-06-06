@@ -5,3 +5,7 @@
 export function GetUsername() {
   return window['go']['user']['UserService']['GetUsername']();
 }
+
+export function SendLoginCommand() {
+  return window['go']['user']['UserService']['SendLoginCommand']();
+}

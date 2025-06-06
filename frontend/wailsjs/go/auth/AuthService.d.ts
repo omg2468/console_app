@@ -7,4 +7,6 @@ export function Disconnect():Promise<void>;
 
 export function ListPorts():Promise<Array<string>>;
 
+export function Read():Promise<string>;
+
 export function Send(arg1:string):Promise<void>;

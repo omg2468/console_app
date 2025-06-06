@@ -14,6 +14,10 @@ export function ListPorts() {
   return window['go']['auth']['AuthService']['ListPorts']();
 }
 
+export function Read() {
+  return window['go']['auth']['AuthService']['Read']();
+}
+
 export function Send(arg1) {
   return window['go']['auth']['AuthService']['Send'](arg1);
 }

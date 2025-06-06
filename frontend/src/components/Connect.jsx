@@ -32,11 +32,13 @@ function ConnectComponent() {
       .catch((err) => setStatus("Lỗi lấy COM: " + err));
   }, []);
 
-  return (
-    <div style={{ padding: 20 }}>
-      <h2>Kết nối COM</h2>
+  console.log('status', status);
 
+  return (
+    <div className="bg-white p-4 shadow-md">
+      <h2>Kết nối COM</h2>
       <select
+        className="border border-gray-300 rounded p-2"
         value={selectedPort}
         onChange={(e) => setSelectedPort(e.target.value)}
       >

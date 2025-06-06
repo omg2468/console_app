@@ -19,8 +19,6 @@ export default function Main({ onLoginOut }) {
     try {
       const filePath = await SelectFileToImport();
 
-      console.log("Đã chọn file:", filePath);
-
       if (!filePath) {
         return;
       }
@@ -143,7 +141,7 @@ export default function Main({ onLoginOut }) {
           <div className='flex-1 w-auto h-0 bg-white flex flex-col'>
             {leftTab === "Workspace" ? (
               <div className='p-2 flex-1 flex flex-col'>
-                <FileTree />
+                <FileTree treeData={treeData} refreshFileList={refreshFileList} handleImport={handleImport}/>
               </div>
             ) : (
               <div className='p-4 flex-1 flex flex-col'>
