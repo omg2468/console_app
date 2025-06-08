@@ -308,3 +308,7 @@ func (ws *WorkspaceService) NewProject(name string) error {
 	fmt.Printf("✅ Dự án mới đã được tạo: %s (%d bytes)\n", targetPath, written)
 	return nil
 }
+
+func (ws *WorkspaceService) DowloadConfig() error {
+	return ws.authService.Send(`{"type":"download_config"}`)
+}

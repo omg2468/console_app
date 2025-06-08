@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import * as AuthService from "../../wailsjs/go/auth/AuthService";
 
+import { DowloadConfig } from "../../wailsjs/go/workspace/WorkspaceService";
+
 function ConnectComponent() {
   const [ports, setPorts] = useState([]);
   const [selectedPort, setSelectedPort] = useState("");
@@ -27,11 +29,17 @@ function ConnectComponent() {
   };
 
   const handleData = () => {
-    console.log("Gửi lệnh đăng nhập");
+    // AuthService.Login("admin", "1231abc").then(() =>
+    //   setStatus("Đã gửi lệnh đăng nhập")
+    // );
 
-    AuthService.Login("admin", "1231abc").then(() =>
-      setStatus("Đã gửi lệnh đăng nhập")
-    );
+    DowloadConfig()
+      .then(() => {
+        setStatus("Đã gửi lệnh tải cấu hình");
+      })
+      .catch((err) => {
+        setStatus("Lỗi gửi lệnh tải cấu hình: " + err);
+      });
   };
 
   useEffect(() => {
@@ -50,11 +58,19 @@ function ConnectComponent() {
     const listenForData = async () => {
       while (isListening) {
         try {
-          const response = await AuthService.GetResponse(1000);
+          const response = await AuthService.GetResponse(10000);
 
           if (response) {
-            console.log("Dữ liệu từ thiết bị:", response);
-            setStatus("Thiết bị gửi: " + response);
+            console.log("Response nhận được:", response);
+            try {
+              const jsonData = JSON.parse(response);
+              // Nếu parse thành công, mới setStatus
+              console.log("Response nhận được:", jsonData);
+              setStatus("Thiết bị gửi: " + response);
+            } catch (e) {
+              // Nếu không phải JSON hợp lệ, không setStatus hoặc xử lý khác
+              console.warn("Response không phải JSON hợp lệ:", response);
+            }
           }
         } catch (err) {
           if (!err.toString().includes("timeout")) {

@@ -7,6 +7,8 @@ export function CreateFolder(arg1:string):Promise<string>;
 
 export function DeleteFile(arg1:string):Promise<void>;
 
+export function DowloadConfig():Promise<void>;
+
 export function GetWorkspacePath():Promise<string>;
 
 export function ImportFile(arg1:string,arg2:string):Promise<void>;

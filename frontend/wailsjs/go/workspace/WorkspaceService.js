@@ -10,6 +10,10 @@ export function DeleteFile(arg1) {
   return window['go']['workspace']['WorkspaceService']['DeleteFile'](arg1);
 }
 
+export function DowloadConfig() {
+  return window['go']['workspace']['WorkspaceService']['DowloadConfig']();
+}
+
 export function GetWorkspacePath() {
   return window['go']['workspace']['WorkspaceService']['GetWorkspacePath']();
 }

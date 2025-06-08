@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"log"
+	"strings"
 	"sync"
 	"sync/atomic"
 	"time"
@@ -136,7 +137,7 @@ func (a *AuthService) GetResponse(timeout time.Duration) (string, error) {
 		if msg.Err != nil {
 			return "", msg.Err
 		}
-		return msg.Data, nil
+		return strings.TrimRight(msg.Data, "\n"), nil
 	case <-time.After(timeout):
 		return "", errors.New("timeout khi chờ phản hồi")
 	}
@@ -174,7 +175,7 @@ func (a *AuthService) Disconnect() error {
 	return nil
 }
 
-func (a *AuthService) Login(username string, password string) (error) {
+func (a *AuthService) Login(username , password string) (error) {
 	// Tạo JSON login request
 	loginData := map[string]string{
 		"type":     "login",
@@ -186,12 +187,23 @@ func (a *AuthService) Login(username string, password string) (error) {
 		return fmt.Errorf("lỗi khi tạo JSON đăng nhập: %w", err)
 	}
 
-	// Gửi JSON qua UART
-	err = a.Send(string(jsonBytes))
-	
-	if err != nil {
-		return fmt.Errorf("lỗi khi gửi dữ liệu đăng nhập: %w", err)
+	return a.Send(string(jsonBytes))
+
+}
+
+func (a *AuthService) ChangePassword(username, oldPassword, newPassword string) error {
+	changeData := map[string]string{
+		"type":         "change_password",
+		"username":     username,
+		"old_password": oldPassword,
+		"new_password": newPassword,
 	}
 
-	return nil
+	jsonBytes, err := json.Marshal(changeData)
+	if err != nil {
+		return fmt.Errorf("lỗi khi mã hóa JSON: %w", err)
+	}
+
+	return a.Send(string(jsonBytes))
 }
+
