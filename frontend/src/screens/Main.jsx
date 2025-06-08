@@ -13,6 +13,8 @@ import ConnectComponent from "../components/Connect";
 
 export default function Main({ onLoginOut }) {
   const [leftTab, setLeftTab] = useState("Workspace");
+  const [middleTab, setMiddleTab] = useState("system");
+  const [rightTab, setRightTab] = useState("Parameter");
   const tabsLeft = ["Workspace", "Device"];
 
   const [treeData, setTreeData] = useState([]);
@@ -67,6 +69,8 @@ export default function Main({ onLoginOut }) {
     { label: "Timer", value: "timer" },
     { label: "Modbus", value: "modbus" },
   ];
+
+  const rightTabs = ["Parameter", "Control", "Memory view", "Tag view"];
 
   return (
     <div
@@ -137,13 +141,13 @@ export default function Main({ onLoginOut }) {
           Log Out
         </button>
       </div>
-      <div className="flex-1 mt-2 w-full overflow-hidden flex flex-row h-[calc(100vh-60px)]">
-        <div className="w-1/4 flex flex-col h-full">
-          <div className="flex">
+      <div className='flex-1 mt-2 w-full overflow-hidden flex flex-row'>
+        <div className='w-1/4 flex flex-col'>
+          <div className='flex'>
             {tabsLeft.map((tab, index) => (
               <div
                 key={index}
-                className={`cursor-pointer px-2 rounded-md user-none ${
+                className={`cursor-pointer px-2 rounded-md user-none text-xs ${
                   leftTab === tab ? "bg-white" : "border"
                 } hover:bg-blue-50 transition-colors`}
                 onClick={() => setLeftTab(tab)}
@@ -171,11 +175,16 @@ export default function Main({ onLoginOut }) {
             )}
           </div>
         </div>
-        <div className="w-1/4 flex flex-row h-full bg-blue pl-2">
-          <div className="flex flex-col justify-start items-center h-full border-r border-b border-gray-300">
+        <div className='w-1/4 flex flex-row bg-blue pl-2'>
+          <div className='flex flex-col justify-start items-center h-full'>
             {centerList.map((item, index) => (
               <span
-                className="py-3 px-0.2  border border-gray-300 text-gray-700 hover:bg-blue-50  text-center"
+                onClick={() => setMiddleTab(item.value)}
+                className={`py-3 px-0.2 text-xs  text-gray-700 hover:bg-blue-50  text-center ${
+                  middleTab === item.value
+                    ? "bg-white border-0"
+                    : "border border-gray-300"
+                }`}
                 key={index}
                 style={{
                   writingMode: "sideways-lr",
@@ -186,7 +195,25 @@ export default function Main({ onLoginOut }) {
               </span>
             ))}
           </div>
-          <div className="flex-1 h-full bg-blue"></div>
+          <div className='flex-1 w-1/4 h-full border-t border-b border-r border-gray-300 bg-white'></div>
+        </div>
+        <div className='flex flex-1 flex-col border border-gray-300'>
+          <div className='flex flex-row justify-start items-center '>
+            {rightTabs.map((label, idx) => (
+              <span
+                onClick={() => setRightTab(label)}
+                className={`py-0.5 px-3 text-xs ${
+                  rightTab === label
+                    ? "bg-white border-0"
+                    : "border border-gray-300 hover:bg-blue-50"
+                } text-gray-700 hover:text-blue-600 text-center cursor-pointer transition-colors`}
+                key={idx}
+              >
+                {label}
+              </span>
+            ))}
+          </div>
+          <div className='flex flex-1 bg-white'></div>
         </div>
       </div>
     </div>
