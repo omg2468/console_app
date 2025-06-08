@@ -34,8 +34,8 @@ export function Paste() {
   return window['go']['workspace']['WorkspaceService']['Paste']();
 }
 
-export function ReadFile(arg1, arg2) {
-  return window['go']['workspace']['WorkspaceService']['ReadFile'](arg1, arg2);
+export function ReadFile(arg1) {
+  return window['go']['workspace']['WorkspaceService']['ReadFile'](arg1);
 }
 
 export function SetClipboard(arg1) {

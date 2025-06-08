@@ -4,7 +4,7 @@ import Login from "./screens/Login";
 import Main from "./screens/Main";
 
 function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(true);
 
   return (
     <div id="App">
