@@ -10,12 +10,16 @@ export function Disconnect() {
   return window['go']['auth']['AuthService']['Disconnect']();
 }
 
+export function GetResponse(arg1) {
+  return window['go']['auth']['AuthService']['GetResponse'](arg1);
+}
+
 export function ListPorts() {
   return window['go']['auth']['AuthService']['ListPorts']();
 }
 
-export function Read() {
-  return window['go']['auth']['AuthService']['Read']();
+export function Login(arg1, arg2) {
+  return window['go']['auth']['AuthService']['Login'](arg1, arg2);
 }
 
 export function Send(arg1) {

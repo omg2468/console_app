@@ -26,17 +26,58 @@ function ConnectComponent() {
       .catch((err) => setStatus("Lỗi ngắt kết nối: " + err));
   };
 
+  const handleData = () => {
+    console.log("Gửi lệnh đăng nhập");
+
+    AuthService.Login("admin", "1231abc").then(() =>
+      setStatus("Đã gửi lệnh đăng nhập")
+    );
+  };
+
   useEffect(() => {
     AuthService.ListPorts()
       .then(setPorts)
       .catch((err) => setStatus("Lỗi lấy COM: " + err));
   }, []);
 
-  console.log('status', status);
+  useEffect(() => {
+    if (!selectedPort) {
+      return;
+    }
+
+    let isListening = true;
+
+    const listenForData = async () => {
+      while (isListening) {
+        try {
+          const response = await AuthService.GetResponse(1000);
+
+          if (response) {
+            console.log("Dữ liệu từ thiết bị:", response);
+            setStatus("Thiết bị gửi: " + response);
+          }
+        } catch (err) {
+          if (!err.toString().includes("timeout")) {
+            console.error("Lỗi nhận:", err);
+            setStatus("Lỗi nhận dữ liệu: " + err);
+          }
+        }
+      }
+    };
+
+    listenForData();
+
+    return () => {
+      isListening = false; // Ngừng vòng lặp khi component bị unmount
+    };
+  }, [selectedPort]);
 
   return (
     <div className="bg-white p-4 shadow-md">
       <h2>Kết nối COM</h2>
+      <button onClick={handleData} style={{ marginBottom: 10 }}>
+        Gửi lệnh đăng nhập
+      </button>
       <select
         className="border border-gray-300 rounded p-2"
         value={selectedPort}

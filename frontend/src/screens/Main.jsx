@@ -9,6 +9,8 @@ import {
 
 import { SelectFileToImport } from "../../wailsjs/go/main/App";
 
+import ConnectComponent from "../components/Connect";
+
 export default function Main({ onLoginOut }) {
   const [leftTab, setLeftTab] = useState("Workspace");
   const tabsLeft = ["Workspace", "Device"];
@@ -124,20 +126,20 @@ export default function Main({ onLoginOut }) {
         </button>
         <button
           onClick={handleImport}
-          className='rounded-md bg-white border border-gray-300 px-2 py-0.5 text-[10px] font-medium shadow-sm hover:bg-blue-50 hover:border-blue-400 active:bg-blue-100 active:border-blue-400 transition-colors'
+          className="rounded-md bg-white border border-gray-300 px-2 py-0.5 text-[10px] font-medium shadow-sm hover:bg-blue-50 hover:border-blue-400 active:bg-blue-100 active:border-blue-400 transition-colors"
         >
           Import Project
         </button>
         <button
-          className='rounded-md bg-white border border-gray-300 px-2 py-0.5 text-[10px] font-medium shadow-sm hover:bg-blue-50 hover:border-blue-400 active:bg-blue-100 active:border-blue-400 transition-colors'
+          className="rounded-md bg-white border border-gray-300 px-2 py-0.5 text-[10px] font-medium shadow-sm hover:bg-blue-50 hover:border-blue-400 active:bg-blue-100 active:border-blue-400 transition-colors"
           onClick={ImportFile}
         >
           Log Out
         </button>
       </div>
-      <div className='flex-1 mt-2 w-full overflow-hidden flex flex-row h-[calc(100vh-60px)]'>
-        <div className='w-1/4 flex flex-col h-full'>
-          <div className='flex'>
+      <div className="flex-1 mt-2 w-full overflow-hidden flex flex-row h-[calc(100vh-60px)]">
+        <div className="w-1/4 flex flex-col h-full">
+          <div className="flex">
             {tabsLeft.map((tab, index) => (
               <div
                 key={index}
@@ -150,9 +152,9 @@ export default function Main({ onLoginOut }) {
               </div>
             ))}
           </div>
-          <div className='flex-1 w-auto h-0 bg-white flex flex-col'>
+          <div className="flex-1 w-auto h-0 bg-white flex flex-col">
             {leftTab === "Workspace" ? (
-              <div className='p-2 flex-1 flex flex-col'>
+              <div className="p-2 flex-1 flex flex-col">
                 <FileTree
                   treeData={treeData}
                   refreshFileList={refreshFileList}
@@ -160,20 +162,20 @@ export default function Main({ onLoginOut }) {
                 />
               </div>
             ) : (
-              <div className='p-4 flex-1 flex flex-col'>
-                <h2 className='text-lg font-semibold'>Device</h2>
-                <p className='text-gray-600'>
-                  Device related information will be displayed here.
+              <div className="p-4 flex-1 flex flex-col">
+                <h2 className="text-lg font-semibold">Device</h2>
+                <p className="text-gray-600">
+                  <ConnectComponent />
                 </p>
               </div>
             )}
           </div>
         </div>
-        <div className='w-1/4 flex flex-row h-full bg-blue pl-2'>
-          <div className='flex flex-col justify-start items-center h-full border-r border-b border-gray-300'>
+        <div className="w-1/4 flex flex-row h-full bg-blue pl-2">
+          <div className="flex flex-col justify-start items-center h-full border-r border-b border-gray-300">
             {centerList.map((item, index) => (
               <span
-                className='py-3 px-0.2  border border-gray-300 text-gray-700 hover:bg-blue-50  text-center'
+                className="py-3 px-0.2  border border-gray-300 text-gray-700 hover:bg-blue-50  text-center"
                 key={index}
                 style={{
                   writingMode: "sideways-lr",
@@ -184,7 +186,7 @@ export default function Main({ onLoginOut }) {
               </span>
             ))}
           </div>
-          <div className='flex-1 h-full bg-blue'></div>
+          <div className="flex-1 h-full bg-blue"></div>
         </div>
       </div>
     </div>

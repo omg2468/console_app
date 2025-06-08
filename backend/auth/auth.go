@@ -1,9 +1,13 @@
 package auth
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
+	"log"
 	"sync"
+	"sync/atomic"
 	"time"
 
 	serial "go.bug.st/serial.v1"
@@ -13,13 +17,20 @@ type AuthService struct {
 	currentPort serial.Port
 	portName    string
 	mu          sync.Mutex
+	readChan    chan AuthEvent
+	stopRead    chan struct{}
+	isReading   atomic.Bool
+}
+
+type AuthEvent struct {
+	Data string
+	Err  error
 }
 
 func NewAuthService() *AuthService {
 	return &AuthService{}
 }
 
-// ListPorts trả về danh sách cổng COM có trên hệ thống
 func (a *AuthService) ListPorts() ([]string, error) {
 	ports, err := serial.GetPortsList()
 	if err != nil {
@@ -32,15 +43,12 @@ func (a *AuthService) ListPorts() ([]string, error) {
 	return ports, nil
 }
 
-// ConnectToPort mở kết nối với cổng COM chỉ định
 func (a *AuthService) ConnectToPort(portName string) error {
 	a.mu.Lock()
 	defer a.mu.Unlock()
 
 	if a.currentPort != nil {
-		a.currentPort.Close()
-		a.currentPort = nil
-		a.portName = ""
+		return errors.New("đã kết nối, vui lòng ngắt trước")
 	}
 
 	mode := &serial.Mode{
@@ -57,12 +65,83 @@ func (a *AuthService) ConnectToPort(portName string) error {
 
 	a.currentPort = port
 	a.portName = portName
+	a.readChan = make(chan AuthEvent, 100)
+	a.stopRead = make(chan struct{})
 
-	fmt.Printf("Đã kết nối tới %s\n", portName)
+	if !a.isReading.Load() {
+		go a.readLoop()
+		a.isReading.Store(true)
+	}
+
+	fmt.Printf("Đã kết nối COM: %s\n", portName)
 	return nil
 }
 
-// Send gửi dữ liệu tới cổng COM đang kết nối
+func (a *AuthService) readLoop() {
+	log.Printf("Bắt đầu đọc COM: %s\n", a.portName)
+	defer log.Printf("Dừng đọc COM: %s\n", a.portName)
+
+	buf := make([]byte, 128)
+	var buffer []byte
+
+	for {
+		select {
+		case <-a.stopRead:
+			return
+		default:
+			var port serial.Port
+
+			a.mu.Lock()
+			if a.currentPort == nil {
+				a.mu.Unlock()
+				time.Sleep(100 * time.Millisecond)
+				continue
+			}
+			port = a.currentPort
+			a.mu.Unlock()
+
+			n, err := port.Read(buf)
+
+			if err != nil && !errors.Is(err, io.EOF) {
+				a.readChan <- AuthEvent{Err: err}
+				return
+			}
+
+			if n > 0 {
+				buffer = append(buffer, buf[:n]...)
+				for {
+					newlineIndex := -1
+					for i, b := range buffer {
+						if b == '\n' {
+							newlineIndex = i
+							break
+						}
+					}
+					if newlineIndex == -1 {
+						break
+					}
+					a.readChan <- AuthEvent{Data: string(buffer[:newlineIndex+1])}
+					buffer = buffer[newlineIndex+1:]
+				}
+			} else {
+				time.Sleep(100 * time.Millisecond)
+			}
+		}
+	}
+}
+
+func (a *AuthService) GetResponse(timeout time.Duration) (string, error) {
+	select {
+	case msg := <-a.readChan:
+		if msg.Err != nil {
+			return "", msg.Err
+		}
+		return msg.Data, nil
+	case <-time.After(timeout):
+		return "", errors.New("timeout khi chờ phản hồi")
+	}
+}
+
 func (a *AuthService) Send(data string) error {
 	a.mu.Lock()
 	defer a.mu.Unlock()
@@ -70,60 +149,49 @@ func (a *AuthService) Send(data string) error {
 	if a.currentPort == nil {
 		return errors.New("chưa kết nối cổng COM")
 	}
-
 	_, err := a.currentPort.Write([]byte(data + "\n"))
 	if err != nil {
-		return fmt.Errorf("gửi dữ liệu thất bại: %w", err)
+		return fmt.Errorf("lỗi khi gửi: %w", err)
 	}
 
-	fmt.Printf("Đã gửi: %s\n", data)
 	return nil
 }
 
-func (a *AuthService) Read() (string, error) {
-	a.mu.Lock()
-	defer a.mu.Unlock()
-
-	if a.currentPort == nil {
-		return "", errors.New("chưa kết nối cổng COM")
-	}
-
-	var result []byte
-	buf := make([]byte, 1) // đọc từng byte để kiểm tra kết thúc bằng \n
-
-	timeout := time.After(3 * time.Second)
-	for {
-		select {
-		case <-timeout:
-			return "", errors.New("đọc dữ liệu timeout sau 3 giây")
-		default:
-			n, err := a.currentPort.Read(buf)
-			if err != nil {
-				return "", fmt.Errorf("đọc dữ liệu thất bại: %w", err)
-			}
-			if n > 0 {
-				result = append(result, buf[0])
-				if buf[0] == '\n' {
-					return string(result), nil
-				}
-			}
-		}
-	}
-}
-
-// Disconnect đóng kết nối hiện tại
 func (a *AuthService) Disconnect() error {
 	a.mu.Lock()
 	defer a.mu.Unlock()
 
 	if a.currentPort != nil {
-		err := a.currentPort.Close()
+		if a.isReading.Load() {
+			close(a.stopRead)
+			a.isReading.Store(false)
+		}
+		a.currentPort.Close()
 		a.currentPort = nil
 		a.portName = ""
-		if err != nil {
-			return fmt.Errorf("ngắt kết nối lỗi: %w", err)
-		}
 		fmt.Println("Đã ngắt kết nối")
 	}
+	return nil
+}
+
+func (a *AuthService) Login(username string, password string) (error) {
+	// Tạo JSON login request
+	loginData := map[string]string{
+		"type":     "login",
+		"username": username,
+		"password": password,
+	}
+	jsonBytes, err := json.Marshal(loginData)
+	if err != nil {
+		return fmt.Errorf("lỗi khi tạo JSON đăng nhập: %w", err)
+	}
+
+	// Gửi JSON qua UART
+	err = a.Send(string(jsonBytes))
+	
+	if err != nil {
+		return fmt.Errorf("lỗi khi gửi dữ liệu đăng nhập: %w", err)
+	}
+
 	return nil
 }
