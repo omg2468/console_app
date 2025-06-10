@@ -30,7 +30,7 @@ const TreeNode = ({ node, level = 0, isRoot = false }) => {
     <>
       <div
         className={`
-          flex items-center gap-2 cursor-pointer select-none rounded-lg px-3 py-1.5 transition
+          flex items-center justify-start gap-2 cursor-pointer select-none rounded-lg px-3 py-1.5 transition
           ${
             node.type === "folder"
               ? "font-semibold text-slate-800"
@@ -45,7 +45,7 @@ const TreeNode = ({ node, level = 0, isRoot = false }) => {
         `}
         style={{
           paddingLeft: `calc(${level} * 20px)`,
-          minHeight: "36px",
+          minHeight: "30px",
           fontSize: "15.5px",
           letterSpacing: "0.01em",
           transition: "background 0.18s, box-shadow 0.18s",
@@ -53,7 +53,7 @@ const TreeNode = ({ node, level = 0, isRoot = false }) => {
         onClick={toggle}
       >
         <div
-          style={{ width: "18px", height: "18px" }}
+          style={{ width: "18px !important", height: "18px" }}
           className='flex justify-center items-center text-base text-blue-400 group-hover:text-blue-600 transition'
         >
           {node.type === "folder" && hasChildren(node) ? (
@@ -85,7 +85,7 @@ const TreeNode = ({ node, level = 0, isRoot = false }) => {
         )}
 
         {/* Tên file/folder */}
-        <span className='truncate text-[15.5px] font-medium'>{node.name}</span>
+        <span className='truncate text-xs font-medium'>{node.name}</span>
 
         {/* {node.modified && (
           <span className="ml-2 text-xs text-gray-400">({node.modified})</span>

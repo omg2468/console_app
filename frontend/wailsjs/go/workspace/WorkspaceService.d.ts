@@ -19,7 +19,7 @@ export function NewProject(arg1:string):Promise<void>;
 
 export function Paste():Promise<string>;
 
-export function ReadFile(arg1:string,arg2:any):Promise<void>;
+export function ReadFile(arg1:string):Promise<string>;
 
 export function SetClipboard(arg1:string):Promise<void>;
 

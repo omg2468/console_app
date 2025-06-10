@@ -3,7 +3,7 @@ package workspace
 import (
     _ "embed" // để nhúng file JSON mẫu
 	"context"
-	"encoding/json"
+	// "encoding/json"
 	"errors"
 	"fmt"
 	"io"
@@ -117,15 +117,16 @@ func (ws *WorkspaceService) ListFiles() ([]FileNode, error) {
 	return buildFileTree(ws.basePath)
 }
 
-func (ws *WorkspaceService) ReadFile(relPath string, v interface{}) error {
-	absPath := filepath.Join(ws.basePath, relPath)
-
-	data, err := os.ReadFile(absPath)
-	if err != nil {
-		return err
-	}
-
-	return json.Unmarshal(data, v)
+func (ws *WorkspaceService) ReadFile(relPath string) (string, error) {
+    absPath := filepath.Join(ws.basePath, relPath)
+    data, err := os.ReadFile(absPath)
+    if err != nil {
+        return "", err
+    }
+    if len(data) == 0 {
+        return "", fmt.Errorf("File rỗng")
+    }
+    return string(data), nil
 }
 
 func (ws *WorkspaceService) DeleteFile(relPath string) error {
