@@ -1,11 +1,12 @@
 import FileTree from "../components/FileTree";
-import { useState, useEffect, useMemo, useCallback } from "react";
+import { useState, useEffect, useCallback, useContext } from "react";
 import {
   ImportFile,
   ListFiles,
   NewProject,
   ReadFile,
 } from "../../wailsjs/go/workspace/WorkspaceService";
+import { ContextMenuContext } from "../store";
 
 import { SelectFileToImport } from "../../wailsjs/go/main/App";
 
@@ -22,6 +23,17 @@ export default function Main({ onLoginOut }) {
     idx: "",
     value: null,
   });
+
+  const context = useContext(ContextMenuContext);
+
+  const handleContextMenu = (e) => {
+    e.stopPropagation();
+    e.preventDefault();
+    context?.showMenu(e.clientX, e.clientY, [
+      { label: "New Project", action: "newProject" },
+      { label: "New Group ", action: "newGroup" },
+    ]);
+  };
 
   const [treeData, setTreeData] = useState([]);
 
@@ -1274,7 +1286,7 @@ export default function Main({ onLoginOut }) {
               </div>
             ))}
           </div>
-          <div className='flex-1 w-auto h-0 bg-white flex flex-col'>
+          <div onContextMenu={handleContextMenu} className='flex-1 w-auto h-0 bg-white flex flex-col'>
             {leftTab === "Workspace" ? (
               <div className='p-2 flex-1 flex flex-col'>
                 <FileTree

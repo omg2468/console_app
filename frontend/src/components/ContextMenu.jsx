@@ -1,23 +1,52 @@
-import React from "react";
+import { useContext, useEffect, useRef } from "react";
+import { ContextMenuContext } from "../store";
 
-const ContextMenu = ({ x, y, visible, options = [], onSelect, onClose }) => {
-  if (!visible) return null;
+const ContextMenu = () => {
+  const context = useContext(ContextMenuContext);
+  const menuRef = useRef(null);
 
-  const handleClick = (action) => {
-    onSelect(action);
-    onClose();
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
+        context?.hideMenu();
+      }
+    };
+
+    if (context?.isVisible) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [context?.isVisible]);
+
+  if (!context || !context.isVisible) return null;
+
+  const { position, hideMenu, content } = context;
+
+  // Fix: Ensure content is an array before mapping
+  if (!Array.isArray(content) || content.length === 0) return null;
+
+  const handleClick = () => {
+    hideMenu();
   };
 
   return (
     <ul
-      className="absolute bg-white border border-gray-300 shadow-md min-w-[160px] text-sm rounded z-[1000] py-1"
-      style={{ top: y, left: x }}
+      className='absolute bg-white border border-gray-300 shadow-md min-w-[160px] text-sm rounded z-[1000] py-1'
+      style={{ top: position.y, left: position.x }}
+      onClick={hideMenu}
+      ref={menuRef}
     >
-      {options.map((option, index) => (
+      {content.map((option, index) => (
         <li
           key={index}
-          onClick={() => handleClick(option.action)}
-          className="px-3 py-1.5 cursor-pointer hover:bg-gray-100"
+          onClick={(e) => {
+            e.stopPropagation();
+            handleClick(option.action);
+          }}
+          className='px-3 py-1.5 cursor-pointer hover:bg-gray-100'
         >
           {option.label}
         </li>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { Folder, File } from "lucide-react";
 import {
   ShowInExplorer,
@@ -6,6 +6,8 @@ import {
   CreateFolder,
   NewProject,
 } from "../../wailsjs/go/workspace/WorkspaceService";
+
+import { ContextMenuContext } from "../store";
 
 import ContextMenu from "./ContextMenu";
 
@@ -103,20 +105,19 @@ const TreeNode = ({ node, level = 0, isRoot = false }) => {
 };
 
 const FileTree = ({ treeData, refreshFileList, handleImport }) => {
-  const [contextMenu, setContextMenu] = useState(null); // { x: 0, y: 0 }
   const [showMenu, setShowMenu] = useState(false);
+  const context = useContext(ContextMenuContext);
 
   const handleContextMenu = (e) => {
     e.preventDefault();
-    setContextMenu({ x: e.pageX, y: e.pageY });
-    setShowMenu(true);
-  };
-
-  const handleClickOutside = () => {
-    if (showMenu) {
-      setShowMenu(false);
-      setContextMenu(null);
-    }
+    e.stopPropagation();
+    context?.showMenu(e.clientX, e.clientY, [
+      { label: "New Project", action: "newProject" },
+      { label: "New Group ", action: "newGroup" },
+      { label: "Paste", action: "paste" },
+      { label: "Import", action: "import" },
+      { label: "Show in Explore", action: "showInExplore" },
+    ]);
   };
 
   const handleAction = async (action) => {
@@ -149,13 +150,6 @@ const FileTree = ({ treeData, refreshFileList, handleImport }) => {
     refreshFileList();
   };
 
-  useEffect(() => {
-    window.addEventListener("click", handleClickOutside);
-    return () => {
-      window.removeEventListener("click", handleClickOutside);
-    };
-  }, [showMenu]);
-
   return (
     <div
       className='p-4 bg-white rounded shadow-sm max-w-[400px]'
@@ -172,26 +166,6 @@ const FileTree = ({ treeData, refreshFileList, handleImport }) => {
             ))
           : null}
       </div>
-
-      {showMenu && contextMenu && (
-        <ContextMenu
-          x={contextMenu.x}
-          y={contextMenu.y}
-          visible={showMenu}
-          onSelect={handleAction}
-          onClose={() => {
-            setShowMenu(false);
-            setContextMenu(null);
-          }}
-          options={[
-            { label: "New Project", action: "newProject" },
-            { label: "New Group ", action: "newGroup" },
-            { label: "Paste", action: "paste" },
-            { label: "Import", action: "import" },
-            { label: "Show in Explore", action: "showInExplore" },
-          ]}
-        />
-      )}
     </div>
   );
 };
