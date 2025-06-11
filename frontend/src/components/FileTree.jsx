@@ -107,12 +107,13 @@ const TreeNode = ({ node, level = 0, isRoot = false }) => {
 const FileTree = ({ treeData, refreshFileList, handleImport }) => {
   const [showMenu, setShowMenu] = useState(false);
   const context = useContext(ContextMenuContext);
+  const [showModal, setShowModal] = useState(false);
 
   const handleContextMenu = (e) => {
     e.preventDefault();
     e.stopPropagation();
     context?.showMenu(e.clientX, e.clientY, [
-      { label: "New Project", action: "newProject" },
+      { label: "New Project", action: () => setShowModal(true) },
       { label: "New Group ", action: "newGroup" },
       { label: "Paste", action: "paste" },
       { label: "Import", action: "import" },
@@ -151,22 +152,55 @@ const FileTree = ({ treeData, refreshFileList, handleImport }) => {
   };
 
   return (
-    <div
-      className='p-4 bg-white rounded shadow-sm max-w-[400px]'
-      onContextMenu={handleContextMenu}
-    >
-      {(!treeData || treeData.length === 0) && (
-        <p className='text-black'>Không có file nào.</p>
-      )}
+    <>
+      <div
+        className='p-4 bg-white rounded shadow-sm max-w-[400px]'
+        onContextMenu={handleContextMenu}
+      >
+        {(!treeData || treeData.length === 0) && (
+          <p className='text-black'>Không có file nào.</p>
+        )}
 
-      <div className='flex flex-col gap-0.5'>
-        {treeData
-          ? treeData.map((node, idx) => (
-              <TreeNode key={idx} node={node} isRoot={true} />
-            ))
-          : null}
+        <div className='flex flex-col gap-0.5'>
+          {treeData
+            ? treeData.map((node, idx) => (
+                <TreeNode key={idx} node={node} isRoot={true} />
+              ))
+            : null}
+        </div>
       </div>
-    </div>
+      {showModal && (
+        <div
+          className='fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center'
+          onClick={() => setShowModal(false)} // Đóng modal khi click nền đen
+        >
+          <div
+            className='bg-white p-6 rounded-lg shadow-lg w-[300px]'
+            onClick={(e) => e.stopPropagation()} // Ngăn sự kiện nổi bọt khi click vào modal
+          >
+            <input
+              type='text'
+              className='w-full px-3 py-2 border border-gray-300 rounded-md mb-4 focus:outline-none focus:border-blue-500'
+              placeholder='Enter project name'
+            />
+            <div className='flex flex-row justify-around'>
+              <button
+                className='px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600'
+                onClick={() => {}}
+              >
+                Save
+              </button>
+              <button
+                className='px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600'
+                onClick={() => setShowModal(false)}
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
   );
 };
 

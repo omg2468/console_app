@@ -28,7 +28,10 @@ const ContextMenu = () => {
   // Fix: Ensure content is an array before mapping
   if (!Array.isArray(content) || content.length === 0) return null;
 
-  const handleClick = () => {
+  const handleClick = (action) => {
+    if (typeof action === "function") {
+      action();
+    }
     hideMenu();
   };
 
