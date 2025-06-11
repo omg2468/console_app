@@ -90,15 +90,78 @@ export default function Main({ onLoginOut }) {
           );
         case "ftp":
           return (
-            <pre className='text-xs p-2'>
-              {JSON.stringify(dataFIle?.ftp || {}, null, 2)}
-            </pre>
+            <div>
+              <p className='text-sm pl-2 border-b border-gray-100 bg-gray-200'>
+                FTP SETTINGS
+              </p>
+              {dataFIle?.ftp
+                ? dataFIle.ftp.map((item, index) => (
+                    <div
+                      key={index}
+                      onClick={() =>
+                        setParameter({
+                          key: "ftp",
+                          idx: index,
+                          value: item,
+                        })
+                      }
+                      className={`p-2 pl-6 cursor-pointer border-b border-gray-100 hover:bg-blue-100 ${
+                        parameter.key === "ftp" && parameter.idx === index
+                          ? "bg-blue-200"
+                          : "white"
+                      }`}
+                    >
+                      <p className='text-sm'>FTP.{index}</p>
+                    </div>
+                  ))
+                : null}
+            </div>
           );
         case "control":
           return (
-            <pre className='text-xs p-2'>
-              {JSON.stringify(dataFIle?.control || {}, null, 2)}
-            </pre>
+            <div>
+              <p className='text-sm pl-2 border-b border-gray-100 bg-gray-200'>
+                CONTROL SETTINGS
+              </p>
+              {dataFIle?.control ? (
+                Array.isArray(dataFIle.control) ? (
+                  dataFIle.control.map((item, index) => (
+                    <div
+                      key={index}
+                      onClick={() =>
+                        setParameter({
+                          key: "control",
+                          idx: index,
+                          value: item,
+                        })
+                      }
+                      className={`p-2 pl-6 cursor-pointer border-b border-gray-100 hover:bg-blue-100 ${
+                        parameter.key === "control" && parameter.idx === index
+                          ? "bg-blue-200"
+                          : "white"
+                      }`}
+                    >
+                      <p className='text-sm'>Control.{index}</p>
+                    </div>
+                  ))
+                ) : (
+                  <div
+                    onClick={() =>
+                      setParameter({
+                        key: "control",
+                        idx: 0,
+                        value: dataFIle.control,
+                      })
+                    }
+                    className={`p-2 pl-6 cursor-pointer border-b border-gray-100 hover:bg-blue-100 ${
+                      parameter.key === "control" ? "bg-blue-200" : "white"
+                    }`}
+                  >
+                    <p className='text-sm'>CONTROL 0</p>
+                  </div>
+                )
+              ) : null}
+            </div>
           );
         case "di":
           return (
@@ -160,15 +223,61 @@ export default function Main({ onLoginOut }) {
           );
         case "tag":
           return (
-            <pre className='text-xs p-2'>
-              {JSON.stringify(dataFIle?.tag || {}, null, 2)}
-            </pre>
+            <div>
+              <p className='text-sm pl-2 border-b border-gray-100 bg-gray-200'>
+                TAG SETTINGS
+              </p>
+              {dataFIle?.prog
+                ? dataFIle.prog.map((item, index) => (
+                    <div
+                      key={index}
+                      onClick={() =>
+                        setParameter({
+                          key: "tag",
+                          idx: index,
+                          value: item,
+                        })
+                      }
+                      className={`p-2 pl-6 cursor-pointer border-b border-gray-100 hover:bg-blue-100 ${
+                        parameter.key === "tag" && parameter.idx === index
+                          ? "bg-blue-200"
+                          : "white"
+                      }`}
+                    >
+                      <p className='text-sm'>TAG.{index}</p>
+                    </div>
+                  ))
+                : null}
+            </div>
           );
         case "program":
           return (
-            <pre className='text-xs p-2'>
-              {JSON.stringify(dataFIle?.program || {}, null, 2)}
-            </pre>
+            <div>
+              <p className='text-sm pl-2 border-b border-gray-100 bg-gray-200'>
+                PROGRAM SETTINGS
+              </p>
+              {dataFIle?.prog
+                ? dataFIle.prog.map((item, index) => (
+                    <div
+                      key={index}
+                      onClick={() =>
+                        setParameter({
+                          key: "program",
+                          idx: index,
+                          value: item,
+                        })
+                      }
+                      className={`p-2 pl-6 cursor-pointer border-b border-gray-100 hover:bg-blue-100 ${
+                        parameter.key === "do" && parameter.idx === index
+                          ? "bg-blue-200"
+                          : "white"
+                      }`}
+                    >
+                      <p className='text-sm'>PROG.{index}</p>
+                    </div>
+                  ))
+                : null}
+            </div>
           );
         case "timer":
           return (
@@ -178,9 +287,32 @@ export default function Main({ onLoginOut }) {
           );
         case "modbus":
           return (
-            <pre className='text-xs p-2'>
-              {JSON.stringify(dataFIle?.modbus || {}, null, 2)}
-            </pre>
+            <div>
+              <p className='text-sm pl-2 border-b border-gray-100 bg-gray-200'>
+                MODBUS SETTINGS
+              </p>
+              {dataFIle?.modbus_reader
+                ? dataFIle.modbus_reader.map((item, index) => (
+                    <div
+                      key={index}
+                      onClick={() =>
+                        setParameter({
+                          key: "modbus",
+                          idx: index,
+                          value: item,
+                        })
+                      }
+                      className={`p-2 pl-6 cursor-pointer border-b border-gray-100 hover:bg-blue-100 ${
+                        parameter.key === "do" && parameter.idx === index
+                          ? "bg-blue-200"
+                          : "white"
+                      }`}
+                    >
+                      <p className='text-sm'>MODBUS.{index}</p>
+                    </div>
+                  ))
+                : null}
+            </div>
           );
         default:
           return null;
@@ -195,9 +327,365 @@ export default function Main({ onLoginOut }) {
         case "system":
           return dataFIle?.system || {};
         case "ftp":
-          return dataFIle?.ftp || {};
+          return (
+            <div className='h-full flex-1'>
+              <table className='w-full'>
+                <thead>
+                  <tr className=''>
+                    <th className='px-2 py-1 text-sm text-center min-w-[150px] border-b'>
+                      Parameter
+                    </th>
+                    <th className='px-2 py-1 text-sm text-center w-full border-b border-l border-r'>
+                      Value
+                    </th>
+                  </tr>
+                  <tr className='bg-gray-200'>
+                    <th className='px-2 py-1 text-sm text-right min-w-[150px] border-b'>
+                      Ftp Server
+                    </th>
+                    <th className='px-2 py-1 text-sm text-left w-full border-b font-normal'>
+                      {item.idx}
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {item.value && (
+                    <>
+                      <tr className=''>
+                        <td className='px-2 py-1 text-sm text-right font-semibold'>
+                          Enable
+                        </td>
+                        <td className='px-2 py-1 text-sm'>
+                          <input
+                            type='checkbox'
+                            checked={!!parameter.value.en}
+                            className='w-4 h-4 accent-blue-500 cursor-pointer'
+                          />
+                        </td>
+                      </tr>
+                      <tr className=''>
+                        <td className='px-2 py-1 text-sm text-right font-semibold'>
+                          Global
+                        </td>
+                        <td className='px-2 py-1 text-sm'>
+                          <input
+                            type='checkbox'
+                            checked={!!parameter.value.client.global}
+                            className='w-4 h-4 accent-blue-500 cursor-pointer'
+                          />
+                        </td>
+                      </tr>
+                      <tr className=''>
+                        <td className='px-2 py-1 text-sm text-right font-semibold'>
+                          Make directory
+                        </td>
+                        <td className='px-2 py-1 text-sm'>
+                          <select
+                            value={parameter.value.client.make_dir_type}
+                            className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg max-w-[150px]'
+                          >
+                            <option value={0}>Day only</option>
+                          </select>
+                        </td>
+                      </tr>
+                      <tr className=''>
+                        <td className='px-2 py-1 text-sm text-right font-semibold'>
+                          Ip/hostname
+                        </td>
+                        <td className='px-2 py-1 text-sm'>
+                          <input
+                            type='text'
+                            value={parameter.value.client.ip}
+                            className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg px-2 py-1 w-full'
+                          />
+                        </td>
+                      </tr>
+                      <tr className=''>
+                        <td className='px-2 py-1 text-sm text-right font-semibold'>
+                          Port
+                        </td>
+                        <td className='px-2 py-1 text-sm'>
+                          {parameter.value.client.port}
+                        </td>
+                      </tr>
+                      <tr className=''>
+                        <td className='px-2 py-1 text-sm text-right font-semibold'>
+                          Username
+                        </td>
+                        <td className='px-2 py-1 text-sm'>
+                          {parameter.value.client.user}
+                        </td>
+                      </tr>
+                      <tr className=''>
+                        <td className='px-2 py-1 text-sm text-right font-semibold'>
+                          Password
+                        </td>
+                        <td className='px-2 py-1 text-sm'>
+                          {parameter.value.passwd}
+                        </td>
+                      </tr>
+                      <tr className=''>
+                        <td className='px-2 py-1 text-sm text-right font-semibold'>
+                          Log folder
+                        </td>
+                        <td className='px-2 py-1 text-sm'>
+                          {parameter.value.remote_prefix}
+                        </td>
+                      </tr>
+                      <tr className=''>
+                        <td className='px-2 py-1 text-sm text-right font-semibold'>
+                          Assert
+                        </td>
+                        <td className='px-2 py-1 text-sm'>
+                          <input
+                            type='checkbox'
+                            checked={!!parameter.value.client.assert}
+                            className='w-4 h-4 accent-blue-500 cursor-pointer'
+                          />
+                        </td>
+                      </tr>
+                      <tr className=''>
+                        <td className='px-2 py-1 text-sm text-right font-semibold'>
+                          Disable EPASV
+                        </td>
+                        <td className='px-2 py-1 text-sm'>
+                          <input
+                            type='checkbox'
+                            checked={!!parameter.value.client.dep}
+                            className='w-4 h-4 accent-blue-500 cursor-pointer'
+                          />
+                        </td>
+                      </tr>
+                      <tr className=''>
+                        <td className='px-2 py-1 text-sm text-right font-semibold'>
+                          Provin
+                        </td>
+                        <td className='px-2 py-1 text-sm'>
+                          {parameter.value.creator.provin}
+                        </td>
+                      </tr>
+                      <tr className=''>
+                        <td className='px-2 py-1 text-sm text-right font-semibold'>
+                          District
+                        </td>
+                        <td className='px-2 py-1 text-sm'>
+                          {parameter.value.creator.district}
+                        </td>
+                      </tr>
+                      <tr className=''>
+                        <td className='px-2 py-1 text-sm text-right font-semibold'>
+                          Station
+                        </td>
+                        <td className='px-2 py-1 text-sm'>
+                          {parameter.value.creator.station}
+                        </td>
+                      </tr>
+                      <tr className=''>
+                        <td className='px-2 py-1 text-sm text-right font-semibold'>
+                          File type
+                        </td>
+                        <td className='px-2 py-1 text-sm'>
+                          <select
+                            value={parameter.value.creator.file_type}
+                            className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg max-w-[150px]'
+                          >
+                            <option value={0}>CSV</option>
+                          </select>
+                        </td>
+                      </tr>
+                      <tr className=''>
+                        <td className='px-2 py-1 text-sm text-right font-semibold'>
+                          Backup months
+                        </td>
+                        <td className='px-2 py-1 text-sm'>
+                          <select
+                            value={parameter.value.creator.keep_month}
+                            className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg max-w-[150px]'
+                          >
+                            <option value={0}>0</option>
+                          </select>
+                        </td>
+                      </tr>
+                      <tr className=''>
+                        <td className='px-2 py-1 text-sm text-right font-semibold'>
+                          Log duration
+                        </td>
+                        <td className='px-2 py-1 text-sm'>
+                          {parameter.value.duration}
+                        </td>
+                      </tr>
+                      <tr className=''>
+                        <td className='px-2 py-1 text-sm text-right font-semibold'>
+                          Log at second
+                        </td>
+                        <td className='px-2 py-1 text-sm'>
+                          {parameter.value.second}
+                        </td>
+                      </tr>
+                      <tr className=''>
+                        <td className='px-2 py-1 text-sm text-right font-semibold'>
+                          Copy to Sdcard
+                        </td>
+                        <td className='px-2 py-1 text-sm'>
+                          <input
+                            type='checkbox'
+                            checked={!!parameter.value.client.clone}
+                            className='w-4 h-4 accent-blue-500 cursor-pointer'
+                          />
+                        </td>
+                      </tr>
+                    </>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          );
         case "control":
-          return dataFIle?.control || {};
+          return (
+            <div className='h-full flex-1'>
+              <table className='w-full'>
+                <thead>
+                  <tr className=''>
+                    <th className='px-2 py-1 text-sm text-center min-w-[150px] border-b'>
+                      Parameter
+                    </th>
+                    <th className='px-2 py-1 text-sm text-center w-full border-b border-l border-r'>
+                      Value
+                    </th>
+                  </tr>
+                  <tr className='bg-gray-200'>
+                    <th className='px-2 py-1 text-sm text-right min-w-[150px] border-b'>
+                      Control Server
+                    </th>
+                    <th className='px-2 py-1 text-sm text-left w-full border-b font-normal'>
+                      {item.idx}
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {item.value && (
+                    <>
+                      <tr className=''>
+                        <td className='px-2 py-1 text-sm text-right font-semibold'>
+                          Enable
+                        </td>
+                        <td className='px-2 py-1 text-sm'>
+                          <input
+                            type='checkbox'
+                            checked={!!parameter.value.en}
+                            className='w-4 h-4 accent-blue-500 cursor-pointer'
+                          />
+                        </td>
+                      </tr>
+                      <tr className=''>
+                        <td className='px-2 py-1 text-sm text-right font-semibold'>
+                          Type
+                        </td>
+                        <td className='px-2 py-1 text-sm'>
+                          <select
+                            value={parameter.value.act_type}
+                            className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg max-w-[150px]'
+                          >
+                            <option value='RAW'>RAW</option>
+                            <option value='MQTT'>MQTT</option>
+                            <option value='UDP'>UDP</option>
+                          </select>
+                        </td>
+                      </tr>
+                      <tr className=''>
+                        <td className='px-2 py-1 text-sm text-right font-semibold'>
+                          Ip/hostname
+                        </td>
+                        <td className='px-2 py-1 text-sm'>
+                          {parameter.value.ip}
+                        </td>
+                      </tr>
+                      <tr className=''>
+                        <td className='px-2 py-1 text-sm text-right font-semibold'>
+                          Port
+                        </td>
+                        <td className='px-2 py-1 text-sm'>
+                          {parameter.value.port}
+                        </td>
+                      </tr>
+                      <tr className=''>
+                        <td className='px-2 py-1 text-sm text-right font-semibold'>
+                          Username
+                        </td>
+                        <td className='px-2 py-1 text-sm'>
+                          {parameter.value.user}
+                        </td>
+                      </tr>
+                      <tr className=''>
+                        <td className='px-2 py-1 text-sm text-right font-semibold'>
+                          Password
+                        </td>
+                        <td className='px-2 py-1 text-sm'>
+                          {parameter.value.password}
+                        </td>
+                      </tr>
+                      <tr className=''>
+                        <td className='px-2 py-1 text-sm text-right font-semibold'>
+                          Identify
+                        </td>
+                        <td className='px-2 py-1 text-sm'>
+                          {parameter.value.uuid}
+                        </td>
+                      </tr>
+                      <tr className=''>
+                        <td className='px-2 py-1 text-sm text-right font-semibold'>
+                          Identify2
+                        </td>
+                        <td className='px-2 py-1 text-sm'>
+                          {parameter.value.uuid2}
+                        </td>
+                      </tr>
+                      <tr className=''>
+                        <td className='px-2 py-1 text-sm text-right font-semibold'>
+                          Pin index
+                        </td>
+                        <td className='px-2 py-1 text-sm'>
+                          {parameter.value.index}
+                        </td>
+                      </tr>
+                      <tr className=''>
+                        <td className='px-2 py-1 text-sm text-right font-semibold'>
+                          Pulse Duty(s)
+                        </td>
+                        <td className='px-2 py-1 text-sm'>
+                          {parameter.value.duty}
+                        </td>
+                      </tr>
+                      <tr className=''>
+                        <td className='px-2 py-1 text-sm text-right font-semibold'>
+                          Port 2
+                        </td>
+                        <td className='px-2 py-1 text-sm'>
+                          {parameter.value.port2}
+                        </td>
+                      </tr>
+                      <tr className=''>
+                        <td className='px-2 py-1 text-sm text-right font-semibold'>
+                          Username 2
+                        </td>
+                        <td className='px-2 py-1 text-sm'>
+                          {parameter.value.user2}
+                        </td>
+                      </tr>
+                      <tr className=''>
+                        <td className='px-2 py-1 text-sm text-right font-semibold'>
+                          Password 2
+                        </td>
+                        <td className='px-2 py-1 text-sm'>
+                          {parameter.value.password2}
+                        </td>
+                      </tr>
+                    </>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          );
         case "di":
           return (
             <div className='h-full flex-1'>
@@ -334,15 +822,184 @@ export default function Main({ onLoginOut }) {
           );
         case "tag":
           return (
-            <pre className='text-xs p-2'>
-              {JSON.stringify(dataFIle?.tag || {}, null, 2)}
-            </pre>
+            <div className='h-full flex-1'>
+              <table className='w-full'>
+                <thead>
+                  <tr className=''>
+                    <th className='px-2 py-1 text-sm text-center min-w-[150px] border-b'>
+                      Parameter
+                    </th>
+                    <th className='px-2 py-1 text-sm text-center w-full border-b border-l border-r'>
+                      Value
+                    </th>
+                  </tr>
+                  <tr className='bg-gray-200'>
+                    <th className='px-2 py-1 text-sm text-right min-w-[150px] border-b '>
+                      TAG
+                    </th>
+                    <th className='px-2 py-1 text-sm text-left w-full border-b font-normal'>
+                      {item.idx}
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {item.value && (
+                    <>
+                      <tr className=''>
+                        <td className='px-2 py-1 text-sm text-right font-semibold'>
+                          Enabled
+                        </td>
+                        <td className='px-2 py-1 text-sm'>
+                          <input
+                            type='checkbox'
+                            checked={!!parameter.value.en}
+                            className='w-4 h-4 accent-blue-500 cursor-pointer'
+                          />
+                        </td>
+                      </tr>
+                      <tr className=''>
+                        <td className='px-2 py-1 text-sm text-right font-semibold'>
+                          Description
+                        </td>
+                        <td className='px-2 py-1 text-sm font-normat'>
+                          {parameter.value.desc}
+                        </td>
+                      </tr>
+                      <tr className=''>
+                        <td className='px-2 py-1 text-sm text-right font-semibold'>
+                          Name
+                        </td>
+                        <td className='px-2 py-1 text-sm font-normat'>
+                          {parameter.value.name}
+                        </td>
+                      </tr>
+                      <tr className=''>
+                        <td className='px-2 py-1 text-sm text-right font-semibold'>
+                          Unit
+                        </td>
+                        <td className='px-2 py-1 text-sm font-normat'>
+                          {parameter.value.unit}
+                        </td>
+                      </tr>
+                      <tr className=''>
+                        <td className='px-2 py-1 text-sm text-right font-semibold'>
+                          Value index
+                        </td>
+                        <td className='px-2 py-1 text-sm font-normat'>
+                          {parameter.value.val_idx}
+                        </td>
+                      </tr>
+                      <tr className=''>
+                        <td className='px-2 py-1 text-sm text-right font-semibold'>
+                          Use 64bits
+                        </td>
+                        <td className='px-2 py-1 text-sm'>
+                          <input
+                            type='checkbox'
+                            checked={!!parameter.value.en}
+                            className='w-4 h-4 accent-blue-500 cursor-pointer'
+                          />
+                        </td>
+                      </tr>
+                      <tr className=''>
+                        <td className='px-2 py-1 text-sm text-right font-semibold'>
+                          Status index
+                        </td>
+                        <td className='px-2 py-1 text-sm font-normat'>
+                          {parameter.value.stat_idx}
+                        </td>
+                      </tr>
+                      <tr className=''>
+                        <td className='px-2 py-1 text-sm text-right font-semibold'>
+                          Report ftp servers
+                        </td>
+                        <td className='px-2 py-1 text-sm font-normat'>
+                          {parameter.value.unit}
+                        </td>
+                      </tr>
+                      <tr className=''>
+                        <td className='px-2 py-1 text-sm text-right font-semibold'>
+                          Average
+                        </td>
+                        <td className='px-2 py-1 text-sm font-normat'>
+                          {parameter.value.avg}
+                        </td>
+                      </tr>
+                    </>
+                  )}
+                </tbody>
+              </table>
+            </div>
           );
         case "program":
           return (
-            <pre className='text-xs p-2'>
-              {JSON.stringify(dataFIle?.program || {}, null, 2)}
-            </pre>
+            <div className='h-full flex-1'>
+              <table className='w-full'>
+                <thead>
+                  <tr className=''>
+                    <th className='px-2 py-1 text-sm text-center min-w-[150px] border-b'>
+                      Parameter
+                    </th>
+                    <th className='px-2 py-1 text-sm text-center w-full border-b border-l border-r'>
+                      Value
+                    </th>
+                  </tr>
+                  <tr className='bg-gray-200'>
+                    <th className='px-2 py-1 text-sm text-right min-w-[150px] border-b '>
+                      Program
+                    </th>
+                    <th className='px-2 py-1 text-sm text-left w-full border-b font-normal'>
+                      {item.idx}
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {item.value && (
+                    <>
+                      <tr className=''>
+                        <td className='px-2 py-1 text-sm text-right font-semibold'>
+                          Enabled
+                        </td>
+                        <td className='px-2 py-1 text-sm'>
+                          <input
+                            type='checkbox'
+                            checked={!!parameter.value.en}
+                            className='w-4 h-4 accent-blue-500 cursor-pointer'
+                          />
+                        </td>
+                      </tr>
+                      <tr className=''>
+                        <td className='px-2 py-1 text-sm text-right font-semibold'>
+                          Description
+                        </td>
+                        <td className='px-2 py-1 text-sm font-normat'>
+                          {parameter.value.desc}
+                        </td>
+                      </tr>
+                      <tr className=''>
+                        <td className='px-2 py-1 text-sm text-right font-semibold'>
+                          Code
+                        </td>
+                        <td className='px-2 py-1 text-sm font-normat'>
+                          <textarea
+                            value={parameter.value.code}
+                            onChange={(e) =>
+                              setParameter((prev) => ({
+                                ...prev,
+                                value: { ...prev.value, code: e.target.value },
+                              }))
+                            }
+                            rows={25}
+                            className='bg-gray-50 border max-w-[550px] border-gray-300 text-gray-900 text-sm rounded-lg px-2 py-1 w-full resize-y font-mono'
+                            placeholder='Enter code here...'
+                          />
+                        </td>
+                      </tr>
+                    </>
+                  )}
+                </tbody>
+              </table>
+            </div>
           );
         case "timer":
           return (
@@ -352,9 +1009,166 @@ export default function Main({ onLoginOut }) {
           );
         case "modbus":
           return (
-            <pre className='text-xs p-2'>
-              {JSON.stringify(dataFIle?.modbus || {}, null, 2)}
-            </pre>
+            <div className='h-full flex-1'>
+              <table className='w-full'>
+                <thead>
+                  <tr className=''>
+                    <th className='px-2 py-1 text-sm text-center min-w-[150px] border-b'>
+                      Parameter
+                    </th>
+                    <th className='px-2 py-1 text-sm text-center w-full border-b border-l border-r'>
+                      Value
+                    </th>
+                  </tr>
+                  <tr className='bg-gray-200'>
+                    <th className='px-2 py-1 text-sm text-right min-w-[150px] border-b '>
+                      Modbus reader
+                    </th>
+                    <th className='px-2 py-1 text-sm text-left w-full border-b font-normal'>
+                      {item.idx}
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {item.value && (
+                    <>
+                      <tr className=''>
+                        <td className='px-2 py-1 text-sm text-right font-semibold'>
+                          Description
+                        </td>
+                        <td className='px-2 py-1 text-sm font-normat'>
+                          {parameter.value.desc}
+                        </td>
+                      </tr>
+                      <tr className=''>
+                        <td className='px-2 py-1 text-sm text-right font-semibold'>
+                          Enabled
+                        </td>
+                        <td className='px-2 py-1 text-sm'>
+                          <input
+                            type='checkbox'
+                            checked={!!parameter.value.en}
+                            className='w-4 h-4 accent-blue-500 cursor-pointer'
+                          />
+                        </td>
+                      </tr>
+                      <tr className=''>
+                        <td className='px-2 py-1 text-sm text-right font-semibold'>
+                          Type
+                        </td>
+                        <td className='px-2 py-1 text-sm'>
+                          <select
+                            value={parameter.value.type}
+                            className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg max-w-[150px]'
+                          >
+                            <option value={2}>TCP</option>
+                          </select>
+                        </td>
+                      </tr>
+                      <tr className=''>
+                        <td className='px-2 py-1 text-sm text-right font-semibold'>
+                          Address
+                        </td>
+                        <td className='px-2 py-1 text-sm'>
+                          {parameter.value.dev_a}
+                        </td>
+                      </tr>
+                      <tr className=''>
+                        <td className='px-2 py-1 text-sm text-right font-semibold'>
+                          ID
+                        </td>
+                        <td className='px-2 py-1 text-sm'>
+                          {parameter.value.id}
+                        </td>
+                      </tr>
+                      <tr className=''>
+                        <td className='px-2 py-1 text-sm text-right font-semibold'>
+                          Register address
+                        </td>
+                        <td className='px-2 py-1 text-sm'>
+                          {parameter.value.reg_a}
+                        </td>
+                      </tr>
+                      <tr className=''>
+                        <td className='px-2 py-1 text-sm text-right font-semibold'>
+                          Data Type
+                        </td>
+                        <td className='px-2 py-1 text-sm'>
+                          <select
+                            value={parameter.value.d_t}
+                            className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg max-w-[150px]'
+                          >
+                            <option value={4}>Input register</option>
+                          </select>
+                        </td>
+                      </tr>
+                      <tr className=''>
+                        <td className='px-2 py-1 text-sm text-right font-semibold'>
+                          Data order
+                        </td>
+                        <td className='px-2 py-1 text-sm'>
+                          <select
+                            value={parameter.value.d_o}
+                            className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg max-w-[150px]'
+                          >
+                            <option value={0}>AB CD</option>
+                          </select>
+                        </td>
+                      </tr>
+                      <tr className=''>
+                        <td className='px-2 py-1 text-sm text-right font-semibold'>
+                          Data format
+                        </td>
+                        <td className='px-2 py-1 text-sm'>
+                          <select
+                            value={parameter.value.d_f}
+                            className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg max-w-[150px]'
+                          >
+                            <option value={3}>32bit floating</option>
+                          </select>
+                        </td>
+                      </tr>
+                      <tr className=''>
+                        <td className='px-2 py-1 text-sm text-right font-semibold'>
+                          Number object
+                        </td>
+                        <td className='px-2 py-1 text-sm'>
+                          {parameter.value.n_obj}
+                        </td>
+                      </tr>
+                      <tr className=''>
+                        <td className='px-2 py-1 text-sm text-right font-semibold'>
+                          Values location
+                        </td>
+                        <td className='px-2 py-1 text-sm'>
+                          {parameter.value.loc_val}
+                        </td>
+                      </tr>
+                      <tr className=''>
+                        <td className='px-2 py-1 text-sm text-right font-semibold'>
+                          Status location
+                        </td>
+                        <td className='px-2 py-1 text-sm'>
+                          {parameter.value.loc_stat}
+                        </td>
+                      </tr>
+                      <tr className=''>
+                        <td className='px-2 py-1 text-sm text-right font-semibold'>
+                          Hold when read fail
+                        </td>
+                        <td className='px-2 py-1 text-sm'>
+                          <input
+                            type='checkbox'
+                            checked={!!parameter.value.kf}
+                            className='w-4 h-4 accent-blue-500 cursor-pointer'
+                          />
+                        </td>
+                      </tr>
+                    </>
+                  )}
+                </tbody>
+              </table>
+            </div>
           );
         default:
       }
