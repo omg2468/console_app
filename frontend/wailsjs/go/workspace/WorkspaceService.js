@@ -10,8 +10,16 @@ export function DeleteFile(arg1) {
   return window['go']['workspace']['WorkspaceService']['DeleteFile'](arg1);
 }
 
+export function DeleteItem(arg1) {
+  return window['go']['workspace']['WorkspaceService']['DeleteItem'](arg1);
+}
+
 export function DowloadConfig() {
   return window['go']['workspace']['WorkspaceService']['DowloadConfig']();
+}
+
+export function ExportJSONFile(arg1, arg2) {
+  return window['go']['workspace']['WorkspaceService']['ExportJSONFile'](arg1, arg2);
 }
 
 export function GetWorkspacePath() {
@@ -36,6 +44,10 @@ export function Paste() {
 
 export function ReadFile(arg1) {
   return window['go']['workspace']['WorkspaceService']['ReadFile'](arg1);
+}
+
+export function RenameItem(arg1, arg2) {
+  return window['go']['workspace']['WorkspaceService']['RenameItem'](arg1, arg2);
 }
 
 export function SetClipboard(arg1) {

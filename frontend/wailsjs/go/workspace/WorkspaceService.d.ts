@@ -7,7 +7,11 @@ export function CreateFolder(arg1:string):Promise<string>;
 
 export function DeleteFile(arg1:string):Promise<void>;
 
+export function DeleteItem(arg1:string):Promise<void>;
+
 export function DowloadConfig():Promise<void>;
+
+export function ExportJSONFile(arg1:string,arg2:string):Promise<void>;
 
 export function GetWorkspacePath():Promise<string>;
 
@@ -20,6 +24,8 @@ export function NewProject(arg1:string):Promise<void>;
 export function Paste():Promise<string>;
 
 export function ReadFile(arg1:string):Promise<string>;
+
+export function RenameItem(arg1:string,arg2:string):Promise<void>;
 
 export function SetClipboard(arg1:string):Promise<void>;
 
