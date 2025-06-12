@@ -50,6 +50,10 @@ export function RenameItem(arg1, arg2) {
   return window['go']['workspace']['WorkspaceService']['RenameItem'](arg1, arg2);
 }
 
+export function SaveJsonFile(arg1, arg2) {
+  return window['go']['workspace']['WorkspaceService']['SaveJsonFile'](arg1, arg2);
+}
+
 export function SetClipboard(arg1) {
   return window['go']['workspace']['WorkspaceService']['SetClipboard'](arg1);
 }

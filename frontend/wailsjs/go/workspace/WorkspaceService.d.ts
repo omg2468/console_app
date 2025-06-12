@@ -27,6 +27,8 @@ export function ReadFile(arg1:string):Promise<string>;
 
 export function RenameItem(arg1:string,arg2:string):Promise<void>;
 
+export function SaveJsonFile(arg1:string,arg2:string):Promise<void>;
+
 export function SetClipboard(arg1:string):Promise<void>;
 
 export function SetContext(arg1:context.Context):Promise<void>;

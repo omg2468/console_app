@@ -3,6 +3,7 @@ package workspace
 import (
 	"context"
 	_ "embed" // để nhúng file JSON mẫu
+	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
@@ -29,6 +30,7 @@ type FileNode struct {
 	Type     string     `json:"type"` // "file" or "folder"
 	Modified string     `json:"modified,omitempty"`
 	Children []FileNode `json:"children,omitempty"`
+	Path     string     `json:"path,omitempty"` // Đường dẫn đầy đủ đến file hoặc thư mục
 }
 
 type ClipboardAction string
@@ -72,6 +74,7 @@ func buildFileTree(path string) ([]FileNode, error) {
 			Name:     entry.Name(),
 			Type:     "file",
 			Modified: info.ModTime().Format("2006-01-02 15:04:05"),
+			Path:     strings.TrimPrefix(fullPath, "workspace"+string(os.PathSeparator)),
 		}
 
 		if entry.IsDir() {
@@ -117,15 +120,18 @@ func (ws *WorkspaceService) ListFiles() ([]FileNode, error) {
 }
 
 func (ws *WorkspaceService) ReadFile(relPath string) (string, error) {
-    absPath := filepath.Join(ws.basePath, relPath)
-    data, err := os.ReadFile(absPath)
-    if err != nil {
-        return "", err
-    }
-    if len(data) == 0 {
-        return "", fmt.Errorf("File rỗng")
-    }
-    return string(data), nil
+	absPath := filepath.Join(ws.basePath, relPath)
+
+	fmt.Println("Đang đọc file:", absPath)
+
+	data, err := os.ReadFile(absPath)
+	if err != nil {
+		return "", err
+	}
+	if len(data) == 0 {
+		return "", fmt.Errorf("File rỗng")
+	}
+	return string(data), nil
 }
 
 func (ws *WorkspaceService) DeleteFile(relPath string) error {
@@ -145,10 +151,6 @@ func (ws *WorkspaceService) GetWorkspacePath() (string, error) {
 	}
 	return absPath, nil
 }
-
-
-
-
 
 // CreateFolder tạo một thư mục mới.
 func (ws *WorkspaceService) CreateFolder(name string) (string, error) {
@@ -176,7 +178,6 @@ func (ws *WorkspaceService) CreateFolder(name string) (string, error) {
 	fmt.Printf("✅ Đã tạo thư mục: %s\n", newFolderPath)
 	return name, nil
 }
-
 
 func (ws *WorkspaceService) ShowInExplorer(path string) error {
 	switch runtime.GOOS {
@@ -250,6 +251,25 @@ func OverwriteFile(destinationPath string, source io.Reader) (int64, error) {
 	}
 
 	return written, nil
+}
+
+func (ws *WorkspaceService) SaveJsonFile(destinationPath string, jsonContent string) error {
+	if !strings.HasSuffix(destinationPath, ".json") {
+		return fmt.Errorf("chỉ chấp nhận lưu file .json")
+	}
+
+	var js interface{}
+	if err := json.Unmarshal([]byte(jsonContent), &js); err != nil {
+		return fmt.Errorf("nội dung JSON không hợp lệ: %w", err)
+	}
+
+	// Ghi đè nội dung
+	_, err := OverwriteFile(destinationPath, strings.NewReader(jsonContent))
+	if err != nil {
+		return fmt.Errorf("không thể lưu file JSON: %w", err)
+	}
+
+	return nil
 }
 
 func (ws *WorkspaceService) RenameItem(sourceName string, newName string) error {
@@ -338,7 +358,6 @@ func (ws *WorkspaceService) Paste() (string, error) {
 	return targetPath, nil
 }
 
-
 func (ws *WorkspaceService) NewProject(name string) error {
 	// Lấy đường dẫn workspace
 	workspacePath, err := ws.GetWorkspacePath()
@@ -376,7 +395,6 @@ func (ws *WorkspaceService) NewProject(name string) error {
 func (ws *WorkspaceService) DowloadConfig() error {
 	return ws.authService.Send(`{"type":"download_config"}`)
 }
-
 
 func copyFile(src, dst string) (int64, error) {
 	sourceFile, err := os.Open(src)
@@ -487,4 +505,3 @@ func (ws *WorkspaceService) DeleteItem(itemName string) error {
 
 	return nil
 }
-
