@@ -134,6 +134,14 @@ func (ws *WorkspaceService) ReadFile(relPath string) (string, error) {
 	return string(data), nil
 }
 
+func (ws *WorkspaceService) GetDefaultData() (string, error) {
+	if len(testTemplate) == 0 {
+		return "", fmt.Errorf("Template mặc định trống hoặc không được embed")
+	}
+
+	return string(testTemplate), nil
+}
+
 func (ws *WorkspaceService) DeleteFile(relPath string) error {
 	absPath := filepath.Join(ws.basePath, relPath)
 
@@ -392,6 +400,7 @@ func (ws *WorkspaceService) NewProject(name string) error {
 	fmt.Printf("✅ Dự án mới đã được tạo: %s (%d bytes)\n", targetPath, written)
 	return nil
 }
+
 func (ws *WorkspaceService) DowloadConfig() error {
 	return ws.authService.Send(`{"type":"download_config"}`)
 }

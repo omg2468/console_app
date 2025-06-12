@@ -22,6 +22,10 @@ export function ExportJSONFile(arg1, arg2) {
   return window['go']['workspace']['WorkspaceService']['ExportJSONFile'](arg1, arg2);
 }
 
+export function GetDefaultData() {
+  return window['go']['workspace']['WorkspaceService']['GetDefaultData']();
+}
+
 export function GetWorkspacePath() {
   return window['go']['workspace']['WorkspaceService']['GetWorkspacePath']();
 }

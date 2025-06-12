@@ -4,8 +4,8 @@ import {
   ImportFile,
   ListFiles,
   NewProject,
-  ReadFile,
   SaveJsonFile,
+  GetDefaultData,
 } from "../../wailsjs/go/workspace/WorkspaceService";
 import { ContextMenuContext } from "../store";
 
@@ -87,10 +87,10 @@ export default function Main({ onLoginOut }) {
   }, []);
 
   useEffect(() => {
-    const readFile = async () => {
+    const getDefaultData = async () => {
       if (!treeData?.length) return;
       try {
-        const content = await ReadFile("test.json");
+        const content = await GetDefaultData();
         const data = JSON.parse(content);
         if (data) setDataFile(data);
       } catch (error) {
@@ -98,7 +98,7 @@ export default function Main({ onLoginOut }) {
       }
     };
 
-    readFile();
+    getDefaultData();
   }, [treeData]);
 
   const systemCenterData = [

@@ -9,9 +9,6 @@ import {
 } from "../../wailsjs/go/workspace/WorkspaceService";
 
 import { ContextMenuContext } from "../store";
-
-import ContextMenu from "./ContextMenu";
-
 // Helper: kiểm tra node có children không
 const hasChildren = (node) =>
   Array.isArray(node.children) && node.children.length > 0;

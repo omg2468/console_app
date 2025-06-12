@@ -13,6 +13,8 @@ export function DowloadConfig():Promise<void>;
 
 export function ExportJSONFile(arg1:string,arg2:string):Promise<void>;
 
+export function GetDefaultData():Promise<string>;
+
 export function GetWorkspacePath():Promise<string>;
 
 export function ImportFile(arg1:string,arg2:string):Promise<void>;
