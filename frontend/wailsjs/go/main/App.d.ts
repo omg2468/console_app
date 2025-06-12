@@ -5,6 +5,8 @@ export function GetContext():Promise<string>;
 
 export function Greet(arg1:string):Promise<string>;
 
+export function SelectFileToExport(arg1:string):Promise<string>;
+
 export function SelectFileToImport():Promise<string>;
 
 export function ShowInfoDialog():Promise<void>;

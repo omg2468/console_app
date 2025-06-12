@@ -10,6 +10,10 @@ export function Greet(arg1) {
   return window['go']['main']['App']['Greet'](arg1);
 }
 
+export function SelectFileToExport(arg1) {
+  return window['go']['main']['App']['SelectFileToExport'](arg1);
+}
+
 export function SelectFileToImport() {
   return window['go']['main']['App']['SelectFileToImport']();
 }

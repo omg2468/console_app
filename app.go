@@ -71,3 +71,29 @@ func (a *App) SelectFileToImport() (string, error) {
 
 	return selectedFile, nil
 }
+
+func (a *App) SelectFileToExport(defaultName string) (string, error) {
+	options := runtime.SaveDialogOptions{
+		Title:           "Chọn nơi lưu file",
+		DefaultFilename: defaultName, // Tên mặc định, ví dụ: "data.json"
+		Filters: []runtime.FileFilter{
+			{DisplayName: "JSON Files (*.json)", Pattern: "*.json"},
+			{DisplayName: "All Files (*.*)", Pattern: "*.*"},
+		},
+	}
+
+	selectedPath, err := runtime.SaveFileDialog(a.ctx, options)
+	if err != nil {
+		if errors.Is(err, context.Canceled) {
+			return "", nil // Người dùng hủy
+		}
+		return "", fmt.Errorf("Lỗi khi chọn nơi lưu file: %w", err)
+	}
+
+	if selectedPath == "" {
+		return "", nil // Không chọn file
+	}
+
+	return selectedPath, nil
+}
+

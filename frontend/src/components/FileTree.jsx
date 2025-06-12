@@ -6,7 +6,12 @@ import {
   CreateFolder,
   NewProject,
   ReadFile,
+  DeleteItem,
+  ExportJSONFile,
+  RenameItem,
 } from "../../wailsjs/go/workspace/WorkspaceService";
+
+import { SelectFileToExport } from "../../wailsjs/go/main/App";
 
 import { ContextMenuContext } from "../store";
 // Helper: kiểm tra node có children không
@@ -32,42 +37,107 @@ const TreeNode = ({
     }
   };
 
-  const handleAction = async (action, name, e) => {
+  const handleAction = async (action, name) => {
+    console.log("handleAction:", action, name);
+
+    const basePath =
+      node.path.endsWith("/") || node.path.endsWith("\\")
+        ? node.path.slice(0, -1)
+        : node.path;
+
+    const fullPath = `${basePath}/${name}`;
+
     try {
       switch (action) {
+        case "newProject":
+          if (!name || !name.trim()) {
+            console.warn("Tên không hợp lệ");
+            return;
+          }
+          if (!name.toLowerCase().endsWith(".json")) {
+            console.warn("Chỉ cho phép tạo file với phần mở rộng .json");
+            return;
+          }
+          await NewProject(fullPath);
+          setInput("");
+          setShowModal({ show: false, action: null });
+          break;
+
         case "load":
           if (!node.path || node.type !== "file") {
             return;
           }
-          const content = await ReadFile("" + node.path);
+          const content = await ReadFile(node.path);
           const data = JSON.parse(content);
           console.log("Loaded data:", data);
           setDataFile(data);
           break;
 
-        case "showInExplore":
-          const workspaceFolder = await GetWorkspacePath();
-          await ShowInExplorer(workspaceFolder);
-          break;
-
-        case "import":
-          await handleImport();
-          break;
-
         case "newGroup":
-          await CreateFolder(name);
+          await CreateFolder(fullPath);
           setInput("");
           setShowModal({ show: false, action: null });
+
+        case "unload":
+          console.log("Unload action ở:", action);
           break;
 
-        case "newProject":
-          await NewProject(name + ".json");
-          setInput("");
-          setShowModal({ show: false, action: null });
+        case "delete":
+          await DeleteItem(node.path);
           break;
 
-        case "paste":
-          console.log("Paste action ở:", action);
+        case "copy":
+          if (!node.path) {
+            return;
+          }
+          context.setClipboard(node.path);
+
+        case "export":
+          SelectFileToExport(node.name).then(async (filePath) => {
+            if (!filePath) {
+              return;
+            }
+            try {
+              await ExportJSONFile(node.path, filePath);
+            } catch (error) {
+              console.error("Error exporting file:", error);
+            }
+          });
+          break;
+
+        case "showInExplore":
+          if (!node.path) {
+            return;
+          }
+          await ShowInExplorer(node.path);
+          break;
+
+        case "rename":
+          if (!node.path) {
+            return;
+          }
+
+          const trimmedInput = input.trim();
+          if (!trimmedInput) {
+            console.warn("Tên không hợp lệ");
+            return;
+          }
+
+          if (
+            !trimmedInput.toLowerCase().endsWith(".json") &&
+            node.type === "file"
+          ) {
+            console.warn("Chỉ cho phép đổi tên file với phần mở rộng .json");
+            return;
+          }
+
+          try {
+            await RenameItem(node.path, trimmedInput);
+            setInput("");
+            setShowModal({ show: false, action: null });
+          } catch (err) {
+            console.error("Lỗi khi đổi tên:", err);
+          }
           break;
 
         default:
@@ -75,24 +145,64 @@ const TreeNode = ({
           break;
       }
 
-      refreshFileList(); // ✅ chỉ chạy khi không lỗi
+      refreshFileList();
     } catch (error) {
       console.error("Lỗi trong handleAction:", error);
-      // Có thể hiển thị lỗi bằng Toast hoặc Alert tùy UX
+      setInput("");
+      setShowModal({ show: false, action: null });
     }
   };
 
   const handleContextMenu = (e) => {
     e.preventDefault();
     e.stopPropagation();
-    context?.showMenu(e.clientX, e.clientY, [
-      { label: "Load", action: () => handleAction("load") },
-      { label: "Unload", action: "unload" },
-      { label: "Copy", action: "copy" },
-      { label: "Rename", action: "rename" },
-      { label: "Export", action: "export" },
-      { label: "delete", action: "delete" },
-    ]);
+
+    if (node.type == "file") {
+      // Nếu là file, chỉ hiển thị các hành động liên quan đến file
+      context?.showMenu(e.clientX, e.clientY, [
+        { label: "Load", action: () => handleAction("load") },
+        { label: "Unload", action: "unload" },
+        { label: "Copy", action: () => handleAction("copy") },
+        {
+          label: "Rename",
+          action: () => {
+            setShowModal({ show: true, action: "rename" });
+            setInput(node.name);
+          },
+        },
+        { label: "Export", action: () => handleAction("export") },
+        { label: "Delete", action: () => handleAction("delete") },
+      ]);
+    } else if (node.type == "folder") {
+      // Nếu là folder, hiển thị các hành động liên quan đến folder
+      context?.showMenu(e.clientX, e.clientY, [
+        {
+          label: "New Project",
+          action: () => {
+            setInput("default.json");
+            setShowModal({ show: true, action: "newProject" });
+          },
+        },
+        {
+          label: "New Group",
+          action: () => setShowModal({ show: true, action: "newGroup" }),
+        },
+        { label: "Paste", action: "paste" },
+        { label: "Import", action: "import" },
+        {
+          label: "Rename",
+          action: () => {
+            setInput(node.name);
+            setShowModal({ show: true, action: "rename" });
+          },
+        },
+        { label: "Delete", action: () => handleAction("delete") },
+        {
+          label: "Show in Explore",
+          action: () => handleAction("showInExplore"),
+        },
+      ]);
+    }
   };
 
   // Nếu là node root (level === 0), luôn render placeholder mũi tên để căn chỉnh
@@ -211,43 +321,38 @@ const TreeNode = ({
 
 const FileTree = ({ treeData, refreshFileList, handleImport, setDataFile }) => {
   const context = useContext(ContextMenuContext);
-  const [showModal, setShowModal] = useState(false);
+  const [showModal, setShowModal] = useState({ show: false, action: null });
+  const [input, setInput] = useState("");
 
-  const handleAction = async (action, name, e) => {
+  const handleAction = async (action, name) => {
     try {
       switch (action) {
-        case "load":
-          if (!node.path || node.type !== "file") {
+        case "newProject":
+          if (!name || !name.trim()) {
+            console.warn("Tên không hợp lệ");
             return;
           }
-          const content = await ReadFile("" + node.path);
-          const data = JSON.parse(content);
-          setDataFile(data);
-          break; // ⚠️ Rất quan trọng, tránh chạy tiếp case "showInExplore"
+          if (!name.toLowerCase().endsWith(".json")) {
+            console.warn("Chỉ cho phép tạo file với phần mở rộng .json");
+            return;
+          }
+          await NewProject(fullPath);
+          setInput("");
+          setShowModal({ show: false, action: null });
+          break;
 
-        case "showInExplore":
-          const workspaceFolder = await GetWorkspacePath();
-          await ShowInExplorer(workspaceFolder);
+        case "newGroup":
+          await CreateFolder(fullPath);
+          setInput("");
+          setShowModal({ show: false, action: null });
           break;
 
         case "import":
           await handleImport();
           break;
 
-        case "newGroup":
-          await CreateFolder(name);
-          setInput("");
-          setShowModal({ show: false, action: null });
-          break;
-
-        case "newProject":
-          await NewProject(name + ".json");
-          setInput("");
-          setShowModal({ show: false, action: null });
-          break;
-
-        case "paste":
-          console.log("Paste action ở:", action);
+        case "showInExplore":
+          await ShowInExplorer("");
           break;
 
         default:
@@ -255,10 +360,10 @@ const FileTree = ({ treeData, refreshFileList, handleImport, setDataFile }) => {
           break;
       }
 
-      refreshFileList(); // ✅ chỉ chạy khi không lỗi
+      refreshFileList();
     } catch (error) {
-      console.error("Lỗi trong handleAction:", error);
-      // Có thể hiển thị lỗi bằng Toast hoặc Alert tùy UX
+      setInput("");
+      setShowModal({ show: false, action: null });
     }
   };
 
@@ -301,7 +406,7 @@ const FileTree = ({ treeData, refreshFileList, handleImport, setDataFile }) => {
             : null}
         </div>
       </div>
-      {showModal && (
+      {showModal.show && (
         <div
           className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center"
           onClick={() => setShowModal(false)} // Đóng modal khi click nền đen
@@ -314,17 +419,19 @@ const FileTree = ({ treeData, refreshFileList, handleImport, setDataFile }) => {
               type="text"
               className="w-full px-3 py-2 border border-gray-300 rounded-md mb-4 focus:outline-none focus:border-blue-500"
               placeholder="Enter project name"
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
             />
             <div className="flex flex-row justify-around">
               <button
                 className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-                onClick={() => {}}
+                onClick={() => handleAction(showModal.action, input)}
               >
                 Save
               </button>
               <button
                 className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-                onClick={() => setShowModal(false)}
+                onClick={() => setShowModal({ show: false, action: null })}
               >
                 Close
               </button>

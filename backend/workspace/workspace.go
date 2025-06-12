@@ -187,17 +187,29 @@ func (ws *WorkspaceService) CreateFolder(name string) (string, error) {
 	return name, nil
 }
 
-func (ws *WorkspaceService) ShowInExplorer(path string) error {
+func (ws *WorkspaceService) ShowInExplorer(relativePath string) error {
+	// Lấy workspace path
+	workspacePath, err := ws.GetWorkspacePath()
+	if err != nil {
+		return fmt.Errorf("không thể lấy đường dẫn workspace: %w", err)
+	}
+
+	// Ghép đường dẫn đầy đủ
+	fullPath := filepath.Join(workspacePath, relativePath)
+
+	fmt.Println("Đang mở trong Explorer:", fullPath)
+
+	// Mở trong trình quản lý file hệ điều hành
 	switch runtime.GOOS {
 	case "windows":
-		fmt.Println("Opening in Windows Explorer:", path)
-		return exec.Command("explorer", path).Start()
-	case "darwin": // macOS
-		return exec.Command("open", path).Start()
+		fmt.Println("📂 Đang mở trong Explorer:", fullPath)
+		return exec.Command("explorer", fullPath).Start()
+	case "darwin":
+		return exec.Command("open", fullPath).Start()
 	case "linux":
-		return exec.Command("xdg-open", path).Start()
+		return exec.Command("xdg-open", fullPath).Start()
 	default:
-		return nil // hoặc trả lỗi unsupported OS
+		return fmt.Errorf("hệ điều hành không được hỗ trợ: %s", runtime.GOOS)
 	}
 }
 
@@ -428,53 +440,41 @@ func copyFile(src, dst string) (int64, error) {
 // ExportJSONFile xuất một file JSON từ workspace ra một đường dẫn đích.
 // jsonFileName là tên của file JSON (ví dụ: "config.json") trong workspace.
 // destinationFolder là đường dẫn tuyệt đối đến thư mục đích bên ngoài workspace.
-func (ws *WorkspaceService) ExportJSONFile(jsonFileName string, destinationFolder string) error {
+func (ws *WorkspaceService) ExportJSONFile(jsonFileName string, destinationPath string) error {
 	// Lấy đường dẫn tuyệt đối của workspace
 	absWorkspacePath, err := ws.GetWorkspacePath()
 	if err != nil {
 		return fmt.Errorf("không thể lấy đường dẫn workspace: %w", err)
 	}
 
-	// Xây dựng đường dẫn đầy đủ của file JSON nguồn trong workspace
+	// Tạo đường dẫn đầy đủ tới file nguồn trong workspace
 	sourceFullPath := filepath.Join(absWorkspacePath, jsonFileName)
 
-	// Kiểm tra xem file nguồn có tồn tại không
+	// Kiểm tra file nguồn có tồn tại không
 	info, err := os.Stat(sourceFullPath)
 	if os.IsNotExist(err) {
 		return fmt.Errorf("file JSON '%s' không tồn tại trong workspace", jsonFileName)
 	} else if err != nil {
-		return fmt.Errorf("lỗi khi kiểm tra file nguồn '%s': %w", jsonFileName, err)
+		return fmt.Errorf("lỗi khi kiểm tra file nguồn: %w", err)
 	}
 
-	// Đảm bảo đây là một file, không phải thư mục
 	if info.IsDir() {
-		return fmt.Errorf("mục '%s' là một thư mục, không phải file JSON", jsonFileName)
+		return fmt.Errorf("'%s' là thư mục, không phải file JSON", jsonFileName)
 	}
 
-	// Kiểm tra phần mở rộng file để đảm bảo là .json
-	if !strings.HasSuffix(strings.ToLower(jsonFileName), ".json") {
-		return fmt.Errorf("file '%s' không phải là file JSON (không có phần mở rộng .json)", jsonFileName)
+	// Kiểm tra phần mở rộng .json của file đích
+	if !strings.HasSuffix(strings.ToLower(destinationPath), ".json") {
+		return fmt.Errorf("đường dẫn đích '%s' không có phần mở rộng .json", destinationPath)
 	}
 
-	// Xây dựng đường dẫn đích đầy đủ cho file JSON
-	destinationFullPath := filepath.Join(destinationFolder, jsonFileName)
-
-	// Kiểm tra xem thư mục đích có tồn tại không
-	if _, err := os.Stat(destinationFolder); os.IsNotExist(err) {
-		return fmt.Errorf("thư mục đích '%s' không tồn tại", destinationFolder)
-	} else if err != nil {
-		return fmt.Errorf("lỗi khi kiểm tra thư mục đích '%s': %w", destinationFolder, err)
-	}
-
-	fmt.Printf("Đang xuất file JSON '%s' từ '%s' sang '%s'...\n", jsonFileName, absWorkspacePath, destinationFolder)
-
-	// Sao chép file
-	_, err = copyFile(sourceFullPath, destinationFullPath)
+	// Sao chép file từ sourceFullPath sang destinationPath
+	fmt.Printf("Đang xuất file JSON từ '%s' đến '%s'...\n", sourceFullPath, destinationPath)
+	_, err = copyFile(sourceFullPath, destinationPath)
 	if err != nil {
-		return fmt.Errorf("lỗi khi xuất file JSON '%s': %w", jsonFileName, err)
+		return fmt.Errorf("lỗi khi sao chép file: %w", err)
 	}
 
-	fmt.Printf("✅ Đã xuất thành công file JSON '%s' sang '%s'.\n", jsonFileName, destinationFullPath)
+	fmt.Println("✅ Xuất file thành công.")
 	return nil
 }
 
