@@ -2,13 +2,13 @@ import React, { useEffect, useState, useContext } from "react";
 import { Folder, File } from "lucide-react";
 import {
   ShowInExplorer,
-  GetWorkspacePath,
   CreateFolder,
   NewProject,
   ReadFile,
   DeleteItem,
   ExportJSONFile,
   RenameItem,
+  Paste
 } from "../../wailsjs/go/workspace/WorkspaceService";
 
 import { SelectFileToExport } from "../../wailsjs/go/main/App";
@@ -91,6 +91,7 @@ const TreeNode = ({
             return;
           }
           context.setClipboard(node.path);
+          break;
 
         case "export":
           SelectFileToExport(node.name).then(async (filePath) => {
@@ -103,6 +104,20 @@ const TreeNode = ({
               console.error("Error exporting file:", error);
             }
           });
+          break;
+
+        case "paste":
+          if (!context.clipBoard) {
+            console.warn("Clipboard is empty");
+            return;
+          }
+          if (node.type !== "folder") {
+            console.warn("Chỉ có thể dán vào thư mục");
+            return;
+          }
+          const clipboardPath = context.clipBoard;
+
+          await Paste(clipboardPath, node.path);
           break;
 
         case "showInExplore":
@@ -144,12 +159,13 @@ const TreeNode = ({
           console.warn("Unknown action:", action);
           break;
       }
-
-      refreshFileList();
     } catch (error) {
       console.error("Lỗi trong handleAction:", error);
       setInput("");
       setShowModal({ show: false, action: null });
+    } finally {
+      // Refresh file list after any action that modifies the file system
+      refreshFileList();
     }
   };
 
@@ -185,10 +201,13 @@ const TreeNode = ({
         },
         {
           label: "New Group",
-          action: () => setShowModal({ show: true, action: "newGroup" }),
+          action: () => {
+            setInput("");
+            setShowModal({ show: true, action: "newGroup" });
+          },
         },
-        { label: "Paste", action: "paste" },
-        { label: "Import", action: "import" },
+        { label: "Paste", action: () => handleAction("paste")},
+        { label: "Import", action: () => handleImport() },
         {
           label: "Rename",
           action: () => {
@@ -287,7 +306,6 @@ const TreeNode = ({
             <input
               type="text"
               className="w-full px-3 py-2 border border-gray-300 rounded-md mb-4 focus:outline-none focus:border-blue-500"
-              placeholder="Enter project name"
               value={input}
               onChange={(e) => setInput(e.target.value)}
             />
@@ -319,7 +337,7 @@ const TreeNode = ({
   );
 };
 
-const FileTree = ({ treeData, refreshFileList, handleImport, setDataFile }) => {
+const FileTree = ({ treeData, refreshFileList, setDataFile }) => {
   const context = useContext(ContextMenuContext);
   const [showModal, setShowModal] = useState({ show: false, action: null });
   const [input, setInput] = useState("");
@@ -385,7 +403,7 @@ const FileTree = ({ treeData, refreshFileList, handleImport, setDataFile }) => {
   return (
     <>
       <div
-        className="p-4 bg-white rounded shadow-sm max-w-[400px]"
+        className="p-4 h-[100%] bg-white rounded shadow-sm max-w-[400px]"
         onContextMenu={handleContextMenu}
       >
         {(!treeData || treeData.length === 0) && (
@@ -418,7 +436,6 @@ const FileTree = ({ treeData, refreshFileList, handleImport, setDataFile }) => {
             <input
               type="text"
               className="w-full px-3 py-2 border border-gray-300 rounded-md mb-4 focus:outline-none focus:border-blue-500"
-              placeholder="Enter project name"
               value={input}
               onChange={(e) => setInput(e.target.value)}
             />

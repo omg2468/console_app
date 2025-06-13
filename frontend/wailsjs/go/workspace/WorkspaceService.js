@@ -30,8 +30,8 @@ export function GetWorkspacePath() {
   return window['go']['workspace']['WorkspaceService']['GetWorkspacePath']();
 }
 
-export function ImportFile(arg1, arg2) {
-  return window['go']['workspace']['WorkspaceService']['ImportFile'](arg1, arg2);
+export function ImportFileToWorkspace(arg1, arg2) {
+  return window['go']['workspace']['WorkspaceService']['ImportFileToWorkspace'](arg1, arg2);
 }
 
 export function ListFiles() {
@@ -42,8 +42,8 @@ export function NewProject(arg1) {
   return window['go']['workspace']['WorkspaceService']['NewProject'](arg1);
 }
 
-export function Paste() {
-  return window['go']['workspace']['WorkspaceService']['Paste']();
+export function Paste(arg1, arg2) {
+  return window['go']['workspace']['WorkspaceService']['Paste'](arg1, arg2);
 }
 
 export function ReadFile(arg1) {
@@ -56,10 +56,6 @@ export function RenameItem(arg1, arg2) {
 
 export function SaveJsonFile(arg1, arg2) {
   return window['go']['workspace']['WorkspaceService']['SaveJsonFile'](arg1, arg2);
-}
-
-export function SetClipboard(arg1) {
-  return window['go']['workspace']['WorkspaceService']['SetClipboard'](arg1);
 }
 
 export function SetContext(arg1) {

@@ -17,21 +17,19 @@ export function GetDefaultData():Promise<string>;
 
 export function GetWorkspacePath():Promise<string>;
 
-export function ImportFile(arg1:string,arg2:string):Promise<void>;
+export function ImportFileToWorkspace(arg1:string,arg2:string):Promise<void>;
 
 export function ListFiles():Promise<Array<workspace.FileNode>>;
 
 export function NewProject(arg1:string):Promise<void>;
 
-export function Paste():Promise<string>;
+export function Paste(arg1:string,arg2:string):Promise<void>;
 
 export function ReadFile(arg1:string):Promise<string>;
 
 export function RenameItem(arg1:string,arg2:string):Promise<void>;
 
 export function SaveJsonFile(arg1:string,arg2:string):Promise<void>;
-
-export function SetClipboard(arg1:string):Promise<void>;
 
 export function SetContext(arg1:context.Context):Promise<void>;
 

@@ -1,7 +1,7 @@
 import FileTree from "../components/FileTree";
 import { useState, useEffect, useCallback, useContext } from "react";
 import {
-  ImportFile,
+  ImportFileToWorkspace,
   ListFiles,
   NewProject,
   SaveJsonFile,
@@ -47,7 +47,8 @@ export default function Main({ onLoginOut }) {
       }
       const fileName = filePath.split(/[/\\]/).pop();
 
-      await ImportFile(filePath, fileName);
+
+      await ImportFileToWorkspace(filePath,fileName);
       refreshFileList();
     } catch (error) {
       console.error("Lỗi khi import file:", error);
@@ -86,20 +87,20 @@ export default function Main({ onLoginOut }) {
     refreshFileList();
   }, []);
 
-  useEffect(() => {
-    const getDefaultData = async () => {
-      if (!treeData?.length) return;
-      try {
-        const content = await GetDefaultData();
-        const data = JSON.parse(content);
-        if (data) setDataFile(data);
-      } catch (error) {
-        console.error("Error reading file:", error);
-      }
-    };
+  // useEffect(() => {
+  //   const getDefaultData = async () => {
+  //     if (!treeData?.length) return;
+  //     try {
+  //       const content = await GetDefaultData();
+  //       const data = JSON.parse(content);
+  //       if (data) setDataFile(data);
+  //     } catch (error) {
+  //       console.error("Error reading file:", error);
+  //     }
+  //   };
 
-    getDefaultData();
-  }, [treeData]);
+  //   getDefaultData();
+  // }, [treeData]);
 
   const systemCenterData = [
     { label: "MODBUS RTU MASTER", key: "rtu_master" },
@@ -1811,14 +1812,13 @@ export default function Main({ onLoginOut }) {
           Save As Project
         </button>
         <button
-          onClick={handleImport}
+          onClick={() => handleImport()}
           className="rounded-md bg-white border border-gray-300 px-2 py-0.5 text-[10px] font-medium shadow-sm hover:bg-blue-50 hover:border-blue-400 active:bg-blue-100 active:border-blue-400 transition-colors"
         >
           Import Project
         </button>
         <button
           className="rounded-md bg-white border border-gray-300 px-2 py-0.5 text-[10px] font-medium shadow-sm hover:bg-blue-50 hover:border-blue-400 active:bg-blue-100 active:border-blue-400 transition-colors"
-          onClick={ImportFile}
         >
           Log Out
         </button>
@@ -1847,7 +1847,6 @@ export default function Main({ onLoginOut }) {
                 <FileTree
                   treeData={treeData}
                   refreshFileList={refreshFileList}
-                  handleImport={handleImport}
                   setDataFile={setDataFile}
                 />
               </div>

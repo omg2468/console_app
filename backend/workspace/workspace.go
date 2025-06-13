@@ -213,7 +213,8 @@ func (ws *WorkspaceService) ShowInExplorer(relativePath string) error {
 	}
 }
 
-func (ws *WorkspaceService) ImportFile(sourcePath string, filename string) error {
+func (ws *WorkspaceService) ImportFileToWorkspace(sourcePath string, filename string) error {
+
 	src, err := os.Open(sourcePath)
 	if err != nil {
 		return err
@@ -328,54 +329,59 @@ func (ws *WorkspaceService) RenameItem(sourceName string, newName string) error 
 	return nil
 }
 
-func (ws *WorkspaceService) SetClipboard(sourcePath string) {
-	ws.clipboard = &Clipboard{
-		SourcePath: sourcePath,
-		Action:     ActionCopy,
-	}
-}
-
-func (ws *WorkspaceService) Paste() (string, error) {
-	if ws.clipboard == nil {
-		return "", fmt.Errorf("Clipboard rỗng, chưa có file để paste")
-	}
-
-	sourcePath := ws.clipboard.SourcePath
-
-	absPath, err := ws.GetWorkspacePath()
+func (ws *WorkspaceService) Paste(relativeSourcePath, relativeDestinationDir string) error {
+	// Lấy đường dẫn tuyệt đối đến workspace
+	workspacePath, err := ws.GetWorkspacePath()
 	if err != nil {
-		return "", fmt.Errorf("Không thể lấy đường dẫn workspace: %w", err)
+		return fmt.Errorf("Không thể lấy đường dẫn workspace: %w", err)
 	}
 
+	// Xây dựng đường dẫn tuyệt đối đến file nguồn và thư mục đích
+	sourcePath := filepath.Join(workspacePath, relativeSourcePath)
+	destinationDir := filepath.Join(workspacePath, relativeDestinationDir)
+
+	// Lấy tên file từ đường dẫn nguồn
 	filename := filepath.Base(sourcePath)
 
-	uniqueName, err := generateUniqueFilename(absPath, filename)
+	// Đảm bảo thư mục đích tồn tại
+	err = os.MkdirAll(destinationDir, os.ModePerm)
 	if err != nil {
-		return "", err
+		return fmt.Errorf("Không thể tạo thư mục đích '%s': %w", destinationDir, err)
 	}
 
-	targetPath := filepath.Join(absPath, uniqueName)
+	// Tạo tên file đích duy nhất
+	uniqueFilename, err := generateUniqueFilename(destinationDir, filename)
+	if err != nil {
+		return fmt.Errorf("Không thể tạo tên file mới: %w", err)
+	}
+	destinationPath := filepath.Join(destinationDir, uniqueFilename)
 
+	// Mở file nguồn
 	src, err := os.Open(sourcePath)
 	if err != nil {
-		return "", fmt.Errorf("Không thể mở file nguồn: %w", err)
+		return fmt.Errorf("Không thể mở file nguồn '%s': %w", sourcePath, err)
 	}
 	defer src.Close()
 
-	dst, err := os.Create(targetPath)
+	// Tạo file đích
+	dst, err := os.Create(destinationPath)
 	if err != nil {
-		return "", fmt.Errorf("Không thể tạo file đích: %w", err)
+		return fmt.Errorf("Không thể tạo file đích '%s': %w", destinationPath, err)
 	}
 	defer dst.Close()
 
-	_, err = io.Copy(dst, src)
+	// Copy nội dung
+	written, err := io.Copy(dst, src)
 	if err != nil {
-		return "", fmt.Errorf("Lỗi khi copy nội dung: %w", err)
+		return fmt.Errorf("Lỗi khi copy từ '%s' đến '%s': %w", sourcePath, destinationPath, err)
 	}
 
-	ws.clipboard = nil
+	if written == 0 {
+		return fmt.Errorf("File đã tạo nhưng nội dung không được copy (0 byte)")
+	}
 
-	return targetPath, nil
+	fmt.Printf("✅ Đã copy %d bytes từ %s vào %s\n", written, sourcePath, destinationPath)
+	return nil
 }
 
 func (ws *WorkspaceService) NewProject(name string) error {
