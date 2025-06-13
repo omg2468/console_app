@@ -17,6 +17,8 @@ export function GetDefaultData():Promise<string>;
 
 export function GetWorkspacePath():Promise<string>;
 
+export function ImportFileToFolderInWorkspace(arg1:string,arg2:string):Promise<void>;
+
 export function ImportFileToWorkspace(arg1:string,arg2:string):Promise<void>;
 
 export function ListFiles():Promise<Array<workspace.FileNode>>;

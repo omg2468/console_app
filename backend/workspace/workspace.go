@@ -160,6 +160,23 @@ func (ws *WorkspaceService) GetWorkspacePath() (string, error) {
 	return absPath, nil
 }
 
+func (ws *WorkspaceService) sanitizePathFromFrontend(p string) string {
+	// 1. Chuẩn hóa dấu gạch chéo: thay thế '\' bằng '/'
+	p = strings.ReplaceAll(p, `\`, "/")
+
+	// 2. Loại bỏ tiền tố "/workspace" nếu có
+	const workspacePrefix = "/workspace"
+	if strings.HasPrefix(p, workspacePrefix) {
+		p = p[len(workspacePrefix):]
+	}
+
+	// 3. Loại bỏ dấu '/' ở đầu nếu có (ví dụ: "/myfolder/file.json" -> "myfolder/file.json")
+	if strings.HasPrefix(p, "/") {
+		p = p[1:]
+	}
+	return p
+}
+
 // CreateFolder tạo một thư mục mới.
 func (ws *WorkspaceService) CreateFolder(name string) (string, error) {
 	// Lấy đường dẫn workspace
@@ -256,6 +273,63 @@ func (ws *WorkspaceService) ImportFileToWorkspace(sourcePath string, filename st
 	return nil
 }
 
+func (ws *WorkspaceService) ImportFileToFolderInWorkspace(sourcePath string, relativeDestinationDir string) error {
+	// Mở file nguồn
+	src, err := os.Open(sourcePath)
+	if err != nil {
+		return fmt.Errorf("Không thể mở file nguồn '%s': %w", sourcePath, err)
+	}
+	defer src.Close()
+
+	// Lấy đường dẫn tuyệt đối đến workspace
+	workspacePath, err := ws.GetWorkspacePath()
+	if err != nil {
+		return fmt.Errorf("Không thể lấy đường dẫn workspace: %w", err)
+	}
+
+	// Tên file gốc
+	filename := filepath.Base(sourcePath)
+
+	// Tạo đường dẫn tuyệt đối đến thư mục đích
+	destinationDir := filepath.Join(workspacePath, relativeDestinationDir)
+
+	// Tạo thư mục đích nếu chưa tồn tại
+	err = os.MkdirAll(destinationDir, os.ModePerm)
+	if err != nil {
+		return fmt.Errorf("Không thể tạo thư mục đích '%s': %w", destinationDir, err)
+	}
+
+	// Tạo đường dẫn đầy đủ đến file đích
+	targetPath := filepath.Join(destinationDir, filename)
+
+	// Kiểm tra nếu file đích đã tồn tại
+	if _, err := os.Stat(targetPath); err == nil {
+		return fmt.Errorf("File '%s' đã tồn tại trong workspace tại '%s'", filename, relativeDestinationDir)
+	} else if !os.IsNotExist(err) {
+		return fmt.Errorf("Không thể kiểm tra sự tồn tại của file đích: %w", err)
+	}
+
+	// Tạo file đích
+	dst, err := os.Create(targetPath)
+	if err != nil {
+		return fmt.Errorf("Không thể tạo file đích '%s': %w", targetPath, err)
+	}
+	defer dst.Close()
+
+	// Thực hiện copy
+	written, err := io.Copy(dst, src)
+	if err != nil {
+		return fmt.Errorf("Lỗi khi copy nội dung từ '%s' vào '%s': %w", sourcePath, targetPath, err)
+	}
+
+	if written == 0 {
+		return fmt.Errorf("File đã tạo nhưng nội dung không được copy (0 byte)")
+	}
+
+	fmt.Printf("✅ Đã import %d bytes từ %s vào %s\n", written, sourcePath, targetPath)
+	return nil
+}
+
 func OverwriteFile(destinationPath string, source io.Reader) (int64, error) {
 	// Mở hoặc tạo file đích.
 	// os.Create sẽ tạo file nếu chưa tồn tại, hoặc ghi đè (truncate) file nếu đã tồn tại.
@@ -294,33 +368,44 @@ func (ws *WorkspaceService) SaveJsonFile(destinationPath string, jsonContent str
 }
 
 func (ws *WorkspaceService) RenameItem(sourceName string, newName string) error {
-	// Lấy đường dẫn workspace
-	absPath, err := ws.GetWorkspacePath()
+	// Lấy đường dẫn tuyệt đối của workspace
+	absWorkspacePath, err := ws.GetWorkspacePath()
 	if err != nil {
 		return fmt.Errorf("không thể lấy đường dẫn workspace: %w", err)
 	}
 
-	// Xây dựng đường dẫn đầy đủ cho nguồn và đích
-	sourcePath := filepath.Join(absPath, sourceName)
-	newPath := filepath.Join(absPath, newName)
+	// **Bước quan trọng**: Chuẩn hóa sourceName và newName nhận từ frontend
+	// để chúng trở thành đường dẫn tương đối sạch từ gốc của workspace.
+	cleanSourceName := ws.sanitizePathFromFrontend(sourceName)
+    // newName ở đây là tên mới của file/folder, không phải đường dẫn đầy đủ từ gốc workspace
+    // Chúng ta cần xác định thư mục cha của cleanSourceName và áp dụng newName vào đó
+    dir := filepath.Dir(cleanSourceName) // "documents/subfolder" từ "documents/subfolder/file.json"
+    if dir == "." { // Nếu là file/folder ở gốc workspace, Dir trả về "."
+        dir = ""
+    }
 
-	// Kiểm tra xem nguồn có tồn tại không
-	if _, err := os.Stat(sourcePath); os.IsNotExist(err) {
-		return fmt.Errorf("nguồn '%s' không tồn tại để đổi tên", sourceName)
+    baseNewName := filepath.Base(newName) // Lấy phần tên file/folder từ newName
+
+    // Xây dựng đường dẫn tuyệt đối cho mục nguồn và mục đích
+	sourceFullPath := filepath.Join(absWorkspacePath, cleanSourceName)
+	newFullPath := filepath.Join(absWorkspacePath, dir, baseNewName) // dir là thư mục cha của sourceFullPath
+
+	// Kiểm tra xem mục nguồn có tồn tại không
+	if _, err := os.Stat(sourceFullPath); os.IsNotExist(err) {
+		return fmt.Errorf("nguồn '%s' không tồn tại trong workspace để đổi tên", sourceName)
 	} else if err != nil {
 		return fmt.Errorf("lỗi khi kiểm tra nguồn '%s': %w", sourceName, err)
 	}
 
 	// Kiểm tra xem đích đã tồn tại chưa để tránh ghi đè ngầm định
-	// Tùy thuộc vào yêu cầu, bạn có thể bỏ qua kiểm tra này nếu muốn ghi đè
-	if _, err := os.Stat(newPath); err == nil {
-		return fmt.Errorf("đích '%s' đã tồn tại. Vui lòng chọn tên khác hoặc xóa đích trước.", newName)
+	if _, err := os.Stat(newFullPath); err == nil {
+		return fmt.Errorf("đích '%s' đã tồn tại trong workspace. Vui lòng chọn tên khác hoặc xóa đích trước.", newName)
 	} else if !os.IsNotExist(err) {
 		return fmt.Errorf("lỗi khi kiểm tra đích '%s': %w", newName, err)
 	}
 
 	// Thực hiện đổi tên/di chuyển
-	err = os.Rename(sourcePath, newPath)
+	err = os.Rename(sourceFullPath, newFullPath)
 	if err != nil {
 		return fmt.Errorf("không thể đổi tên '%s' thành '%s': %w", sourceName, newName, err)
 	}

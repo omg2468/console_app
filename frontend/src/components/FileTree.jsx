@@ -8,10 +8,14 @@ import {
   DeleteItem,
   ExportJSONFile,
   RenameItem,
-  Paste
+  Paste,
+  ImportFileToFolderInWorkspace,
 } from "../../wailsjs/go/workspace/WorkspaceService";
 
-import { SelectFileToExport } from "../../wailsjs/go/main/App";
+import {
+  SelectFileToExport,
+  SelectFileToImport,
+} from "../../wailsjs/go/main/App";
 
 import { ContextMenuContext } from "../store";
 // Helper: kiểm tra node có children không
@@ -29,6 +33,8 @@ const TreeNode = ({
   const [showModal, setShowModal] = useState({ show: false, action: null });
   const [input, setInput] = useState("");
   const context = useContext(ContextMenuContext);
+
+  console.log(node.path)
 
   const toggle = (e) => {
     e.stopPropagation();
@@ -104,6 +110,7 @@ const TreeNode = ({
               console.error("Error exporting file:", error);
             }
           });
+
           break;
 
         case "paste":
@@ -155,6 +162,10 @@ const TreeNode = ({
           }
           break;
 
+        case "import":
+          const filePath = await SelectFileToImport();
+
+          await ImportFileToFolderInWorkspace(filePath, node.path);
         default:
           console.warn("Unknown action:", action);
           break;
@@ -206,8 +217,8 @@ const TreeNode = ({
             setShowModal({ show: true, action: "newGroup" });
           },
         },
-        { label: "Paste", action: () => handleAction("paste")},
-        { label: "Import", action: () => handleImport() },
+        { label: "Paste", action: () => handleAction("paste") },
+        { label: "Import", action: () => handleAction("import") },
         {
           label: "Rename",
           action: () => {

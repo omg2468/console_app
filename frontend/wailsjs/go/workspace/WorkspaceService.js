@@ -30,6 +30,10 @@ export function GetWorkspacePath() {
   return window['go']['workspace']['WorkspaceService']['GetWorkspacePath']();
 }
 
+export function ImportFileToFolderInWorkspace(arg1, arg2) {
+  return window['go']['workspace']['WorkspaceService']['ImportFileToFolderInWorkspace'](arg1, arg2);
+}
+
 export function ImportFileToWorkspace(arg1, arg2) {
   return window['go']['workspace']['WorkspaceService']['ImportFileToWorkspace'](arg1, arg2);
 }
