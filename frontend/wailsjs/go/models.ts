@@ -5,6 +5,7 @@ export namespace workspace {
 	    type: string;
 	    modified?: string;
 	    children?: FileNode[];
+	    fullPath?: string;
 	    path?: string;
 	
 	    static createFrom(source: any = {}) {
@@ -17,6 +18,7 @@ export namespace workspace {
 	        this.type = source["type"];
 	        this.modified = source["modified"];
 	        this.children = this.convertValues(source["children"], FileNode);
+	        this.fullPath = source["fullPath"];
 	        this.path = source["path"];
 	    }
 	

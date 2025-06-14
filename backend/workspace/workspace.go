@@ -30,6 +30,7 @@ type FileNode struct {
 	Type     string     `json:"type"` // "file" or "folder"
 	Modified string     `json:"modified,omitempty"`
 	Children []FileNode `json:"children,omitempty"`
+	FullPath string     `json:"fullPath,omitempty"` // Đường dẫn đầy đủ đến file hoặc thư mục, không trả về cho frontend
 	Path     string     `json:"path,omitempty"` // Đường dẫn đầy đủ đến file hoặc thư mục
 }
 
@@ -74,6 +75,7 @@ func buildFileTree(path string) ([]FileNode, error) {
 			Name:     entry.Name(),
 			Type:     "file",
 			Modified: info.ModTime().Format("2006-01-02 15:04:05"),
+			FullPath: fullPath,
 			Path:     strings.TrimPrefix(fullPath, "workspace"+string(os.PathSeparator)),
 		}
 

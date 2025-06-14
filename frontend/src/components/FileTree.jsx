@@ -75,11 +75,11 @@ const TreeNode = ({
             return;
           }
           setIsLoadFile(node.name);
-
+          console.log("Loading file:", node);
           const content = await ReadFile(node.path);
           const data = JSON.parse(content);
           setDataFile({ ...data });
-          setFileLoaded(node.name);
+          setFileLoaded(node.fullPath);
           break;
 
         case "newGroup":
@@ -264,7 +264,7 @@ const TreeNode = ({
               ? "bg-blue-100/90 shadow-inner"
               : "hover:bg-blue-50 hover:shadow"
           }
-          ${fileLoaded && fileLoaded === node.name ? "bg-blue-200" : ""}
+          ${fileLoaded && fileLoaded === node.fullPath ? "bg-blue-200" : ""}
           group
         `}
         style={{
@@ -500,6 +500,11 @@ const FileTree = ({ treeData, refreshFileList, setDataFile }) => {
               </button>
             </div>
           </div>
+        </div>
+      )}
+      {!!fileLoaded && (
+        <div className='fixed bottom-0 left-0 z-20 p-2 bg-stone-100 shadow-md text-sm text-gray-600'>
+          {window.__dirname}/{fileLoaded}
         </div>
       )}
     </>
