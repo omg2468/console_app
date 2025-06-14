@@ -1,6 +1,6 @@
 {
     "common": {
-        "ai_loc": 99,
+        "ai_loc": 0,
         "conf_port": 19981,
         "di_loc": 12,
         "do_loc": 20,

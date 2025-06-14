@@ -1,4 +1,4 @@
-import React, { createContext, useState, ReactNode, MouseEvent } from 'react';
+import React, { createContext, useState, ReactNode, MouseEvent } from "react";
 
 interface ContextMenuState {
   isVisible: boolean;
@@ -10,7 +10,9 @@ interface ContextMenuState {
   hideMenu: () => void;
 }
 
-export const ContextMenuContext = createContext<ContextMenuState | undefined>(undefined);
+export const ContextMenuContext = createContext<ContextMenuState | undefined>(
+  undefined,
+);
 
 export const ContextMenuProvider = ({ children }: { children: ReactNode }) => {
   const [isVisible, setIsVisible] = useState(false);
@@ -29,8 +31,19 @@ export const ContextMenuProvider = ({ children }: { children: ReactNode }) => {
     setContent(null);
   };
 
+
   return (
-    <ContextMenuContext.Provider value={{ isVisible, position, content, clipBoard, showMenu, hideMenu, setClipboard }}>
+    <ContextMenuContext.Provider
+      value={{
+        isVisible,
+        position,
+        content,
+        clipBoard,
+        showMenu,
+        hideMenu,
+        setClipboard,
+      }}
+    >
       {children}
     </ContextMenuContext.Provider>
   );
