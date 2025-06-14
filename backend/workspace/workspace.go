@@ -605,3 +605,34 @@ func (ws *WorkspaceService) DeleteItem(itemName string) error {
 
 	return nil
 }
+
+func (ws *WorkspaceService) SaveJsonToPath(jsonData string, fullPath string) error {
+	// Optional: kiểm tra đuôi .json
+	if !strings.HasSuffix(fullPath, ".json") {
+		fullPath += ".json"
+	}
+
+	// Optional: validate JSON
+	var js map[string]interface{}
+	if err := json.Unmarshal([]byte(jsonData), &js); err != nil {
+		return fmt.Errorf("JSON không hợp lệ: %w", err)
+	}
+
+	// Đảm bảo thư mục cha tồn tại
+	dir := filepath.Dir(fullPath)
+	if err := os.MkdirAll(dir, 0755); err != nil {
+		return fmt.Errorf("Không thể tạo thư mục cha: %w", err)
+	}
+
+	// Ghi file
+	err := os.WriteFile(fullPath, []byte(jsonData), 0644)
+	if err != nil {
+		return fmt.Errorf("Không thể ghi dữ liệu vào file: %w", err)
+	}
+
+	fmt.Printf("✅ Đã lưu JSON vào: %s\n", fullPath)
+	return nil
+}
+
+
+
