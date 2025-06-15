@@ -347,7 +347,7 @@ const TreeNode = ({
           >
             <input
               type="text"
-              className="w-full px-3 py-2 border border-gray-300 rounded-md mb-4 focus:outline-none focus:border-blue-500"
+              className="custom w-full px-3 py-2 border border-gray-300 rounded-md mb-4 focus:outline-none focus:border-blue-500"
               value={input}
               onChange={(e) => setInput(e.target.value)}
             />
@@ -520,7 +520,7 @@ const FileTree = ({
           >
             <input
               type="text"
-              className="w-full px-3 py-2 border border-gray-300 rounded-md mb-4 focus:outline-none focus:border-blue-500"
+              className="custom w-full px-3 py-2 border border-gray-300 rounded-md mb-4 focus:outline-none focus:border-blue-500"
               value={input}
               onChange={(e) => setInput(e.target.value)}
             />

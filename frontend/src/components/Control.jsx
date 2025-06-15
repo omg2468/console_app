@@ -7,8 +7,8 @@ const Control = () => {
   console.log(context.analogData);
 
   return (
-    <div className='w-full overflow-x-scroll h-full flex flex-row flex-1 p-2'>
-      <div className='h-full min-w-[350px] flex flex-1 flex-col gap-2 '>
+    <div className='w-full overflow-x-scroll flex flex-row px-2 py-1 box-border'>
+      <div className='min-w-[350px] flex flex-col gap-2 '>
         <span className='text-xs font-semibold'>NETWORK SETTING</span>
         <div className='border flex-1'>
           <table className='w-full h-full max-h-[400px] border-collapse'>
@@ -60,7 +60,7 @@ const Control = () => {
             <input type='checkbox' className='w-4 h-4' checked={true} />
             <span className='text-sm'>Display analog value</span>
           </div>
-          <div className='w-full flex-shrink-1' style={{ maxHeight: 350 }}>
+          <div className='w-full'>
             <div style={{ maxHeight: 310, overflowY: "auto" }}>
               <table className='w-full'>
                 <colgroup>
@@ -104,7 +104,7 @@ const Control = () => {
         </div>
       </div>
       <div className='flex flex-col h-full w-full'>
-        <div className='grid grid-cols-3 grid-rows-3 gap-2 p-1'>
+        <div className='grid grid-cols-3 grid-rows-3 gap-2 p-1 '>
           <div className='flex items-center justify-start'>
             <p className='text-xs whitespace-nowrap text-left px-2'>
               Generate current
@@ -187,7 +187,10 @@ const Control = () => {
               PERFORM
             </p>
           </div>
-          <div className="col-span-3 border"></div>
+        </div>
+        <div className='gap-2 flex flex-1 flex-col mx-1'>
+          <div className='w-full min-h-[20px] border '></div>
+          <div className='flex-1 w-full border'></div>
         </div>
       </div>
     </div>
