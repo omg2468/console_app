@@ -39,7 +39,7 @@ export default function Main({ onLoginOut }) {
   
 
   const context = useContext(ContextMenuContext);
-
+  console.log("dataFile", dataFile);
   useEffect(() => {
     if (!parameter.key) return;
     if (!context.isLoadFile) return;

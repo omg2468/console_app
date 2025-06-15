@@ -542,8 +542,8 @@ const FileTree = ({
         </div>
       )}
       {!!fileLoaded && (
-        <div className="fixed bottom-0 left-0 z-20 p-2 bg-stone-100 shadow-md text-sm text-gray-600">
-          {window.__dirname}/{fileLoaded}
+        <div className='fixed bottom-0 left-0 z-20 p-2 bg-stone-100 shadow-md text-sm text-gray-600'>
+          {fileLoaded}
         </div>
       )}
     </>

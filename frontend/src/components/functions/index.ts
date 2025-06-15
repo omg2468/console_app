@@ -42,6 +42,8 @@ export const handleUpdateParameter = ({
       newDataFile[key][paramKey] = value;
       break;
     }
+    case "dis":
+    case "dos":
     case "tags":
     case "prog":
     case "timers":
