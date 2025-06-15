@@ -1,4 +1,4 @@
-import React, { createContext, useState } from "react";
+import { createContext, useState } from "react";
 
 export const ContextMenuContext = createContext(undefined);
 
@@ -7,6 +7,7 @@ export const ContextMenuProvider = ({ children }) => {
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [content, setContent] = useState(null);
   const [clipBoard, setClipboard] = useState(null);
+  const [analogData, setAnalogData] = useState([]);
 
   const showMenu = (x, y, content) => {
     setPosition({ x, y });
@@ -28,7 +29,9 @@ export const ContextMenuProvider = ({ children }) => {
         clipBoard,
         showMenu,
         hideMenu,
-        setClipboard
+        setClipboard,
+        analogData,
+        setAnalogData,
       }}
     >
       {children}

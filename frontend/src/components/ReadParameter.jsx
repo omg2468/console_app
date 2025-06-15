@@ -371,7 +371,7 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                         </td>
                         <td className='px-2 py-1 text-sm'>
                           <input
-                            type='text'
+                            type='number'
                             value={parameter.value.offset}
                             onChange={(e) =>
                               handleUpdateParameter({
@@ -379,7 +379,7 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                                 setDataFile,
                                 key: item.key,
                                 paramKey: "offset",
-                                value: e.target.value,
+                                value: Number(e.target.value),
                               })
                             }
                             className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg px-2 py-1 w-full'
@@ -442,7 +442,7 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                         </td>
                         <td className='px-2 py-1 text-sm'>
                           <input
-                            type='text'
+                            type='number'
                             value={parameter.value.delay}
                             onChange={(e) =>
                               handleUpdateParameter({
@@ -450,7 +450,7 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                                 setDataFile,
                                 key: item.key,
                                 paramKey: "delay",
-                                value: e.target.value,
+                                value: Number(e.target.value),
                               })
                             }
                             className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg px-2 py-1 w-full'
@@ -513,7 +513,7 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                         </td>
                         <td className='px-2 py-1 text-sm'>
                           <input
-                            type='text'
+                            type='number'
                             value={parameter.value.port}
                             onChange={(e) =>
                               handleUpdateParameter({
@@ -521,7 +521,7 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                                 setDataFile,
                                 key: item.key,
                                 paramKey: "port",
-                                value: e.target.value,
+                                value: Number(e.target.value),
                               })
                             }
                             className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg px-2 py-1 w-full'
@@ -534,7 +534,7 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                         </td>
                         <td className='px-2 py-1 text-sm'>
                           <input
-                            type='text'
+                            type='number'
                             value={parameter.value.id}
                             onChange={(e) =>
                               handleUpdateParameter({
@@ -542,7 +542,7 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                                 setDataFile,
                                 key: item.key,
                                 paramKey: "id",
-                                value: e.target.value,
+                                value: Number(e.target.value),
                               })
                             }
                             className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg px-2 py-1 w-full'
@@ -580,7 +580,7 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                         </td>
                         <td className='px-2 py-1 text-sm'>
                           <input
-                            type='text'
+                            type='number'
                             value={parameter.value.offset}
                             onChange={(e) =>
                               handleUpdateParameter({
@@ -588,7 +588,7 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                                 setDataFile,
                                 key: item.key,
                                 paramKey: "offset",
-                                value: e.target.value,
+                                value: Number(e.target.value),
                               })
                             }
                             className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg px-2 py-1 w-full'
@@ -630,7 +630,7 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                         </td>
                         <td className='px-2 py-1 text-sm'>
                           <input
-                            type='text'
+                            type='number'
                             value={parameter.value.page_dur}
                             onChange={(e) =>
                               handleUpdateParameter({
@@ -638,7 +638,7 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                                 setDataFile,
                                 key: item.key,
                                 paramKey: "page_dur",
-                                value: e.target.value,
+                                value: Number(e.target.value),
                               })
                             }
                             className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg px-2 py-1 w-full'
@@ -696,7 +696,7 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                         </td>
                         <td className='px-2 py-1 text-sm'>
                           <input
-                            type='text'
+                            type='number'
                             value={parameter.value.conf_port}
                             onChange={(e) =>
                               handleUpdateParameter({
@@ -704,7 +704,7 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                                 setDataFile,
                                 key: item.key,
                                 paramKey: "conf_port",
-                                value: e.target.value,
+                                value: Number(e.target.value),
                               })
                             }
                             className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg px-2 py-1 w-full'
@@ -717,7 +717,7 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                         </td>
                         <td className='px-2 py-1 text-sm'>
                           <input
-                            type='text'
+                            type='number'
                             value={parameter.value.precision}
                             onChange={(e) =>
                               handleUpdateParameter({
@@ -725,7 +725,7 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                                 setDataFile,
                                 key: item.key,
                                 paramKey: "precision",
-                                value: e.target.value,
+                                value: Number(e.target.value),
                               })
                             }
                             className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg px-2 py-1 w-full'
@@ -738,7 +738,7 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                         </td>
                         <td className='px-2 py-1 text-sm'>
                           <input
-                            type='text'
+                            type='number'
                             value={parameter.value.ai_loc}
                             onChange={(e) =>
                               handleUpdateParameter({
@@ -746,7 +746,7 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                                 setDataFile,
                                 key: item.key,
                                 paramKey: "ai_loc",
-                                value: e.target.value,
+                                value: Number(e.target.value),
                               })
                             }
                             className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg px-2 py-1 w-full'
@@ -759,7 +759,7 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                         </td>
                         <td className='px-2 py-1 text-sm'>
                           <input
-                            type='text'
+                            type='number'
                             value={parameter.value.di_loc}
                             onChange={(e) =>
                               handleUpdateParameter({
@@ -767,7 +767,7 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                                 setDataFile,
                                 key: item.key,
                                 paramKey: "di_loc",
-                                value: e.target.value,
+                                value: Number(e.target.value),
                               })
                             }
                             className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg px-2 py-1 w-full'
@@ -780,7 +780,7 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                         </td>
                         <td className='px-2 py-1 text-sm'>
                           <input
-                            type='text'
+                            type='number'
                             value={parameter.value.do_loc}
                             onChange={(e) =>
                               handleUpdateParameter({
@@ -788,7 +788,7 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                                 setDataFile,
                                 key: item.key,
                                 paramKey: "do_loc",
-                                value: e.target.value,
+                                value: Number(e.target.value),
                               })
                             }
                             className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg px-2 py-1 w-full'
@@ -947,7 +947,7 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                         </td>
                         <td className='px-2 py-1 text-sm'>
                           <input
-                            type='text'
+                            type='number'
                             value={parameter.value.client.port}
                             onChange={(e) =>
                               handleUpdateParameter({
@@ -957,7 +957,7 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                                 index: item.idx,
                                 paramKey: "client",
                                 subParamKey: "port",
-                                value: e.target.value,
+                                value: Number(e.target.value),
                               })
                             }
                             className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg px-2 py-1 w-full'
@@ -1207,7 +1207,7 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                         </td>
                         <td className='px-2 py-1 text-sm'>
                           <input
-                            type='text'
+                            type='number'
                             value={parameter.value.duration}
                             onChange={(e) =>
                               handleUpdateParameter({
@@ -1216,7 +1216,7 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                                 key: item.key,
                                 index: item.idx,
                                 paramKey: "duration",
-                                value: e.target.value,
+                                value: Number(e.target.value),
                               })
                             }
                             className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg px-2 py-1 w-full'
@@ -1229,7 +1229,7 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                         </td>
                         <td className='px-2 py-1 text-sm'>
                           <input
-                            type='text'
+                            type='number'
                             value={parameter.value.second}
                             onChange={(e) =>
                               handleUpdateParameter({
@@ -1238,7 +1238,7 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                                 key: item.key,
                                 index: item.idx,
                                 paramKey: "second",
-                                value: e.target.value,
+                                value: Number(e.target.value),
                               })
                             }
                             className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg px-2 py-1 w-full'
@@ -1370,7 +1370,7 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                         </td>
                         <td className='px-2 py-1 text-sm'>
                           <input
-                            type='text'
+                            type='number'
                             value={parameter.value.port}
                             onChange={(e) =>
                               handleUpdateParameter({
@@ -1378,7 +1378,7 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                                 setDataFile,
                                 key: item.key,
                                 paramKey: "port",
-                                value: e.target.value,
+                                value: Number(e.target.value),
                               })
                             }
                             className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg px-2 py-1 w-full'
@@ -1475,7 +1475,7 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                         </td>
                         <td className='px-2 py-1 text-sm'>
                           <input
-                            type='text'
+                            type='number'
                             value={parameter.value.index}
                             onChange={(e) =>
                               handleUpdateParameter({
@@ -1483,7 +1483,7 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                                 setDataFile,
                                 key: item.key,
                                 paramKey: "index",
-                                value: e.target.value,
+                                value: Number(e.target.value),
                               })
                             }
                             className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg px-2 py-1 w-full'
@@ -1496,7 +1496,7 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                         </td>
                         <td className='px-2 py-1 text-sm'>
                           <input
-                            type='text'
+                            type='number'
                             value={parameter.value.duty}
                             onChange={(e) =>
                               handleUpdateParameter({
@@ -1504,7 +1504,7 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                                 setDataFile,
                                 key: item.key,
                                 paramKey: "duty",
-                                value: e.target.value,
+                                value: Number(e.target.value),
                               })
                             }
                             className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg px-2 py-1 w-full'
@@ -1517,7 +1517,7 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                         </td>
                         <td className='px-2 py-1 text-sm'>
                           <input
-                            type='text'
+                            type='number'
                             value={parameter.value.port2}
                             onChange={(e) =>
                               handleUpdateParameter({
@@ -1525,7 +1525,7 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                                 setDataFile,
                                 key: item.key,
                                 paramKey: "port2",
-                                value: e.target.value,
+                                value: Number(e.target.value),
                               })
                             }
                             className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg px-2 py-1 w-full'
@@ -1659,7 +1659,7 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                         </td>
                         <td className='px-2 py-1 text-sm'>
                           <input
-                            type='text'
+                            type='number'
                             value={parameter.value.increment}
                             onChange={(e) =>
                               handleUpdateParameter({
@@ -1760,7 +1760,7 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                         </td>
                         <td className='px-2 py-1 text-sm'>
                           <input
-                            type='text'
+                            type='number'
                             value={parameter.value.duty}
                             onChange={(e) =>
                               handleUpdateParameter({
@@ -1769,7 +1769,7 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                                 key: "dos",
                                 index: item.idx,
                                 paramKey: "duty",
-                                value: e.target.value,
+                                value: Number(e.target.value),
                               })
                             }
                             className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg px-2 py-1 w-full'
@@ -1782,7 +1782,7 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                         </td>
                         <td className='px-2 py-1 text-sm'>
                           <input
-                            type='text'
+                            type='number'
                             value={parameter.value.period}
                             onChange={(e) =>
                               handleUpdateParameter({
@@ -1791,7 +1791,7 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                                 key: "dos",
                                 index: item.idx,
                                 paramKey: "period",
-                                value: e.target.value,
+                                value: Number(e.target.value),
                               })
                             }
                             className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg px-2 py-1 w-full'
@@ -1923,7 +1923,7 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                         </td>
                         <td className='px-2 py-1 text-sm font-normat'>
                           <input
-                            type='text'
+                            type='number'
                             value={parameter.value.val_idx}
                             onChange={(e) =>
                               handleUpdateParameter({
@@ -1932,7 +1932,7 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                                 key: "tags",
                                 index: item.idx,
                                 paramKey: "val_idx",
-                                value: e.target.value,
+                                value: Number(e.target.value),
                               })
                             }
                             className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg px-2 py-1 w-full'
@@ -1967,7 +1967,7 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                         </td>
                         <td className='px-2 py-1 text-sm font-normat'>
                           <input
-                            type='text'
+                            type='number'
                             value={parameter.value.stat_idx}
                             onChange={(e) =>
                               handleUpdateParameter({
@@ -1976,7 +1976,7 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                                 key: "tags",
                                 index: item.idx,
                                 paramKey: "stat_idx",
-                                value: e.target.value,
+                                value: Number(e.target.value),
                               })
                             }
                             className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg px-2 py-1 w-full'
@@ -2011,7 +2011,7 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                         </td>
                         <td className='px-2 py-1 text-sm font-normat'>
                           <input
-                            type='text'
+                            type='number'
                             value={parameter.value.avg}
                             onChange={(e) =>
                               handleUpdateParameter({
@@ -2020,7 +2020,7 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                                 key: "tags",
                                 index: item.idx,
                                 paramKey: "avg",
-                                value: e.target.value,
+                                value: Number(e.target.value),
                               })
                             }
                             className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg px-2 py-1 w-full'
@@ -2206,7 +2206,7 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                         </td>
                         <td className='px-2 py-1 text-sm font-normat'>
                           <input
-                            type='text'
+                            type='number'
                             value={parameter.value.int}
                             onChange={(e) =>
                               handleUpdateParameter({
@@ -2215,7 +2215,7 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                                 key: "timers",
                                 index: item.idx,
                                 paramKey: "int",
-                                value: e.target.value,
+                                value: Number(e.target.value),
                               })
                             }
                             className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg px-2 py-1 w-full'
@@ -2394,7 +2394,7 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                         </td>
                         <td className='px-2 py-1 text-sm'>
                           <input
-                            type='text'
+                            type='number'
                             value={parameter.value.id}
                             onChange={(e) =>
                               handleUpdateParameter({
@@ -2403,7 +2403,7 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                                 key: "modbus_reader",
                                 index: item.idx,
                                 paramKey: "id",
-                                value: e.target.value,
+                                value: Number(e.target.value),
                               })
                             }
                             className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg px-2 py-1 w-full'
@@ -2416,7 +2416,7 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                         </td>
                         <td className='px-2 py-1 text-sm'>
                           <input
-                            type='text'
+                            type='number'
                             value={parameter.value.reg_a}
                             onChange={(e) =>
                               handleUpdateParameter({
@@ -2425,7 +2425,7 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                                 key: "modbus_reader",
                                 index: item.idx,
                                 paramKey: "reg_a",
-                                value: e.target.value,
+                                value: Number(e.target.value),
                               })
                             }
                             className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg px-2 py-1 w-full'
@@ -2518,7 +2518,7 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                         </td>
                         <td className='px-2 py-1 text-sm'>
                           <input
-                            type='text'
+                            type='number'
                             value={parameter.value.n_obj}
                             onChange={(e) =>
                               handleUpdateParameter({
@@ -2527,7 +2527,7 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                                 key: "modbus_reader",
                                 index: item.idx,
                                 paramKey: "n_obj",
-                                value: e.target.value,
+                                value: Number(e.target.value),
                               })
                             }
                             className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg px-2 py-1 w-full'
@@ -2540,7 +2540,7 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                         </td>
                         <td className='px-2 py-1 text-sm'>
                           <input
-                            type='text'
+                            type='number'
                             value={parameter.value.loc_val}
                             onChange={(e) =>
                               handleUpdateParameter({
@@ -2549,7 +2549,7 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                                 key: "modbus_reader",
                                 index: item.idx,
                                 paramKey: "loc_val",
-                                value: e.target.value,
+                                value: Number(e.target.value),
                               })
                             }
                             className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg px-2 py-1 w-full'
@@ -2562,7 +2562,7 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                         </td>
                         <td className='px-2 py-1 text-sm'>
                           <input
-                            type='text'
+                            type='number'
                             value={parameter.value.loc_stat}
                             onChange={(e) =>
                               handleUpdateParameter({
@@ -2571,7 +2571,7 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                                 key: "modbus_reader",
                                 index: item.idx,
                                 paramKey: "loc_stat",
-                                value: e.target.value,
+                                value: Number(e.target.value),
                               })
                             }
                             className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg px-2 py-1 w-full'
