@@ -8,6 +8,8 @@ export const ContextMenuProvider = ({ children }) => {
   const [content, setContent] = useState(null);
   const [clipBoard, setClipboard] = useState(null);
   const [analogData, setAnalogData] = useState([]);
+  const [memoryViewData, setMemoryViewData] = useState([]);
+  const [tagViewData, setTagViewData] = useState([]);
 
   const showMenu = (x, y, content) => {
     setPosition({ x, y });
@@ -32,6 +34,10 @@ export const ContextMenuProvider = ({ children }) => {
         setClipboard,
         analogData,
         setAnalogData,
+        memoryViewData,
+        setMemoryViewData,
+        tagViewData,
+        setTagViewData,
       }}
     >
       {children}

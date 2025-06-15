@@ -1,26 +1,20 @@
-import React from "react";
+import React, { useContext } from "react";
+import { ContextMenuContext } from "../store";
 
 const TagView = () => {
-  // Tạo dữ liệu mẫu: 6 hàng, 5 cột (cột đầu là index)
-  const rows = 6;
-  const cols = 5;
-  const data = Array.from({ length: rows }, (_, rowIdx) =>
-    Array.from({ length: cols }, (_, colIdx) =>
-      colIdx === 0 ? rowIdx : `Value${rowIdx}-${colIdx}`
-    )
-  );
+  const context = useContext(ContextMenuContext);
+  const data = context.tagViewData || [];
 
   return (
     <div className="flex flex-col items-start justify-start p-2 w-full h-full">
       <p className="text-md font-semibold">TAG VIEW</p>
-      <div className='flex flex-row items-center justify-center gap-1'>
-        <input type='checkbox' className='custom' checked readOnly />
+
+      <div className="flex flex-row items-center justify-center gap-1 mb-2">
+        <input type="checkbox" className="custom" checked readOnly />
         <span>Display value</span>
       </div>
-      <div
-        className="border flex-1 w-full"
-        style={{ minHeight: 0, height: "1px" }}
-      >
+
+      <div className="border flex-1 w-full">
         <div
           style={{
             width: "100%",
@@ -30,21 +24,25 @@ const TagView = () => {
           }}
         >
           <table className="w-full text-sm border-collapse">
+            <thead>
+              <tr className="bg-gray-100">
+                <th className="border px-2 py-1 text-right">ID</th>
+                <th className="border px-2 py-1">Name</th>
+                <th className="border px-2 py-1 text-right">Value</th>
+                <th className="border px-2 py-1">Unit</th>
+                <th className="border px-2 py-1">Status</th>
+              </tr>
+            </thead>
             <tbody>
-              {data.map((row, rowIdx) => (
-                <tr key={rowIdx}>
-                  {row.map((cell, colIdx) => (
-                    <td
-                      key={colIdx}
-                      className="border px-2 py-1"
-                      style={{
-                        background: colIdx === 0 ? "#f3f4f6" : undefined,
-                        textAlign: colIdx === 0 ? "right" : "left",
-                      }}
-                    >
-                      {cell}
-                    </td>
-                  ))}
+              {data.map((tag) => (
+                <tr key={tag.id}>
+                  <td className="border px-2 py-1 text-right">{tag.id}</td>
+                  <td className="border px-2 py-1">{tag.name}</td>
+                  <td className="border px-2 py-1 text-right">
+                    {tag.value.toFixed(2)}
+                  </td>
+                  <td className="border px-2 py-1">{tag.unit}</td>
+                  <td className="border px-2 py-1">{tag.status}</td>
                 </tr>
               ))}
             </tbody>

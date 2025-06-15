@@ -1,6 +1,9 @@
-import React from "react";
+import React, { useContext } from "react";
+import { ContextMenuContext } from "../store";
 
 const MemoryView = ({ memory }) => {
+  const context = useContext(ContextMenuContext);
+
   const totalRegisters = 256;
   const columns = 8;
   const rows = Math.ceil(totalRegisters / (columns / 2));
@@ -21,20 +24,20 @@ const MemoryView = ({ memory }) => {
       const idx = colArrays[col][row];
       if (idx !== undefined) {
         cells.push(
-          <td key={`reg-${col}-${row}`} className='border px-2 py-1 text-right'>
+          <td key={`reg-${col}-${row}`} className="border px-2 py-1 text-right">
             {`Reg${idx}`}
-          </td>,
+          </td>
         );
         cells.push(
-          <td key={`val-${col}-${row}`} className='border px-2 py-1 '>
+          <td key={`val-${col}-${row}`} className="border px-2 py-1 ">
             {memory && memory[`Reg${idx}`] !== undefined
               ? memory[`Reg${idx}`]
-              : ""}
-          </td>,
+              : context.memoryViewData[idx]}
+          </td>
         );
       } else {
-        cells.push(<td key={`reg-empty-${col}-${row}`} className='border' />);
-        cells.push(<td key={`val-empty-${col}-${row}`} className='border' />);
+        cells.push(<td key={`reg-empty-${col}-${row}`} className="border" />);
+        cells.push(<td key={`val-empty-${col}-${row}`} className="border" />);
       }
     }
     tableRows.push(<tr key={row}>{cells}</tr>);
@@ -42,26 +45,26 @@ const MemoryView = ({ memory }) => {
   const header = [];
   for (let i = 0; i < columns / 2; i++) {
     header.push(
-      <th key={`hreg-${i}`} className='border bg-gray-100 px-2 py-1'>
+      <th key={`hreg-${i}`} className="border bg-gray-100 px-2 py-1">
         Register
-      </th>,
+      </th>
     );
     header.push(
-      <th key={`hval-${i}`} className='border bg-gray-100 px-2 py-1'>
+      <th key={`hval-${i}`} className="border bg-gray-100 px-2 py-1">
         Value
-      </th>,
+      </th>
     );
   }
 
   return (
-    <div className='flex flex-col items-start justify-start p-2 w-full h-full'>
-      <p className='text-md font-semibold'>MEMORY VIEW</p>
-      <div className='flex flex-row items-center justify-center gap-1'>
-        <input type='checkbox' className='custom' checked readOnly />
+    <div className="flex flex-col items-start justify-start p-2 w-full h-full">
+      <p className="text-md font-semibold">MEMORY VIEW</p>
+      <div className="flex flex-row items-center justify-center gap-1">
+        <input type="checkbox" className="custom" checked readOnly />
         <span>Display memory value</span>
       </div>
       <div
-        className='border flex-1 w-full'
+        className="border flex-1 w-full"
         style={{ minHeight: 0, height: "1px" }}
       >
         <div
@@ -72,7 +75,7 @@ const MemoryView = ({ memory }) => {
             overflowY: "auto",
           }}
         >
-          <table className='w-full text-sm border-collapse'>
+          <table className="w-full text-sm border-collapse">
             <thead>
               <tr>
                 {header.map((cell, idx) => (

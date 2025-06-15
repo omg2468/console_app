@@ -12,6 +12,7 @@ function ConnectComponent() {
   const context = useContext(ContextMenuContext);
 
   const handleConnect = () => {
+
     if (!selectedPort) {
       setStatus("Hãy chọn một cổng COM");
       return;
@@ -65,6 +66,14 @@ function ConnectComponent() {
               switch (jsonData.type) {
                 case "read_analog":
                   context.setAnalogData(jsonData.data);
+                  break;
+
+                case "read_tag_view":
+                  context.setTagViewData(jsonData.data);
+                  break;
+
+                case "read_memory_view":
+                  context.setMemoryViewData(jsonData.data);
                   break;
 
                 default:
