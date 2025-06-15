@@ -11,6 +11,7 @@ import { ContextMenuContext } from "../store";
 import ReadData from "../components/ReadData";
 import ReadParameter from "../components/ReadParameter";
 import Control from "../components/Control";
+import MemoryView from "../components/MemoryView";
 
 import {
   SelectFileToImport,
@@ -329,6 +330,8 @@ export default function Main({ onLoginOut }) {
               />
             )}
             {rightTab === "Control" && <Control />}
+            {rightTab === "Memory view" && <MemoryView />}
+            
           </div>
         </div>
       </div>
