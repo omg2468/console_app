@@ -8,6 +8,8 @@ interface ContextMenuState {
   setClipboard?: (value: string | null) => void;
   showMenu: (x: number, y: number, content: ReactNode) => void;
   hideMenu: () => void
+  analogData: any;
+  setAnalogData: (value: any) => void
 }
 
 export const ContextMenuContext = createContext<ContextMenuState | undefined>(
@@ -19,6 +21,7 @@ export const ContextMenuProvider = ({ children }: { children: ReactNode }) => {
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [content, setContent] = useState<ReactNode | null>(null);
   const [clipBoard, setClipboard] = useState<string | null>(null);
+  const [analogData, setAnalogData] = useState([]);
 
   const showMenu = (x: number, y: number, content: ReactNode) => {
     setPosition({ x, y });
@@ -40,7 +43,9 @@ export const ContextMenuProvider = ({ children }: { children: ReactNode }) => {
         clipBoard,
         showMenu,
         hideMenu,
-        setClipboard
+        setClipboard,
+        analogData,
+        setAnalogData
       }}
     >
       {children}

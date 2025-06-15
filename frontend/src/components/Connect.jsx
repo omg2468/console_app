@@ -1,12 +1,15 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import * as AuthService from "../../wailsjs/go/auth/AuthService";
 
 import { DowloadConfig } from "../../wailsjs/go/workspace/WorkspaceService";
+
+import { ContextMenuContext } from "../store";
 
 function ConnectComponent() {
   const [ports, setPorts] = useState([]);
   const [selectedPort, setSelectedPort] = useState("");
   const [status, setStatus] = useState("Chưa kết nối");
+  const context = useContext(ContextMenuContext);
 
   const handleConnect = () => {
     if (!selectedPort) {
@@ -29,10 +32,6 @@ function ConnectComponent() {
   };
 
   const handleData = () => {
-    // AuthService.Login("admin", "1231abc").then(() =>
-    //   setStatus("Đã gửi lệnh đăng nhập")
-    // );
-
     DowloadConfig()
       .then(() => {
         setStatus("Đã gửi lệnh tải cấu hình");
@@ -61,12 +60,16 @@ function ConnectComponent() {
           const response = await AuthService.GetResponse(10000);
 
           if (response) {
-            console.log("Response nhận được:", response);
             try {
               const jsonData = JSON.parse(response);
-              // Nếu parse thành công, mới setStatus
-              console.log("Response nhận được:", jsonData);
-              setStatus("Thiết bị gửi: " + response);
+              switch (jsonData.type) {
+                case "read_analog":
+                  context.setAnalogData(jsonData.data);
+                  break;
+
+                default:
+                  break;
+              }
             } catch (e) {
               // Nếu không phải JSON hợp lệ, không setStatus hoặc xử lý khác
               console.warn("Response không phải JSON hợp lệ:", response);
