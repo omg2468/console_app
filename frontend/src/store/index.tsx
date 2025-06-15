@@ -8,6 +8,8 @@ interface ContextMenuState {
   setClipboard?: (value: string | null) => void;
   showMenu: (x: number, y: number, content: ReactNode) => void;
   hideMenu: () => void;
+  fileName: string;
+  setFileName?: (value: string) => void;
 }
 
 export const ContextMenuContext = createContext<ContextMenuState | undefined>(
@@ -19,6 +21,7 @@ export const ContextMenuProvider = ({ children }: { children: ReactNode }) => {
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [content, setContent] = useState<ReactNode | null>(null);
   const [clipBoard, setClipboard] = useState<string | null>(null);
+  const [fileName, setFileName] = useState<string>("");
 
   const showMenu = (x: number, y: number, content: ReactNode) => {
     setPosition({ x, y });
@@ -31,7 +34,6 @@ export const ContextMenuProvider = ({ children }: { children: ReactNode }) => {
     setContent(null);
   };
 
-
   return (
     <ContextMenuContext.Provider
       value={{
@@ -42,6 +44,8 @@ export const ContextMenuProvider = ({ children }: { children: ReactNode }) => {
         showMenu,
         hideMenu,
         setClipboard,
+        fileName,
+        setFileName,
       }}
     >
       {children}

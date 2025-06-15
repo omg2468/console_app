@@ -79,6 +79,7 @@ const TreeNode = ({
           const content = await ReadFile(node.path);
           const data = JSON.parse(content);
           setDataFile({ ...data });
+          context.setFileName(node.name)
           setFileLoaded(node.fullPath);
           break;
 
