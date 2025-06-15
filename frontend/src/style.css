@@ -43,6 +43,9 @@ input[type="checkbox"] {
   border-radius: 0.25rem;
   background-color: #ffffff;
   cursor: pointer;
+}
+
+input[type="checkbox"]:not(.custom) {
   margin-left: 8px;
 }
 
@@ -63,7 +66,7 @@ input[type="text"]:focus {
   outline: none;
 }
 
-input[type="number"] {
+input[type="number"]:not(.custom) {
   border: none;
   background: none;
 }
