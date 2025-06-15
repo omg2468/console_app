@@ -65,7 +65,7 @@ const Control = () => {
                     <th className='border-r w-[150px] border-b p-2 text-right'>
                       Parameter
                     </th>
-                    <th className='p-2 border-b text-left win-[150px] min-w-[200px]'>
+                    <th className='p-2 border-b text-left win-[150px] min-w-[150px]'>
                       Value
                     </th>
                   </tr>
@@ -76,7 +76,7 @@ const Control = () => {
                       <td className='border-r border-b p-2 text-right min-w-[150px] whitespace-nowrap'>
                         Analog input  {index + 1}
                       </td>
-                      <td className='p-2 border-box border-b text-left min-w-[200px]'>
+                      <td className='p-2 border-box border-b text-left min-w-[150px]'>
                       </td>
                     </tr>
                   ))}

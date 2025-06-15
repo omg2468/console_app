@@ -79,7 +79,6 @@ const TreeNode = ({
           const content = await ReadFile(node.path);
           const data = JSON.parse(content);
           setDataFile({ ...data });
-          context.setFileName(node.name)
           setFileLoaded(node.fullPath);
           break;
 
@@ -249,7 +248,7 @@ const TreeNode = ({
 
   // Nếu là node root (level === 0), luôn render placeholder mũi tên để căn chỉnh
   const showArrowPlaceholder = isRoot || node.type === "folder";
-
+  console.log("Node:", fileLoaded, node.fullPath);
   return (
     <>
       <div
@@ -374,7 +373,15 @@ const TreeNode = ({
       {expanded &&
         hasChildren(node) &&
         node.children.map((child, index) => (
-          <TreeNode key={index} node={child} level={level + 1} />
+          <TreeNode
+            key={index}
+            node={child}
+            level={level + 1}
+            refreshFileList={refreshFileList}
+            setDataFile={setDataFile}
+            fileLoaded={fileLoaded}
+            setFileLoaded={setFileLoaded}
+          />
         ))}
     </>
   );
