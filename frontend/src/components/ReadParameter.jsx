@@ -289,7 +289,63 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
             </div>
           );
         case "tcp_master":
-          return <div className='h-full flex-1'></div>;
+          return (
+            <div className='h-full flex-1'>
+              <table className='w-full'>
+                <thead>
+                  <tr className=''>
+                    <th className='px-2 py-1 text-sm text-center min-w-[150px] border-b'>
+                      Parameter
+                    </th>
+                    <th className='px-2 py-1 text-sm text-center w-full border-b border-l border-r'>
+                      Value
+                    </th>
+                  </tr>
+                  <tr className='bg-gray-200'>
+                    <th className='px-2 py-1 text-sm text-right min-w-[150px] border-b'>
+                      Modbus TCP master
+                    </th>
+                    <th className='px-2 py-1 text-sm text-left w-full border-b font-normal'></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {item.value && (
+                    <>
+                      <tr className=''>
+                        <td className='px-2 py-1 text-sm text-right font-semibold'>
+                          Enable
+                        </td>
+                        <td className='px-2 py-1 text-sm'>
+                          <input
+                            type='checkbox'
+                            onChange={(event) => {
+                              handleUpdateParameter({
+                                dataFile,
+                                setDataFile,
+                                key: item.key,
+                                paramKey: "en",
+                                value: event.target.checked,
+                              });
+                            }}
+                            checked={!!parameter.value.en}
+                            className='w-4 h-4 accent-blue-500 cursor-pointer'
+                          />
+                        </td>
+                      </tr>
+                      <tr className=''>
+                        <td className='px-2 py-1 text-sm text-right font-semibold'>
+                          Delay
+                        </td>
+                        <td className='px-2 py-1 text-sm'>
+                          {parameter.value.delay}
+                        </td>
+                      </tr>
+                    </>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          );
         case "tcp_slave":
           return (
             <div className='h-full flex-1'>

@@ -10,6 +10,7 @@ import {
 import { ContextMenuContext } from "../store";
 import ReadData from "../components/ReadData";
 import ReadParameter from "../components/ReadParameter";
+import Control from "../components/Control";
 
 import {
   SelectFileToImport,
@@ -222,17 +223,17 @@ export default function Main({ onLoginOut }) {
         </button>
         <button
           onClick={handleImport}
-          className="rounded-md bg-white border border-gray-300 px-2 py-0.5 text-[10px] font-medium shadow-sm hover:bg-blue-50 hover:border-blue-400 active:bg-blue-100 active:border-blue-400 transition-colors"
+          className='rounded-md bg-white border border-gray-300 px-2 py-0.5 text-[10px] font-medium shadow-sm hover:bg-blue-50 hover:border-blue-400 active:bg-blue-100 active:border-blue-400 transition-colors'
         >
           Import Project
         </button>
-        <button className="rounded-md bg-white border border-gray-300 px-2 py-0.5 text-[10px] font-medium shadow-sm hover:bg-blue-50 hover:border-blue-400 active:bg-blue-100 active:border-blue-400 transition-colors">
+        <button className='rounded-md bg-white border border-gray-300 px-2 py-0.5 text-[10px] font-medium shadow-sm hover:bg-blue-50 hover:border-blue-400 active:bg-blue-100 active:border-blue-400 transition-colors'>
           Log Out
         </button>
       </div>
-      <div className="flex-1 mt-2 w-full overflow-hidden flex flex-row">
-        <div className="w-1/4 flex flex-col">
-          <div className="flex">
+      <div className='flex-1 mt-2 w-full overflow-hidden flex flex-row'>
+        <div className='w-1/4 flex flex-col'>
+          <div className='flex'>
             {tabsLeft.map((tab, index) => (
               <div
                 key={index}
@@ -247,10 +248,10 @@ export default function Main({ onLoginOut }) {
           </div>
           <div
             onContextMenu={handleContextMenu}
-            className="flex-1 w-auto h-0 bg-white flex flex-col"
+            className='flex-1 w-auto h-0 bg-white flex flex-col'
           >
             {leftTab === "Workspace" ? (
-              <div className="p-2 flex-1 flex flex-col">
+              <div className='p-2 flex-1 flex flex-col'>
                 <FileTree
                   treeData={treeData}
                   refreshFileList={refreshFileList}
@@ -258,17 +259,17 @@ export default function Main({ onLoginOut }) {
                 />
               </div>
             ) : (
-              <div className="p-4 flex-1 flex flex-col">
-                <h2 className="text-lg font-semibold">Device</h2>
-                <p className="text-gray-600">
+              <div className='p-4 flex-1 flex flex-col'>
+                <h2 className='text-lg font-semibold'>Device</h2>
+                <p className='text-gray-600'>
                   <ConnectComponent />
                 </p>
               </div>
             )}
           </div>
         </div>
-        <div className="w-1/4 flex flex-row bg-blue pl-2">
-          <div className="flex flex-col justify-start items-center h-full">
+        <div className='w-1/4 flex flex-row bg-blue pl-2'>
+          <div className='flex flex-col justify-start items-center h-full'>
             {centerList.map((item, index) => (
               <span
                 onClick={() => {
@@ -303,8 +304,8 @@ export default function Main({ onLoginOut }) {
             />
           </div>
         </div>
-        <div className="flex flex-1 flex-col border border-gray-300">
-          <div className="flex flex-row justify-start items-center ">
+        <div className='flex flex-1 flex-col border border-gray-300'>
+          <div className='flex flex-row justify-start items-center '>
             {rightTabs.map((label, idx) => (
               <button
                 onClick={() => setRightTab(label)}
@@ -320,7 +321,7 @@ export default function Main({ onLoginOut }) {
             ))}
           </div>
           <div className='flex flex-1 bg-white'>
-            {parameter.key && (
+            {rightTab === "Parameter" && parameter.key && (
               <ReadParameter
                 parameter={parameter}
                 setParameter={setParameter}
@@ -328,6 +329,7 @@ export default function Main({ onLoginOut }) {
                 setDataFile={setDataFile}
               />
             )}
+            {rightTab === "Control" && <Control />}
           </div>
         </div>
       </div>
