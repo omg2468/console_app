@@ -417,6 +417,7 @@ func (ws *WorkspaceService) RenameItem(sourceName string, newName string) error 
 }
 
 func (ws *WorkspaceService) Paste(relativeSourcePath, relativeDestinationDir string) error {
+
 	// Lấy đường dẫn tuyệt đối đến workspace
 	workspacePath, err := ws.GetWorkspacePath()
 	if err != nil {

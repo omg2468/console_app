@@ -1,5 +1,4 @@
 {
-    "type": "download_config",
     "common": {
         "ai_loc": 0,
         "conf_port": 19981,
