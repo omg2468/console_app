@@ -95,41 +95,17 @@ export default function Main({ onLoginOut }) {
   };
 
   const handleSaveProject = async () => {
-    const jsonObject = {
-      name: "Example",
-      value: 42,
-      items: [1, 2, 3],
-    };
+    if (!dataFile) return;
+    const jsonObject = { ...dataFile };
+    console.log("jsonObject", dataFile.rtu_master);
     const jsonString = JSON.stringify(jsonObject);
     const cleanPath = normalizeWorkspacePath(fileLoaded);
     await SaveJsonFile(cleanPath, jsonString);
   };
 
   const handleSaveAsProject = async () => {
-    const jsonData = `{
-  "name": "My Project",
-  "type": "folder",
-  "modified": "2025-06-14 21:00:00",
-  "children": [
-    {
-      "name": "main.json",
-      "type": "file",
-      "modified": "2025-06-14 20:59:00"
-    },
-    {
-      "name": "config",
-      "type": "folder",
-      "modified": "2025-06-14 20:58:00",
-      "children": [
-        {
-          "name": "settings.json",
-          "type": "file",
-          "modified": "2025-06-14 20:57:00"
-        }
-      ]
-    }
-  ]
-}`;
+    if (!dataFile) return;
+    const jsonData = JSON.stringify({ ...dataFile });
 
     SelectFileToExport("api-json.json").then(async (filePath) => {
       if (!filePath) {
