@@ -3,10 +3,12 @@ import { ContextMenuContext } from "../store";
 
 const Control = () => {
   const [realCurrent, setRealCurrent] = useState("4.000mA");
+  const [display, setDisplay] = useState(false);
+  const [DHCP, setDHCP] = useState(false);
+  const [generateCurrent, setGenerateCurrent] = useState(false);
+  const [digitalOutput, setDigitalOutput] = useState([false, false, false, false, false]);
 
   const context = useContext(ContextMenuContext);
-
-  console.log(context.analogData);
 
   return (
     <div className="w-full overflow-x-scroll flex flex-row px-2 py-1 box-border">
@@ -21,7 +23,12 @@ const Control = () => {
                 </td>
                 <td className="p-2 border-b text-left ">
                   <div className="w-full h-full flex items-center justify-start">
-                    <input type="checkbox" className="w-4 h-4" checked={true} />
+                    <input
+                      type="checkbox"
+                      className="w-4 h-4"
+                      checked={DHCP}
+                      onChange={() => setDHCP(!DHCP)}
+                    />
                   </div>
                 </td>
               </tr>
@@ -59,7 +66,12 @@ const Control = () => {
           </div>
           <span className="font-black text-sm pt-2">ANALOG INPUT</span>
           <div className="gap-2 flex items-center justify-start ">
-            <input type="checkbox" className="w-4 h-4" checked={true} />
+            <input
+              type="checkbox"
+              className="w-4 h-4"
+              checked={display}
+              onChange={(e) => setDisplay(e.target.checked)}
+            />
             <span className="text-sm">Display analog value</span>
           </div>
           <div className="w-full">
@@ -80,7 +92,7 @@ const Control = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {context.analogData.length === 0
+                  {context.analogData.length === 0 || !display
                     ? Array.from({ length: 12 }, (_, index) => (
                         <tr key={index}>
                           <td className="border-r border-b p-2 text-right min-w-[150px] whitespace-nowrap">
@@ -120,7 +132,7 @@ const Control = () => {
             <option value="20">20mA</option>
           </select>
           <div className="flex items-center justify-start">
-            <input type="checkbox" />
+            <input type="checkbox" checked={generateCurrent} onChange={(e) => setGenerateCurrent(e.target.checked)} />
           </div>
           <div className="flex items-center justify-start">
             <p className="text-xs whitespace-nowrap text-left px-2">
@@ -155,11 +167,16 @@ const Control = () => {
             </p>
           </div>
           <div className="flex flex-row gap-4 ml-2 col-span-2">
-            {Array.from({ length: 5 }, (_, index) => (
+            {digitalOutput.map((_, index) => (
               <div className="flex flex-row items-center justify-center">
                 <p className="text-center mt-[1px]">{index}</p>
                 <input
-                  checked={false}
+                  checked={digitalOutput[index]}
+                  onChange={(e) => {
+                    const newDigitalOutput = [...digitalOutput];
+                    newDigitalOutput[index] = e.target.checked;
+                    setDigitalOutput(newDigitalOutput);
+                  }}
                   type="checkbox"
                   className="custom ml-1"
                 />

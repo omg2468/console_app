@@ -1,7 +1,9 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { ContextMenuContext } from "../store";
 
 const TagView = () => {
+  const [display, setDisplay] = useState(false);
+
   const context = useContext(ContextMenuContext);
   const data = context.tagViewData || [];
 
@@ -10,7 +12,12 @@ const TagView = () => {
       <p className="text-md font-semibold">TAG VIEW</p>
 
       <div className="flex flex-row items-center justify-center gap-1 mb-2">
-        <input type="checkbox" className="custom" checked readOnly />
+        <input
+          type="checkbox"
+          className="custom"
+          checked={display}
+          onChange={(e) => setDisplay(e.target.checked)}
+        />
         <span>Display value</span>
       </div>
 
@@ -34,17 +41,18 @@ const TagView = () => {
               </tr>
             </thead>
             <tbody>
-              {data.map((tag) => (
-                <tr key={tag.id}>
-                  <td className="border px-2 py-1 text-right">{tag.id}</td>
-                  <td className="border px-2 py-1">{tag.name}</td>
-                  <td className="border px-2 py-1 text-right">
-                    {tag.value.toFixed(2)}
-                  </td>
-                  <td className="border px-2 py-1">{tag.unit}</td>
-                  <td className="border px-2 py-1">{tag.status}</td>
-                </tr>
-              ))}
+              {display &&
+                data.map((tag) => (
+                  <tr key={tag.id}>
+                    <td className="border px-2 py-1 text-right">{tag.id}</td>
+                    <td className="border px-2 py-1">{tag.name}</td>
+                    <td className="border px-2 py-1 text-right">
+                      {tag.value.toFixed(2)}
+                    </td>
+                    <td className="border px-2 py-1">{tag.unit}</td>
+                    <td className="border px-2 py-1">{tag.status}</td>
+                  </tr>
+                ))}
             </tbody>
           </table>
         </div>

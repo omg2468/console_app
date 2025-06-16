@@ -1,8 +1,12 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { ContextMenuContext } from "../store";
 
-const MemoryView = ({ memory }) => {
+const MemoryView = () => {
+  const [display, setDisplay] = useState(false);
+
   const context = useContext(ContextMenuContext);
+
+  const memory = context.memoryViewData;
 
   const totalRegisters = 256;
   const columns = 8;
@@ -30,9 +34,7 @@ const MemoryView = ({ memory }) => {
         );
         cells.push(
           <td key={`val-${col}-${row}`} className="border px-2 py-1 ">
-            {memory && memory[`Reg${idx}`] !== undefined
-              ? memory[`Reg${idx}`]
-              : context.memoryViewData[idx]}
+            {memory && display ? memory[idx] : "-"}
           </td>
         );
       } else {
@@ -42,6 +44,7 @@ const MemoryView = ({ memory }) => {
     }
     tableRows.push(<tr key={row}>{cells}</tr>);
   }
+
   const header = [];
   for (let i = 0; i < columns / 2; i++) {
     header.push(
@@ -60,7 +63,12 @@ const MemoryView = ({ memory }) => {
     <div className="flex flex-col items-start justify-start p-2 w-full h-full">
       <p className="text-md font-semibold">MEMORY VIEW</p>
       <div className="flex flex-row items-center justify-center gap-1">
-        <input type="checkbox" className="custom" checked readOnly />
+        <input
+          type="checkbox"
+          className="custom"
+          checked={display}
+          onChange={() => setDisplay(!display)}
+        />
         <span>Display memory value</span>
       </div>
       <div

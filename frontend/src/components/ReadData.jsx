@@ -335,7 +335,6 @@ const ReadData = ({ dataFile, parameter, setParameter, keyType }) => {
       parameter,
     ],
   );
-  console.log({parameter})
   return <>{readData(keyType)}</>;
 };
 
