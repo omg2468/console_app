@@ -9,4 +9,8 @@ export function SelectFileToExport(arg1:string):Promise<string>;
 
 export function SelectFileToImport():Promise<string>;
 
+export function ShowErrorDialog(arg1:string):Promise<void>;
+
 export function ShowInfoDialog():Promise<void>;
+
+export function ShowQuestionDialog(arg1:string):Promise<void>;

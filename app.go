@@ -35,23 +35,35 @@ func (a *App) GetContext() string {
 	return "Context is active"
 }
 
-func (a *App) ShowInfoDialog() {
-	fmt.Println("Showing info dialog")
-	// runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
-	// 	Title:   "Thông báo",
-	// 	Message: "Đây là một thông báo thông tin từ Wails!",
-	// 	Type:    runtime.InfoDialog,
-	// })
+func (a *App) ShowInfoDialog(message string) {
+	runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
+		Title:   "Thông báo",
+		Message: message,
+		Type:    runtime.InfoDialog,
+	})
 }
 
+func (a *App) ShowErrorDialog(message string) {
+	runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
+		Title:   "Error",
+		Message: message,
+		Type:    runtime.ErrorDialog,
+	})
+}
+
+func (a *App) ShowQuestionDialog(message string) {
+	runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
+		Title:   "Xác nhận",
+		Message: message,
+		Type:    runtime.QuestionDialog,
+	})
+}
 
 func (a *App) SelectFileToImport() (string, error) {
 	options := runtime.OpenDialogOptions{
 		Title: "Chọn file để nhập",
 		Filters: []runtime.FileFilter{
-			{DisplayName: "All Files (*.*)", Pattern: "*.*"},
 			{DisplayName: "JSON Files (*.json)", Pattern: "*.json"},
-			{DisplayName: "Text Files (*.txt)", Pattern: "*.txt"},
 		},
 	}
 
@@ -60,13 +72,13 @@ func (a *App) SelectFileToImport() (string, error) {
 		// runtime.OpenFileDialog có thể trả về lỗi nếu người dùng hủy bỏ (cancel)
 		// hoặc có lỗi hệ thống.
 		if errors.Is(err, context.Canceled) { // Kiểm tra nếu người dùng hủy bỏ
-			return "", nil // Trả về rỗng và nil error nếu bị hủy
+			return "", fmt.Errorf("Người dùng hủy bỏ") // Trả về rỗng và nil error nếu bị hủy
 		}
-		return "", fmt.Errorf("Lỗi khi mở hộp thoại chọn file: %w", err)
+		return "", fmt.Errorf("Lỗi khi mở hộp thoại chọn file")
 	}
 
 	if selectedFile == "" {
-		return "", nil // Người dùng không chọn file nào
+		return "", fmt.Errorf("Không chọn file")
 	}
 
 	return selectedFile, nil
@@ -96,4 +108,3 @@ func (a *App) SelectFileToExport(defaultName string) (string, error) {
 
 	return selectedPath, nil
 }
-

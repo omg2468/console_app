@@ -18,6 +18,14 @@ export function SelectFileToImport() {
   return window['go']['main']['App']['SelectFileToImport']();
 }
 
+export function ShowErrorDialog(arg1) {
+  return window['go']['main']['App']['ShowErrorDialog'](arg1);
+}
+
 export function ShowInfoDialog() {
   return window['go']['main']['App']['ShowInfoDialog']();
+}
+
+export function ShowQuestionDialog(arg1) {
+  return window['go']['main']['App']['ShowQuestionDialog'](arg1);
 }

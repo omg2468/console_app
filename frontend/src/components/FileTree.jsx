@@ -15,6 +15,7 @@ import {
 import {
   SelectFileToExport,
   SelectFileToImport,
+  ShowErrorDialog,
 } from "../../wailsjs/go/main/App";
 
 import { ContextMenuContext } from "../store";
@@ -175,9 +176,9 @@ const TreeNode = ({
           break;
       }
     } catch (error) {
-      console.error("Lỗi trong handleAction:", error);
       setInput("");
       setShowModal({ show: false, action: null });
+      ShowErrorDialog(error);
     } finally {
       // Refresh file list after any action that modifies the file system
       setIsLoadFile("");
@@ -450,7 +451,7 @@ const FileTree = ({
     } catch (error) {
       setInput("");
       setShowModal({ show: false, action: null });
-      alert(error);
+      ShowErrorDialog(error);
     }
   };
 
@@ -467,7 +468,10 @@ const FileTree = ({
       },
       {
         label: "New Group ",
-        action: () => setShowModal({ show: true, action: "newGroup" }),
+        action: () => {
+          setInput("");
+          setShowModal({ show: true, action: "newGroup" });
+        },
       },
       {
         label: "Paste",
@@ -542,7 +546,7 @@ const FileTree = ({
         </div>
       )}
       {!!fileLoaded && (
-        <div className='fixed bottom-0 left-0 z-20 p-2 bg-stone-100 shadow-md text-sm text-gray-600'>
+        <div className="fixed bottom-0 left-0 z-20 p-2 bg-stone-100 shadow-md text-sm text-gray-600">
           {fileLoaded}
         </div>
       )}
