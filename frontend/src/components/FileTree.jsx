@@ -46,7 +46,6 @@ const TreeNode = ({
   };
 
   const handleAction = async (action, name) => {
-    console.log("handleAction:", action, name);
 
     const basePath =
       node.path.endsWith("/") || node.path.endsWith("\\")
@@ -59,11 +58,11 @@ const TreeNode = ({
       switch (action) {
         case "newProject":
           if (!name || !name.trim()) {
-            console.warn("Tên không hợp lệ");
+            ShowErrorDialog("Tên không hợp lệ");
             return;
           }
           if (!name.toLowerCase().endsWith(".json")) {
-            console.warn("Chỉ cho phép tạo file với phần mở rộng .json");
+            ShowErrorDialog("Chỉ cho phép tạo file với phần mở rộng .json");
             return;
           }
           await NewProject(fullPath);
@@ -76,7 +75,6 @@ const TreeNode = ({
             return;
           }
           setIsLoadFile(node.name);
-          console.log("Loading file:", node);
           const content = await ReadFile(node.path);
           const data = JSON.parse(content);
           setDataFile({ ...data });
@@ -108,22 +106,19 @@ const TreeNode = ({
             if (!filePath) {
               return;
             }
-            try {
-              await ExportJSONFile(node.path, filePath);
-            } catch (error) {
-              console.error("Error exporting file:", error);
-            }
+
+            await ExportJSONFile(node.path, filePath);
           });
 
           break;
 
         case "paste":
           if (!context.clipBoard) {
-            console.warn("Clipboard is empty");
+            ShowErrorDialog("Chưa có dữ liệu trong clipboard");
             return;
           }
           if (node.type !== "folder") {
-            console.warn("Chỉ có thể dán vào thư mục");
+            ShowErrorDialog("Chỉ có thể dán vào thư mục");
             return;
           }
           const clipboardPath = context.clipBoard;
@@ -146,7 +141,7 @@ const TreeNode = ({
 
           const trimmedInput = input.trim();
           if (!trimmedInput) {
-            console.warn("Tên không hợp lệ");
+            ShowErrorDialog("Tên không hợp lệ");
             return;
           }
 
@@ -154,17 +149,14 @@ const TreeNode = ({
             !trimmedInput.toLowerCase().endsWith(".json") &&
             node.type === "file"
           ) {
-            console.warn("Chỉ cho phép đổi tên file với phần mở rộng .json");
+            ShowErrorDialog("Chỉ cho phép đổi tên file với phần mở rộng .json");
             return;
           }
 
-          try {
-            await RenameItem(node.path, trimmedInput);
-            setInput("");
-            setShowModal({ show: false, action: null });
-          } catch (err) {
-            console.error("Lỗi khi đổi tên:", err);
-          }
+          await RenameItem(node.path, trimmedInput);
+          setInput("");
+          setShowModal({ show: false, action: null });
+
           break;
 
         case "import":
@@ -400,7 +392,6 @@ const FileTree = ({
   const [input, setInput] = useState("");
 
   const handleAction = async (action, name) => {
-    console.log("handleAction:", action, name);
 
     try {
       switch (action) {

@@ -24,17 +24,6 @@ func (a *App) startup(ctx context.Context) {
 	a.ctx = ctx
 }
 
-// Greet returns a greeting for the given name
-func (a *App) Greet(name string) string {
-	a.ShowInfoDialog()
-	fmt.Println("Greet called with name:", name)
-	return fmt.Sprintf("Hello %s, It's show time!", name)
-}
-
-func (a *App) GetContext() string {
-	return "Context is active"
-}
-
 func (a *App) ShowInfoDialog(message string) {
 	runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
 		Title:   "Thông báo",

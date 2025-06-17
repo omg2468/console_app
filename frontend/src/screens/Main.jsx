@@ -34,6 +34,9 @@ export default function Main({ onLoginOut }) {
     value: null,
   });
 
+  const [showModal, setShowModal] = useState(false);
+  const [input, setInput] = useState("");
+
   function normalizeWorkspacePath(path) {
     return path.replace(/^workspace\//, "");
   }
@@ -76,18 +79,6 @@ export default function Main({ onLoginOut }) {
     }
   };
 
-  const handleNewProject = async () => {
-    await ShowQuestionDialog("Chưa thực hành");
-
-    try {
-      await NewProject("new-project.json");
-      refreshFileList();
-      console.log("Tạo dự án mới");
-    } catch (error) {
-      ShowErrorDialog(error);
-    }
-  };
-
   const refreshFileList = () => {
     ListFiles()
       .then((nodes) => {
@@ -125,6 +116,20 @@ export default function Main({ onLoginOut }) {
     });
   };
 
+  const handleAction = async (name) => {
+    if (!name || !name.trim()) {
+      ShowErrorDialog("Tên không hợp lệ");
+      return;
+    }
+    if (!name.toLowerCase().endsWith(".json")) {
+      ShowErrorDialog("Chỉ cho phép tạo file với phần mở rộng .json");
+      return;
+    }
+    await NewProject(name);
+    setInput("");
+    setShowModal({ show: false, action: null });
+  };
+
   useEffect(() => {
     refreshFileList();
   }, []);
@@ -157,7 +162,10 @@ export default function Main({ onLoginOut }) {
     >
       <div style={{ display: "flex", gap: "0.25rem" }}>
         <button
-          onClick={handleNewProject}
+          onClick={() => {
+            setInput("default.json");
+            setShowModal(true);
+          }}
           style={{
             borderRadius: "0.375rem",
             backgroundColor: "white",
@@ -315,6 +323,39 @@ export default function Main({ onLoginOut }) {
           </div>
         </div>
       </div>
+
+      {showModal && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center"
+          onClick={() => setShowModal(false)} // Đóng modal khi click nền đen
+        >
+          <div
+            className="bg-white p-6 rounded-lg shadow-lg w-[300px]"
+            onClick={(e) => e.stopPropagation()} // Ngăn sự kiện nổi bọt khi click vào modal
+          >
+            <input
+              type="text"
+              className="custom w-full px-3 py-2 border border-gray-300 rounded-md mb-4 focus:outline-none focus:border-blue-500"
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+            />
+            <div className="flex flex-row justify-around">
+              <button
+                className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+                onClick={() => handleAction(input)}
+              >
+                Save
+              </button>
+              <button
+                className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+                onClick={() => setShowModal(false)}
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
