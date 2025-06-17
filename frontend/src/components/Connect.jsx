@@ -59,7 +59,8 @@ function ConnectComponent() {
       while (isListening) {
         try {
           const response = await AuthService.GetResponse(10000);
-
+          console.log("Received response:", JSON.stringify(response));
+     
           if (response) {
             try {
               const jsonData = JSON.parse(response);
@@ -85,6 +86,7 @@ function ConnectComponent() {
             }
           }
         } catch (err) {
+          console.log("err", err)
           if (!err.toString().includes("timeout")) {
             console.error("Lỗi nhận:", err);
             setStatus("Lỗi nhận dữ liệu: " + err);

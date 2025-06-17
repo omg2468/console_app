@@ -3,6 +3,7 @@ import { useState } from "react";
 import Login from "./screens/Login";
 import Main from "./screens/Main";
 import ContextMenu from "./components/ContextMenu";
+import Modal from "./components/Modal";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(true);
@@ -15,6 +16,7 @@ function App() {
         <>
           <Main onLoginOut={() => setIsLoggedIn(false)} />
           <ContextMenu />
+          <Modal />
         </>
       )}
     </div>

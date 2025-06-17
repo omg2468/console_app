@@ -1,5 +1,5 @@
 import FileTree from "../components/FileTree";
-import { useState, useEffect, useCallback, useContext } from "react";
+import { useState, useEffect, useContext } from "react";
 import {
   ImportFileToWorkspace,
   ListFiles,
@@ -46,7 +46,6 @@ export default function Main({ onLoginOut }) {
   const context = useContext(ContextMenuContext);
   useEffect(() => {
     if (!parameter.key) return;
-    if (!context.isLoadFile) return;
     let newValue = null;
     if (parameter.key && dataFile) {
       if (Array.isArray(dataFile[parameter.key])) {
@@ -59,7 +58,7 @@ export default function Main({ onLoginOut }) {
         value: newValue,
       }));
     }
-  }, [dataFile, context.isLoadFile]);
+  }, [dataFile]);
 
   const [treeData, setTreeData] = useState([]);
 
@@ -147,7 +146,7 @@ export default function Main({ onLoginOut }) {
   ];
 
   const rightTabs = ["Parameter", "Control", "Memory view", "Tag view"];
-
+  console.log({context: context})
   return (
     <div
       style={{
@@ -189,8 +188,10 @@ export default function Main({ onLoginOut }) {
             fontWeight: "500",
             boxShadow: "0 1px 2px 0 rgb(0 0 0 / 0.05)",
             cursor: "pointer",
+            color: fileLoaded ? "black" : "gray",
           }}
           onClick={handleSaveProject}
+          disabled={!fileLoaded}
         >
           Save Project
         </button>
@@ -225,7 +226,7 @@ export default function Main({ onLoginOut }) {
             {tabsLeft.map((tab, index) => (
               <div
                 key={index}
-                className={`cursor-pointer px-2 rounded-md user-none text-xs ${
+                className={`cursor-pointer px-2 user-none text-xs ${
                   leftTab === tab ? "bg-white" : "border"
                 } hover:bg-blue-50 transition-colors`}
                 onClick={() => setLeftTab(tab)}
@@ -266,6 +267,7 @@ export default function Main({ onLoginOut }) {
                     value: null,
                   }));
                   setMiddleTab(item.value);
+                  setRightTab("Parameter");
                 }}
                 className={`py-3 px-0.2 text-xs  text-gray-700 hover:bg-blue-50  text-center ${
                   middleTab === item.value

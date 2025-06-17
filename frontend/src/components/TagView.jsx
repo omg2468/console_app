@@ -30,7 +30,7 @@ const TagView = () => {
             overflowY: "auto",
           }}
         >
-          <table className="w-full text-sm border-collapse">
+          <table className="w-full text-xs border-collapse">
             <thead>
               <tr className="bg-gray-100">
                 <th className="border px-2 py-1 text-right">ID</th>

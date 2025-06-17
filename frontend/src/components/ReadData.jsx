@@ -15,7 +15,7 @@ const ReadData = ({ dataFile, parameter, setParameter, keyType }) => {
         case "system":
           return (
             <div>
-              <p className='text-sm pl-2 border-b border-gray-100 bg-gray-200'>
+              <p className='text-xs pl-2 border-b border-gray-100 bg-gray-200'>
                 SYSTEM SETTINGS
               </p>
               {dataFile && systemCenterData
@@ -35,7 +35,7 @@ const ReadData = ({ dataFile, parameter, setParameter, keyType }) => {
                           : "white"
                       }`}
                     >
-                      <p className='text-sm'>{item.label}</p>
+                      <p className='text-xs'>{item.label}</p>
                     </div>
                   ))
                 : null}
@@ -44,7 +44,7 @@ const ReadData = ({ dataFile, parameter, setParameter, keyType }) => {
         case "ftp":
           return (
             <div>
-              <p className='text-sm pl-2 border-b border-gray-100 bg-gray-200'>
+              <p className='text-xs pl-2 border-b border-gray-100 bg-gray-200'>
                 FTP SETTINGS
               </p>
               {dataFile?.ftp
@@ -64,7 +64,7 @@ const ReadData = ({ dataFile, parameter, setParameter, keyType }) => {
                           : "white"
                       }`}
                     >
-                      <p className='text-sm'>FTP.{index}</p>
+                      <p className='text-xs'>FTP.{index}</p>
                     </div>
                   ))
                 : null}
@@ -73,7 +73,7 @@ const ReadData = ({ dataFile, parameter, setParameter, keyType }) => {
         case "control":
           return (
             <div>
-              <p className='text-sm pl-2 border-b border-gray-100 bg-gray-200'>
+              <p className='text-xs pl-2 border-b border-gray-100 bg-gray-200'>
                 CONTROL SETTINGS
               </p>
               {dataFile?.control ? (
@@ -94,7 +94,7 @@ const ReadData = ({ dataFile, parameter, setParameter, keyType }) => {
                           : "white"
                       }`}
                     >
-                      <p className='text-sm'>Control.{index}</p>
+                      <p className='text-xs'>Control.{index}</p>
                     </div>
                   ))
                 ) : (
@@ -110,7 +110,7 @@ const ReadData = ({ dataFile, parameter, setParameter, keyType }) => {
                       parameter.key === "control" ? "bg-blue-200" : "white"
                     }`}
                   >
-                    <p className='text-sm'>CONTROL 0</p>
+                    <p className='text-xs'>CONTROL 0</p>
                   </div>
                 )
               ) : null}
@@ -119,7 +119,7 @@ const ReadData = ({ dataFile, parameter, setParameter, keyType }) => {
         case "di":
           return (
             <div>
-              <p className='text-sm pl-2 border-b border-gray-100 bg-gray-200'>
+              <p className='text-xs pl-2 border-b border-gray-100 bg-gray-200'>
                 DI SETTINGS
               </p>
               {dataFile?.dis
@@ -139,7 +139,7 @@ const ReadData = ({ dataFile, parameter, setParameter, keyType }) => {
                           : "white"
                       }`}
                     >
-                      <p className='text-sm'>DI.{index}</p>
+                      <p className='text-xs'>DI.{index}</p>
                     </div>
                   ))
                 : null}
@@ -148,7 +148,7 @@ const ReadData = ({ dataFile, parameter, setParameter, keyType }) => {
         case "do":
           return (
             <div>
-              <p className='text-sm pl-2 border-b border-gray-100 bg-gray-200'>
+              <p className='text-xs pl-2 border-b border-gray-100 bg-gray-200'>
                 DO SETTINGS
               </p>
               {dataFile?.dos
@@ -168,7 +168,7 @@ const ReadData = ({ dataFile, parameter, setParameter, keyType }) => {
                           : "white"
                       }`}
                     >
-                      <p className='text-sm'>DO.{index}</p>
+                      <p className='text-xs'>DO.{index}</p>
                     </div>
                   ))
                 : null}
@@ -185,7 +185,7 @@ const ReadData = ({ dataFile, parameter, setParameter, keyType }) => {
                   REM
                 </div>
               </div>
-              <p className='text-sm pl-2 border-b border-gray-100 bg-gray-200'>
+              <p className='text-xs pl-2 border-b border-gray-100 bg-gray-200'>
                 TAG SETTINGS
               </p>
               {dataFile?.tags
@@ -205,7 +205,7 @@ const ReadData = ({ dataFile, parameter, setParameter, keyType }) => {
                           : "white"
                       }`}
                     >
-                      <p className='text-sm'>TAG.{index}</p>
+                      <p className='text-xs'>TAG.{index}</p>
                     </div>
                   ))
                 : null}
@@ -222,7 +222,7 @@ const ReadData = ({ dataFile, parameter, setParameter, keyType }) => {
                   REM
                 </div>
               </div>
-              <p className='text-sm pl-2 border-b border-gray-100 bg-gray-200'>
+              <p className='text-xs pl-2 border-b border-gray-100 bg-gray-200'>
                 PROGRAM SETTINGS
               </p>
               {dataFile?.prog
@@ -242,7 +242,7 @@ const ReadData = ({ dataFile, parameter, setParameter, keyType }) => {
                           : "white"
                       }`}
                     >
-                      <p className='text-sm'>PROG.{index}</p>
+                      <p className='text-xs'>PROG.{index}</p>
                     </div>
                   ))
                 : null}
@@ -259,7 +259,7 @@ const ReadData = ({ dataFile, parameter, setParameter, keyType }) => {
                   REM
                 </div>
               </div>
-              <p className='text-sm pl-2 border-b border-gray-100 bg-gray-200'>
+              <p className='text-xs pl-2 border-b border-gray-100 bg-gray-200'>
                 TIMER SETTINGS
               </p>
               {dataFile?.timers
@@ -279,7 +279,7 @@ const ReadData = ({ dataFile, parameter, setParameter, keyType }) => {
                           : "white"
                       }`}
                     >
-                      <p className='text-sm'>TIMER.{index}</p>
+                      <p className='text-xs'>TIMER.{index}</p>
                     </div>
                   ))
                 : null}
@@ -296,7 +296,7 @@ const ReadData = ({ dataFile, parameter, setParameter, keyType }) => {
                   REM
                 </div>
               </div>
-              <p className='text-sm pl-2 border-b border-gray-100 bg-gray-200'>
+              <p className='text-xs pl-2 border-b border-gray-100 bg-gray-200'>
                 MODBUS SETTINGS
               </p>
               {dataFile?.modbus_reader
@@ -316,7 +316,7 @@ const ReadData = ({ dataFile, parameter, setParameter, keyType }) => {
                           : "white"
                       }`}
                     >
-                      <p className='text-sm'>MODBUS.{index}</p>
+                      <p className='text-xs'>MODBUS.{index}</p>
                     </div>
                   ))
                 : null}
