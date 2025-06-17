@@ -5,7 +5,7 @@ import (
 	"myproject/backend/user"
 	"myproject/backend/workspace"
 	"myproject/backend/auth"
-	"myproject/backend/realTime"
+	"myproject/backend/control"
 
 	"github.com/wailsapp/wails/v2"
 	"github.com/wailsapp/wails/v2/pkg/options"
@@ -19,9 +19,9 @@ func main() {
 	// Create an instance of the app structure
 	app := NewApp()
 	authService := auth.NewAuthService()
+	controlService := control.NewControlService(authService)
 	userService := user.NewUserService(authService)
 	workspaceService := workspace.NewWorkspaceService(authService)
-	realtimeService := realTime.NewRealtimeDataService(authService)
 
 	// Create application with options
 	err := wails.Run(&options.App{
@@ -38,7 +38,7 @@ func main() {
 			userService,
 			workspaceService,
 			authService,
-			realtimeService,
+			controlService,
 		},
 	})
 

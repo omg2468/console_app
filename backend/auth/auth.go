@@ -175,7 +175,7 @@ func (a *AuthService) Disconnect() error {
 	return nil
 }
 
-func (a *AuthService) Login(username , password string) (error) {
+func (a *AuthService) Login(username, password string) error {
 	// Tạo JSON login request
 	loginData := map[string]string{
 		"type":     "login",
@@ -188,7 +188,6 @@ func (a *AuthService) Login(username , password string) (error) {
 	}
 
 	return a.Send(string(jsonBytes))
-
 }
 
 func (a *AuthService) ChangePassword(username, oldPassword, newPassword string) error {
@@ -207,3 +206,31 @@ func (a *AuthService) ChangePassword(username, oldPassword, newPassword string) 
 	return a.Send(string(jsonBytes))
 }
 
+func (a *AuthService) AddUser(username, password string) error {
+	data := map[string]string{
+		"type":     "add_user",
+		"username": username,
+		"password": password,
+	}
+
+	jsonBytes, err := json.Marshal(data)
+	if err != nil {
+		return fmt.Errorf("lỗi khi tạo JSON: %w", err)
+	}
+
+	return a.Send(string(jsonBytes))
+}
+
+func (a *AuthService) RemoveUser(username string) error {
+	data := map[string]string{
+		"type":     "remove_user",
+		"username": username,
+	}
+
+	jsonBytes, err := json.Marshal(data)
+	if err != nil {
+		return fmt.Errorf("lỗi khi tạo JSON: %w", err)
+	}
+
+	return a.Send(string(jsonBytes))
+}

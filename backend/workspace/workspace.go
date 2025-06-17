@@ -31,7 +31,7 @@ type FileNode struct {
 	Modified string     `json:"modified,omitempty"`
 	Children []FileNode `json:"children,omitempty"`
 	FullPath string     `json:"fullPath,omitempty"` // Đường dẫn đầy đủ đến file hoặc thư mục, không trả về cho frontend
-	Path     string     `json:"path,omitempty"` // Đường dẫn đầy đủ đến file hoặc thư mục
+	Path     string     `json:"path,omitempty"`     // Đường dẫn đầy đủ đến file hoặc thư mục
 }
 
 type ClipboardAction string
@@ -379,16 +379,16 @@ func (ws *WorkspaceService) RenameItem(sourceName string, newName string) error 
 	// **Bước quan trọng**: Chuẩn hóa sourceName và newName nhận từ frontend
 	// để chúng trở thành đường dẫn tương đối sạch từ gốc của workspace.
 	cleanSourceName := ws.sanitizePathFromFrontend(sourceName)
-    // newName ở đây là tên mới của file/folder, không phải đường dẫn đầy đủ từ gốc workspace
-    // Chúng ta cần xác định thư mục cha của cleanSourceName và áp dụng newName vào đó
-    dir := filepath.Dir(cleanSourceName) // "documents/subfolder" từ "documents/subfolder/file.json"
-    if dir == "." { // Nếu là file/folder ở gốc workspace, Dir trả về "."
-        dir = ""
-    }
+	// newName ở đây là tên mới của file/folder, không phải đường dẫn đầy đủ từ gốc workspace
+	// Chúng ta cần xác định thư mục cha của cleanSourceName và áp dụng newName vào đó
+	dir := filepath.Dir(cleanSourceName) // "documents/subfolder" từ "documents/subfolder/file.json"
+	if dir == "." {                      // Nếu là file/folder ở gốc workspace, Dir trả về "."
+		dir = ""
+	}
 
-    baseNewName := filepath.Base(newName) // Lấy phần tên file/folder từ newName
+	baseNewName := filepath.Base(newName) // Lấy phần tên file/folder từ newName
 
-    // Xây dựng đường dẫn tuyệt đối cho mục nguồn và mục đích
+	// Xây dựng đường dẫn tuyệt đối cho mục nguồn và mục đích
 	sourceFullPath := filepath.Join(absWorkspacePath, cleanSourceName)
 	newFullPath := filepath.Join(absWorkspacePath, dir, baseNewName) // dir là thư mục cha của sourceFullPath
 
@@ -509,6 +509,23 @@ func (ws *WorkspaceService) NewProject(name string) error {
 
 func (ws *WorkspaceService) DowloadConfig() error {
 	return ws.authService.Send(`{"type":"download_config"}`)
+}
+
+func (ws *WorkspaceService) UploadConfig(data string) error {
+	var configData map[string]interface{}
+	if err := json.Unmarshal([]byte(data), &configData); err != nil {
+		return fmt.Errorf("dữ liệu upload không phải JSON hợp lệ: %w", err)
+	}
+
+	// Thêm trường type
+	configData["type"] = "upload_config"
+
+	finalData, err := json.Marshal(configData)
+	if err != nil {
+		return fmt.Errorf("lỗi khi chuyển thành JSON: %w", err)
+	}
+
+	return ws.authService.Send(string(finalData))
 }
 
 func copyFile(src, dst string) (int64, error) {
@@ -636,6 +653,3 @@ func (ws *WorkspaceService) SaveJsonToPath(jsonData string, fullPath string) err
 	fmt.Printf("✅ Đã lưu JSON vào: %s\n", fullPath)
 	return nil
 }
-
-
-
