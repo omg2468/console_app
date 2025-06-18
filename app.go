@@ -24,9 +24,9 @@ func (a *App) startup(ctx context.Context) {
 	a.ctx = ctx
 }
 
-func (a *App) ShowInfoDialog(message string) {
+func (a *App) ShowInfoDialog(message, title string) {
 	runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
-		Title:   "Thông báo",
+		Title:   title,
 		Message: message,
 		Type:    runtime.InfoDialog,
 	})
@@ -40,9 +40,9 @@ func (a *App) ShowErrorDialog(message string) {
 	})
 }
 
-func (a *App) ShowQuestionDialog(message string) {
+func (a *App) ShowQuestionDialog(message, title string) {
 	runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
-		Title:   "Xác nhận",
+		Title:   title,
 		Message: message,
 		Type:    runtime.QuestionDialog,
 	})

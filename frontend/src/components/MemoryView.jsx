@@ -9,7 +9,6 @@ const MemoryView = () => {
   const context = useContext(ContextMenuContext);
 
   const memory = context.memoryViewData;
-  console.log("MemoryView data:", memory);
   const totalRegisters = 256;
   const columns = 8;
   const rows = Math.ceil(totalRegisters / (columns / 2));
@@ -87,6 +86,7 @@ const MemoryView = () => {
               width: `${memory?.length ? barWidth : 0}%`,
               left: `${loadingPos}%`,
               transition: "left 0.01s linear",
+              display: display && memory?.length ? "block" : "none",
             }}
           />
         </div>

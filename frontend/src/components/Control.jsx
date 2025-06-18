@@ -1,18 +1,82 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { ContextMenuContext } from "../store";
+
+import {
+  SettingNetwork,
+  GetNetworkInfo,
+  Calib4ma,
+  Calib20ma,
+} from "../../wailsjs/go/control/ControlService";
+
+import { ShowQuestionDialog } from "../../wailsjs/go/main/App";
 
 const Control = () => {
   const [realCurrent, setRealCurrent] = useState("4.000mA");
   const [display, setDisplay] = useState(false);
-  const [DHCP, setDHCP] = useState(false);
+  const [formData, setFormData] = useState({
+    dhcp: false,
+    ip: "",
+    netmask: "",
+    gateway: "",
+    dns: "",
+    proxy: "",
+    "secondary ip": "",
+    global: "",
+    modem: false,
+  });
   const [generateCurrent, setGenerateCurrent] = useState(false);
-  const [digitalOutput, setDigitalOutput] = useState([false, false, false, false, false]);
+  const [digitalOutput, setDigitalOutput] = useState([
+    false,
+    false,
+    false,
+    false,
+    false,
+  ]);
+  const [loadingPos, setLoadingPos] = useState(0);
+  const barWidth = 40;
 
   const context = useContext(ContextMenuContext);
 
+  const analogData = context.analogData || [];
+
+  const handleChange = (e) => {
+    const { name, type, checked, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: type === "checkbox" ? checked : value,
+    }));
+  };
+
+  const handleSetNetwork = () => {
+    SettingNetwork(formData);
+  };
+
+  const handleGetNetwork = () => {
+    GetNetworkInfo();
+  };
+
+  const handleCalib4 = () => {
+    ShowQuestionDialog("Calibration at 4mA", "Calibration");
+
+    Calib4ma();
+  };
+
+  const handleCalib16 = () => {
+    ShowQuestionDialog("Calibration at 20mA", "Calibration");
+    Calib20ma();
+  };
+
+  useEffect(() => {
+    if (!analogData?.length) return;
+    const interval = setInterval(() => {
+      setLoadingPos((prev) => (prev >= 100 ? -loadingPos : prev + 1));
+    }, 15);
+    return () => clearInterval(interval);
+  }, [analogData]);
+
   return (
     <div className="w-full overflow-x-scroll flex flex-row px-2 py-1 box-border">
-      <div className="min-w-[350px] flex flex-col gap-2 ">
+      <div className="min-w-[350px] flex flex-col gap-2">
         <span className="text-xs font-semibold">NETWORK SETTING</span>
         <div className="border flex-1">
           <table className="w-full h-full max-h-[400px] border-collapse">
@@ -25,42 +89,142 @@ const Control = () => {
                   <div className="w-full h-full flex items-center justify-start">
                     <input
                       type="checkbox"
+                      name="dhcp"
                       className="w-4 h-4"
-                      checked={DHCP}
-                      onChange={() => setDHCP(!DHCP)}
+                      checked={formData.dhcp}
+                      onChange={handleChange}
                     />
                   </div>
                 </td>
               </tr>
+
               <tr>
                 <td className="border-r border-b p-2 text-right">IP</td>
-                <td className="p-2 border-b text-left">192.168.1.16</td>
+                <td className="p-2 border-b text-left">
+                  <input
+                    className="w-full"
+                    type="text"
+                    name="ip"
+                    placeholder="Enter IP address"
+                    value={formData.ip}
+                    onChange={handleChange}
+                  />
+                </td>
               </tr>
+
               <tr>
                 <td className="border-r border-b p-2 text-right">Netmask</td>
-                <td className="p-2 border-b text-left">255.255.255.0</td>
+                <td className="p-2 border-b text-left">
+                  <input
+                    className="w-full"
+                    type="text"
+                    name="netmask"
+                    placeholder="Enter subnet mask"
+                    value={formData.netmask}
+                    onChange={handleChange}
+                  />
+                </td>
               </tr>
+
               <tr>
                 <td className="border-r border-b p-2 text-right">Gateway</td>
-                <td className="p-2 border-b text-left">192.168.1.1</td>
+                <td className="p-2 border-b text-left">
+                  <input
+                    className="w-full"
+                    type="text"
+                    name="gateway"
+                    placeholder="Enter gateway IP"
+                    value={formData.gateway}
+                    onChange={handleChange}
+                  />
+                </td>
               </tr>
+
               <tr>
-                <td className="border-r border-b p-2 text-right">Dns</td>
-                <td className="p-2 border-b text-left">8.8.8.8</td>
+                <td className="border-r border-b p-2 text-right">DNS</td>
+                <td className="p-2 border-b text-left">
+                  <input
+                    className="w-full"
+                    type="text"
+                    name="dns"
+                    placeholder="Enter DNS server"
+                    value={formData.dns}
+                    onChange={handleChange}
+                  />
+                </td>
               </tr>
+
               <tr>
                 <td className="border-r border-b p-2 text-right">Proxy</td>
-                <td className="p-2 border-b text-left">direct</td>
+                <td className="p-2 border-b text-left">
+                  <input
+                    className="w-full"
+                    type="text"
+                    name="proxy"
+                    placeholder="Enter proxy address"
+                    value={formData.proxy}
+                    onChange={handleChange}
+                  />
+                </td>
+              </tr>
+
+              <tr>
+                <td className="border-r border-b p-2 text-right">Secondary</td>
+                <td className="p-2 border-b text-left">
+                  <input
+                    className="w-full"
+                    type="text"
+                    name="secondary ip"
+                    placeholder="Enter secondary IP"
+                    value={formData["secondary ip"]}
+                    onChange={handleChange}
+                  />
+                </td>
+              </tr>
+
+              <tr>
+                <td className="border-r border-b p-2 text-right">Global</td>
+                <td className="p-2 border-b text-left">
+                  <input
+                    className="w-full"
+                    type="text"
+                    name="global"
+                    placeholder="Enter global IP"
+                    value={formData.global}
+                    onChange={handleChange}
+                  />
+                </td>
+              </tr>
+
+              <tr>
+                <td className="border-r border-b p-2 text-right">Modem</td>
+                <td className="p-2 border-b text-left">
+                  <div className="w-full h-full flex items-center justify-start">
+                    <input
+                      type="checkbox"
+                      name="modem"
+                      className="w-4 h-4"
+                      checked={formData.modem}
+                      onChange={handleChange}
+                    />
+                  </div>
+                </td>
               </tr>
             </tbody>
           </table>
         </div>
         <div className="flex flex-col gap-1">
           <div className="flex flex-row w-full items-center justify-center gap-2">
-            <div className="flex-1 text-center text-xs border py-1 bg-gray-200 cursor-pointer hover:bg-gray-300">
+            <div
+              className="flex-1 text-center text-xs border py-1 bg-gray-200 cursor-pointer hover:bg-gray-300"
+              onClick={handleGetNetwork}
+            >
               GET NETWORK
             </div>
-            <div className="flex-1 text-center text-xs border py-1 bg-gray-200 cursor-pointer hover:bg-gray-300">
+            <div
+              className="flex-1 text-center text-xs border py-1 bg-gray-200 cursor-pointer hover:bg-gray-300"
+              onClick={handleSetNetwork}
+            >
               SET NETWORK
             </div>
           </div>
@@ -73,6 +237,17 @@ const Control = () => {
               onChange={(e) => setDisplay(e.target.checked)}
             />
             <span className="text-sm">Display analog value</span>
+            <div className="w-[100px] h-2 bg-gray-200 rounded overflow-hidden relative">
+              <div
+                className="absolute h-full bg-blue-500 rounded transition-all"
+                style={{
+                  width: `${analogData?.length ? barWidth : 0}%`,
+                  left: `${loadingPos}%`,
+                  transition: "left 0.01s linear",
+                  display: display && analogData?.length ? "block" : "none",
+                }}
+              />
+            </div>
           </div>
           <div className="w-full">
             <div style={{ maxHeight: 310, overflowY: "auto" }}>
@@ -92,7 +267,7 @@ const Control = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {context.analogData.length === 0 || !display
+                  {analogData.length === 0 || !display
                     ? Array.from({ length: 12 }, (_, index) => (
                         <tr key={index}>
                           <td className="border-r border-b p-2 text-right min-w-[150px] whitespace-nowrap">
@@ -101,7 +276,7 @@ const Control = () => {
                           <td className="p-2 border-box border-b text-left min-w-[150px]"></td>
                         </tr>
                       ))
-                    : context.analogData.map(({ id, value }) => (
+                    : analogData.map(({ id, value }) => (
                         <tr key={id}>
                           <td className="border-r border-b p-2 text-right min-w-[150px] whitespace-nowrap">
                             Analog input {id}
@@ -132,7 +307,11 @@ const Control = () => {
             <option value="20">20mA</option>
           </select>
           <div className="flex items-center justify-start">
-            <input type="checkbox" checked={generateCurrent} onChange={(e) => setGenerateCurrent(e.target.checked)} />
+            <input
+              type="checkbox"
+              checked={generateCurrent}
+              onChange={(e) => setGenerateCurrent(e.target.checked)}
+            />
           </div>
           <div className="flex items-center justify-start">
             <p className="text-xs whitespace-nowrap text-left px-2">
@@ -151,12 +330,18 @@ const Control = () => {
             </p>
           </div>
           <div className="flex items-center justify-center">
-            <p className="text-sm bg-gray-200 w-full p-1 ml-2 text-center select-none hover:bg-gray-300 cursor-pointer">
+            <p
+              className="text-sm bg-gray-200 w-full p-1 ml-2 text-center select-none hover:bg-gray-300 cursor-pointer"
+              onClick={handleCalib4}
+            >
               CALIB 4mA
             </p>
           </div>
           <div className="flex items-center justify-center">
-            <p className="text-sm bg-gray-200 w-full p-1  text-center select-none hover:bg-gray-300 cursor-pointer">
+            <p
+              className="text-sm bg-gray-200 w-full p-1  text-center select-none hover:bg-gray-300 cursor-pointer"
+              onClick={handleCalib16}
+            >
               CALIB 16mA
             </p>
           </div>

@@ -1,11 +1,21 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { ContextMenuContext } from "../store";
 
 const TagView = () => {
   const [display, setDisplay] = useState(false);
+  const [loadingPos, setLoadingPos] = useState(0);
+  const barWidth = 40;
 
   const context = useContext(ContextMenuContext);
   const data = context.tagViewData || [];
+
+  useEffect(() => {
+    if (!data?.length) return;
+    const interval = setInterval(() => {
+      setLoadingPos((prev) => (prev >= 100 ? -loadingPos : prev + 1));
+    }, 15);
+    return () => clearInterval(interval);
+  }, [data]);
 
   return (
     <div className="flex flex-col items-start justify-start p-2 w-full h-full">
@@ -19,6 +29,17 @@ const TagView = () => {
           onChange={(e) => setDisplay(e.target.checked)}
         />
         <span>Display value</span>
+        <div className="w-[100px] h-2 bg-gray-200 rounded overflow-hidden relative">
+          <div
+            className="absolute h-full bg-blue-500 rounded transition-all"
+            style={{
+              width: `${data?.length ? barWidth : 0}%`,
+              left: `${loadingPos}%`,
+              transition: "left 0.01s linear",
+              display: display && data?.length ? "block" : "none",
+            }}
+          />
+        </div>
       </div>
 
       <div className="border flex-1 w-full">
