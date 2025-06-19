@@ -228,7 +228,7 @@ const Control = () => {
               SET NETWORK
             </div>
           </div>
-          <span className="font-black text-sm pt-2">ANALOG INPUT</span>
+          <span className="font-black text-xs pt-2">ANALOG INPUT</span>
           <div className="gap-2 flex items-center justify-start ">
             <input
               type="checkbox"
@@ -313,21 +313,24 @@ const Control = () => {
               onChange={(e) => setGenerateCurrent(e.target.checked)}
             />
           </div>
-          <div className="flex items-center justify-start">
-            <p className="text-xs whitespace-nowrap text-left px-2">
-              Real current
-            </p>
-          </div>
-          <input
-            className="custom bg-gray-50 w-full border rounded-md border-gray-300 text-gray-900 pl-3"
-            type="text"
-            value={realCurrent}
-            onChange={(e) => setRealCurrent(e.target.value)}
-          />
-          <div className="flex items-center justify-center w-full">
-            <p className="text-sm bg-gray-200 w-full p-1 text-center select-none hover:bg-gray-300 cursor-pointer">
-              UPDATE
-            </p>
+          {/* Real current */}
+          <div className="flex flex-col md:flex-row md:items-center w-full">
+            <div className="flex-1 flex items-center justify-start max-w-[95px]">
+              <p className="text-xs text-left">
+                Real current
+              </p>
+            </div>
+            <input
+              className="custom text-xs bg-gray-50 border rounded-md border-gray-300 text-gray-900 pl-3 h-[24px] w-auto"
+              type="text"
+              value={realCurrent}
+              onChange={(e) => setRealCurrent(e.target.value)}
+            />
+            <div className="flex items-center flex-1 justify-center w-full md:ml-2">
+              <p className="text-xs bg-gray-200 w-full p-1 text-center select-none hover:bg-gray-300 cursor-pointer">
+                UPDATE
+              </p>
+            </div>
           </div>
           <div className="flex items-center justify-center">
             <p
@@ -345,59 +348,66 @@ const Control = () => {
               CALIB 16mA
             </p>
           </div>
-          <div></div>
-          <div className="flex items-center justify-start col-span-3">
-            <p className="text-xs whitespace-nowrap text-left px-2">
-              Digital output control
-            </p>
+          {/* Digital output control */}
+          <div className="flex flex-col w-full">
+            <div className="flex items-center justify-start">
+              <p className="text-xs whitespace-nowrap text-left px-2">
+                Digital output control
+              </p>
+            </div>
+            <div className="flex flex-row gap-4 ml-2 flex-wrap">
+              {digitalOutput.map((_, index) => (
+                <div className="flex flex-row items-center justify-center" key={index}>
+                  <p className="text-center mt-[1px]">{index}</p>
+                  <input
+                    checked={digitalOutput[index]}
+                    onChange={(e) => {
+                      const newDigitalOutput = [...digitalOutput];
+                      newDigitalOutput[index] = e.target.checked;
+                      setDigitalOutput(newDigitalOutput);
+                    }}
+                    type="checkbox"
+                    className="custom ml-1"
+                  />
+                </div>
+              ))}
+            </div>
+            <div className="flex items-center justify-center mt-2">
+              <p className="text-xs bg-gray-200 w-full p-1 text-center select-none hover:bg-gray-300 cursor-pointer">
+                SET
+              </p>
+            </div>
           </div>
-          <div className="flex flex-row gap-4 ml-2 col-span-2">
-            {digitalOutput.map((_, index) => (
-              <div className="flex flex-row items-center justify-center">
-                <p className="text-center mt-[1px]">{index}</p>
-                <input
-                  checked={digitalOutput[index]}
-                  onChange={(e) => {
-                    const newDigitalOutput = [...digitalOutput];
-                    newDigitalOutput[index] = e.target.checked;
-                    setDigitalOutput(newDigitalOutput);
-                  }}
-                  type="checkbox"
-                  className="custom ml-1"
-                />
+          {/* System control */}
+          <div className="flex flex-col w-full">
+            <div className="flex items-center justify-start">
+              <p className="text-xs whitespace-nowrap text-left px-2">
+                System control
+              </p>
+            </div>
+            <div className="flex flex-row gap-2 items-center">
+              <select className="bg-gray-50 w-full border border-gray-300 text-gray-900 text-xs py-[2px] ml-0">
+                <option value="0">Read system info</option>
+                <option value="1">Write serial number</option>
+                <option value="2">Write mac address</option>
+                <option value="3">Retry configuration</option>
+                <option value="4">Reboot</option>
+                <option value="5">Reload</option>
+                <option value="6">get time</option>
+                <option value="7">set time</option>
+                <option value="8">enable ntp</option>
+                <option value="9">Read sim info</option>
+                <option value="10">Read sdcard info</option>
+                <option value="11">Ping</option>
+                <option value="12">Get log</option>
+                <option value="13">Command</option>
+              </select>
+              <div className="flex items-center justify-center">
+                <p className="text-xs bg-gray-200 w-full p-1 text-center select-none hover:bg-gray-300 cursor-pointer">
+                  PERFORM
+                </p>
               </div>
-            ))}
-          </div>
-          <div className="flex items-center justify-center">
-            <p className="text-sm bg-gray-200 w-full p-1  text-center select-none hover:bg-gray-300 cursor-pointer">
-              SET
-            </p>
-          </div>
-          <div className="flex items-center justify-start col-span-3">
-            <p className="text-xs whitespace-nowrap text-left px-2">
-              System control
-            </p>
-          </div>
-          <select className="bg-gray-50 w-full border border-gray-300 text-gray-900 text-sm py-[2px] ml-0 col-span-2">
-            <option value="0">Read system info</option>
-            <option value="1">Write serial number</option>
-            <option value="2">Write mac address</option>
-            <option value="3">Retry configuration</option>
-            <option value="4">Reboot</option>
-            <option value="5">Reload</option>
-            <option value="6">get time</option>
-            <option value="7">set time</option>
-            <option value="8">enable ntp</option>
-            <option value="9">Read sim info</option>
-            <option value="10">Read sdcard info</option>
-            <option value="11">Ping</option>
-            <option value="12">Get log</option>
-            <option value="13">Command</option>
-          </select>
-          <div className="flex items-center justify-center">
-            <p className="text-sm bg-gray-200 w-full p-1  text-center select-none hover:bg-gray-300 cursor-pointer">
-              PERFORM
-            </p>
+            </div>
           </div>
         </div>
         <div className="gap-2 flex flex-1 flex-col mx-1">

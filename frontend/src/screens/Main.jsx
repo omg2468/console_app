@@ -146,7 +146,7 @@ export default function Main({ onLoginOut }) {
   ];
 
   const rightTabs = ["Parameter", "Control", "Memory view", "Tag view"];
-  console.log({context: context})
+
   return (
     <div
       style={{
@@ -288,6 +288,7 @@ export default function Main({ onLoginOut }) {
             <ReadData
               keyType={middleTab}
               dataFile={dataFile}
+              setDataFile={setDataFile}
               parameter={parameter}
               setParameter={setParameter}
             />

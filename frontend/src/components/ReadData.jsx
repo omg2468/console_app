@@ -8,7 +8,13 @@ const systemCenterData = [
   { label: "COMMON", key: "common" },
 ];
 
-const ReadData = ({ dataFile, parameter, setParameter, keyType }) => {
+const ReadData = ({
+  dataFile,
+  parameter,
+  setDataFile,
+  setParameter,
+  keyType,
+}) => {
   const readData = useCallback(
     (key) => {
       switch (key) {
@@ -178,10 +184,57 @@ const ReadData = ({ dataFile, parameter, setParameter, keyType }) => {
           return (
             <div>
               <div className='flex flex-row w-full justify-around items-center py-1 px-3 gap-2'>
-                <div className='hover:bg-blue-100 cursor-pointer select-none w-full text-center text-xs rounded-sm bg-gray-200 py-1 px-5'>
+                <div
+                  onClick={() => {
+                    setDataFile((prev) => {
+                      const tags = prev.tags || [];
+                      let newTag;
+                      if (
+                        parameter.key === "tags" &&
+                        typeof parameter.idx === "number" &&
+                        parameter.idx >= 0 &&
+                        parameter.idx < tags.length
+                      ) {
+                        newTag = { ...tags[parameter.idx] };
+                      } else if (tags.length > 0) {
+                        newTag = { ...tags[tags.length - 1] };
+                      } else {
+                        newTag = { name: "", value: 0, unit: "", status: "" };
+                      }
+                      return {
+                        ...prev,
+                        tags: [...tags, newTag],
+                      };
+                    });
+                    setParameter({
+                      key: "tags",
+                      idx: (dataFile.tags || []).length,
+                      value:
+                        (parameter.key === "tags" &&
+                          typeof parameter.idx === "number" &&
+                          (dataFile.tags || [])[parameter.idx]) ||
+                        (dataFile.tags || [])[((dataFile.tags || []).length - 1)] ||
+                        { name: "", value: 0, unit: "", status: "" },
+                    });
+                  }}
+                  className='hover:bg-blue-100 cursor-pointer select-none w-full text-center text-xs rounded-sm bg-gray-200 py-1 px-5'
+                >
                   ADD
                 </div>
-                <div className='hover:bg-blue-100 cursor-pointer select-none w-full text-center text-xs rounded-sm bg-gray-200 py-1 px-5'>
+                <div
+                  onClick={() => {
+                    setDataFile((prev) => ({
+                      ...prev,
+                      tags: prev.tags && prev.tags.length > 0 ? prev.tags.slice(0, -1) : [],
+                    }));
+                    setParameter({
+                      key: "tags",
+                      idx: (dataFile.tags || []).length - 2,
+                      value: (dataFile.tags || [])[Math.max(0, (dataFile.tags || []).length - 2)] || { name: "", value: 0, unit: "", status: "" },
+                    });
+                  }}
+                  className='hover:bg-blue-100 cursor-pointer select-none w-full text-center text-xs rounded-sm bg-gray-200 py-1 px-5'
+                >
                   REM
                 </div>
               </div>
@@ -215,10 +268,41 @@ const ReadData = ({ dataFile, parameter, setParameter, keyType }) => {
           return (
             <div>
               <div className='flex flex-row w-full justify-around items-center py-1 px-3 gap-2'>
-                <div className='hover:bg-blue-100 cursor-pointer select-none w-full text-center text-xs rounded-sm bg-gray-200 py-1 px-5'>
+                <div
+                  onClick={() => {
+                    setDataFile((prev) => ({
+                      ...prev,
+                      prog: [
+                        ...(prev.prog || []),
+                        prev.prog && prev.prog.length > 0
+                          ? { ...prev.prog[prev.prog.length - 1] }
+                          : {},
+                      ],
+                    }));
+                    setParameter({
+                      key: "program",
+                      idx: (dataFile.prog || []).length,
+                      value: {},
+                    });
+                  }}
+                  className='hover:bg-blue-100 cursor-pointer select-none w-full text-center text-xs rounded-sm bg-gray-200 py-1 px-5'
+                >
                   ADD
                 </div>
-                <div className='hover:bg-blue-100 cursor-pointer select-none w-full text-center text-xs rounded-sm bg-gray-200 py-1 px-5'>
+                <div
+                  onClick={() => {
+                    setDataFile((prev) => ({
+                      ...prev,
+                      prog: prev.prog && prev.prog.length > 0 ? prev.prog.slice(0, -1) : [],
+                    }));
+                    setParameter({
+                      key: "program",
+                      idx: (dataFile.prog || []).length - 2,
+                      value: (dataFile.prog || [])[Math.max(0, (dataFile.prog || []).length - 2)] || {},
+                    });
+                  }}
+                  className='hover:bg-blue-100 cursor-pointer select-none w-full text-center text-xs rounded-sm bg-gray-200 py-1 px-5'
+                >
                   REM
                 </div>
               </div>
@@ -252,10 +336,41 @@ const ReadData = ({ dataFile, parameter, setParameter, keyType }) => {
           return (
             <div>
               <div className='flex flex-row w-full justify-around items-center py-1 px-3 gap-2'>
-                <div className='hover:bg-blue-100 cursor-pointer select-none w-full text-center text-xs rounded-sm bg-gray-200 py-1 px-5'>
+                <div
+                  onClick={() => {
+                    setDataFile((prev) => ({
+                      ...prev,
+                      timers: [
+                        ...(prev.timers || []),
+                        prev.timers && prev.timers.length > 0
+                          ? { ...prev.timers[prev.timers.length - 1] }
+                          : {},
+                      ],
+                    }));
+                    setParameter({
+                      key: "timer",
+                      idx: (dataFile.timers || []).length,
+                      value: {},
+                    });
+                  }}
+                  className='hover:bg-blue-100 cursor-pointer select-none w-full text-center text-xs rounded-sm bg-gray-200 py-1 px-5'
+                >
                   ADD
                 </div>
-                <div className='hover:bg-blue-100 cursor-pointer select-none w-full text-center text-xs rounded-sm bg-gray-200 py-1 px-5'>
+                <div
+                  onClick={() => {
+                    setDataFile((prev) => ({
+                      ...prev,
+                      timers: prev.timers && prev.timers.length > 0 ? prev.timers.slice(0, -1) : [],
+                    }));
+                    setParameter({
+                      key: "timer",
+                      idx: (dataFile.timers || []).length - 2,
+                      value: (dataFile.timers || [])[Math.max(0, (dataFile.timers || []).length - 2)] || {},
+                    });
+                  }}
+                  className='hover:bg-blue-100 cursor-pointer select-none w-full text-center text-xs rounded-sm bg-gray-200 py-1 px-5'
+                >
                   REM
                 </div>
               </div>
@@ -289,10 +404,41 @@ const ReadData = ({ dataFile, parameter, setParameter, keyType }) => {
           return (
             <div>
               <div className='flex flex-row w-full justify-around items-center py-1 px-3 gap-2'>
-                <div className='hover:bg-blue-100 cursor-pointer select-none w-full text-center text-xs rounded-sm bg-gray-200 py-1 px-5'>
+                <div
+                  onClick={() => {
+                    setDataFile((prev) => ({
+                      ...prev,
+                      modbus_reader: [
+                        ...(prev.modbus_reader || []),
+                        prev.modbus_reader && prev.modbus_reader.length > 0
+                          ? { ...prev.modbus_reader[prev.modbus_reader.length - 1] }
+                          : {},
+                      ],
+                    }));
+                    setParameter({
+                      key: "modbus",
+                      idx: (dataFile.modbus_reader || []).length,
+                      value: {},
+                    });
+                  }}
+                  className='hover:bg-blue-100 cursor-pointer select-none w-full text-center text-xs rounded-sm bg-gray-200 py-1 px-5'
+                >
                   ADD
                 </div>
-                <div className='hover:bg-blue-100 cursor-pointer select-none w-full text-center text-xs rounded-sm bg-gray-200 py-1 px-5'>
+                <div
+                  onClick={() => {
+                    setDataFile((prev) => ({
+                      ...prev,
+                      modbus_reader: prev.modbus_reader && prev.modbus_reader.length > 0 ? prev.modbus_reader.slice(0, -1) : [],
+                    }));
+                    setParameter({
+                      key: "modbus",
+                      idx: (dataFile.modbus_reader || []).length - 2,
+                      value: (dataFile.modbus_reader || [])[Math.max(0, (dataFile.modbus_reader || []).length - 2)] || {},
+                    });
+                  }}
+                  className='hover:bg-blue-100 cursor-pointer select-none w-full text-center text-xs rounded-sm bg-gray-200 py-1 px-5'
+                >
                   REM
                 </div>
               </div>

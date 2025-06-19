@@ -87,7 +87,8 @@ const TreeNode = ({
           setShowModal({ show: false, action: null });
 
         case "unload":
-          console.log("Unload action ở:", action);
+          setFileLoaded('');
+          setDataFile(null);
           break;
 
         case "delete":
@@ -189,7 +190,7 @@ const TreeNode = ({
           label: "Load",
           action: () => handleAction("load"),
         },
-        { label: "Unload", action: "unload" },
+        { label: "Unload", action: () => handleAction("unload") },
         { label: "Copy", action: () => handleAction("copy") },
         {
           label: "Rename",
