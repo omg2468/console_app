@@ -293,119 +293,107 @@ const Control = () => {
         </div>
       </div>
       <div className="flex flex-col h-full w-full">
-        <div className="grid grid-cols-3 grid-rows-3 gap-2 p-1 ">
-          <div className="flex items-center justify-start">
-            <p className="text-xs whitespace-nowrap text-left px-2">
-              Generate current
-            </p>
-          </div>
-          <select className="bg-gray-50 w-full border border-gray-300 text-gray-900 text-sm py-[2px] ml-0">
-            <option value="4">4mA</option>
-            <option value="8">8mA</option>
-            <option value="12">12mA</option>
-            <option value="16">16mA</option>
-            <option value="20">20mA</option>
-          </select>
-          <div className="flex items-center justify-start">
-            <input
-              type="checkbox"
-              checked={generateCurrent}
-              onChange={(e) => setGenerateCurrent(e.target.checked)}
-            />
-          </div>
-          {/* Real current */}
-          <div className="flex flex-col md:flex-row md:items-center w-full">
-            <div className="flex-1 flex items-center justify-start max-w-[95px]">
-              <p className="text-xs text-left">
-                Real current
-              </p>
+        <div className="w-full flex flex-col gap-2 p-1">
+          <div className="flex flex-col gap-2">
+            <div className="flex-1 min-w-[200px] flex flex-col gap-2 border rounded-md p-2 bg-gray-50">
+              <div className="flex flex-col sm:flex-row items-center gap-2 flex-wrap">
+                <span className="text-xs whitespace-nowrap">Generate current</span>
+                <select className="bg-white border border-gray-300 text-gray-900 text-sm py-[2px] w-20">
+                  <option value="4">4mA</option>
+                  <option value="8">8mA</option>
+                  <option value="12">12mA</option>
+                  <option value="16">16mA</option>
+                  <option value="20">20mA</option>
+                </select>
+                <input
+                  type="checkbox"
+                  checked={generateCurrent}
+                  onChange={(e) => setGenerateCurrent(e.target.checked)}
+                  className="ml-2"
+                />
+              </div>
+              <div className="flex flex-col sm:flex-row items-center gap-2 mt-2 flex-wrap">
+                <span className="text-xs">Real current</span>
+                <input
+                  className="custom text-xs bg-white border rounded-md border-gray-300 text-gray-900 pl-2 h-[24px] w-20"
+                  type="text"
+                  value={realCurrent}
+                  onChange={(e) => setRealCurrent(e.target.value)}
+                />
+                <button
+                  className="text-xs bg-gray-200 px-2 py-1 rounded hover:bg-gray-300 transition"
+                  style={{ minWidth: 60 }}
+                >
+                  UPDATE
+                </button>
+              </div>
+              <div className="flex flex-col sm:flex-row gap-2 mt-2 flex-wrap">
+                <button
+                  className="flex-1 text-xs bg-gray-200 px-2 py-1 rounded hover:bg-gray-300 transition min-w-[90px]"
+                  onClick={handleCalib4}
+                >
+                  CALIB 4mA
+                </button>
+                <button
+                  className="flex-1 text-xs bg-gray-200 px-2 py-1 rounded hover:bg-gray-300 transition min-w-[90px]"
+                  onClick={handleCalib16}
+                >
+                  CALIB 16mA
+                </button>
+              </div>
             </div>
-            <input
-              className="custom text-xs bg-gray-50 border rounded-md border-gray-300 text-gray-900 pl-3 h-[24px] w-auto"
-              type="text"
-              value={realCurrent}
-              onChange={(e) => setRealCurrent(e.target.value)}
-            />
-            <div className="flex items-center flex-1 justify-center w-full md:ml-2">
-              <p className="text-xs bg-gray-200 w-full p-1 text-center select-none hover:bg-gray-300 cursor-pointer">
-                UPDATE
-              </p>
-            </div>
-          </div>
-          <div className="flex items-center justify-center">
-            <p
-              className="text-sm bg-gray-200 w-full p-1 ml-2 text-center select-none hover:bg-gray-300 cursor-pointer"
-              onClick={handleCalib4}
-            >
-              CALIB 4mA
-            </p>
-          </div>
-          <div className="flex items-center justify-center">
-            <p
-              className="text-sm bg-gray-200 w-full p-1  text-center select-none hover:bg-gray-300 cursor-pointer"
-              onClick={handleCalib16}
-            >
-              CALIB 16mA
-            </p>
-          </div>
-          {/* Digital output control */}
-          <div className="flex flex-col w-full">
-            <div className="flex items-center justify-start">
-              <p className="text-xs whitespace-nowrap text-left px-2">
-                Digital output control
-              </p>
-            </div>
-            <div className="flex flex-row gap-4 ml-2 flex-wrap">
-              {digitalOutput.map((_, index) => (
-                <div className="flex flex-row items-center justify-center" key={index}>
-                  <p className="text-center mt-[1px]">{index}</p>
-                  <input
-                    checked={digitalOutput[index]}
-                    onChange={(e) => {
-                      const newDigitalOutput = [...digitalOutput];
-                      newDigitalOutput[index] = e.target.checked;
-                      setDigitalOutput(newDigitalOutput);
-                    }}
-                    type="checkbox"
-                    className="custom ml-1"
-                  />
-                </div>
-              ))}
-            </div>
-            <div className="flex items-center justify-center mt-2">
-              <p className="text-xs bg-gray-200 w-full p-1 text-center select-none hover:bg-gray-300 cursor-pointer">
+            {/* Digital output control */}
+            <div className="flex-1 min-w-[200px] flex flex-col gap-2 border rounded-md p-2 bg-gray-50">
+              <span className="text-xs font-semibold">Digital output control</span>
+              <div className="flex flex-wrap gap-2">
+                {digitalOutput.map((_, index) => (
+                  <label key={index} className="flex items-center gap-1 text-xs">
+                    <span>{index}</span>
+                    <input
+                      checked={digitalOutput[index]}
+                      onChange={(e) => {
+                        const newDigitalOutput = [...digitalOutput];
+                        newDigitalOutput[index] = e.target.checked;
+                        setDigitalOutput(newDigitalOutput);
+                      }}
+                      type="checkbox"
+                      className="custom"
+                    />
+                  </label>
+                ))}
+              </div>
+              <button
+                className="text-xs bg-gray-200 px-2 py-1 rounded hover:bg-gray-300 transition mt-2"
+                style={{ minWidth: 60 }}
+              >
                 SET
-              </p>
+              </button>
             </div>
-          </div>
-          {/* System control */}
-          <div className="flex flex-col w-full">
-            <div className="flex items-center justify-start">
-              <p className="text-xs whitespace-nowrap text-left px-2">
-                System control
-              </p>
-            </div>
-            <div className="flex flex-row gap-2 items-center">
-              <select className="bg-gray-50 w-full border border-gray-300 text-gray-900 text-xs py-[2px] ml-0">
-                <option value="0">Read system info</option>
-                <option value="1">Write serial number</option>
-                <option value="2">Write mac address</option>
-                <option value="3">Retry configuration</option>
-                <option value="4">Reboot</option>
-                <option value="5">Reload</option>
-                <option value="6">get time</option>
-                <option value="7">set time</option>
-                <option value="8">enable ntp</option>
-                <option value="9">Read sim info</option>
-                <option value="10">Read sdcard info</option>
-                <option value="11">Ping</option>
-                <option value="12">Get log</option>
-                <option value="13">Command</option>
-              </select>
-              <div className="flex items-center justify-center">
-                <p className="text-xs bg-gray-200 w-full p-1 text-center select-none hover:bg-gray-300 cursor-pointer">
+            {/* System control */}
+            <div className="flex-1 min-w-[200px] flex flex-col gap-2 border rounded-md p-2 bg-gray-50">
+              <span className="text-xs font-semibold">System control</span>
+              <div className="flex flex-col sm:flex-row gap-2 items-center flex-wrap">
+                <select className="bg-white border border-gray-300 text-gray-900 text-xs py-[2px] w-full">
+                  <option value="0">Read system info</option>
+                  <option value="1">Write serial number</option>
+                  <option value="2">Write mac address</option>
+                  <option value="3">Retry configuration</option>
+                  <option value="4">Reboot</option>
+                  <option value="5">Reload</option>
+                  <option value="6">get time</option>
+                  <option value="7">set time</option>
+                  <option value="8">enable ntp</option>
+                  <option value="9">Read sim info</option>
+                  <option value="10">Read sdcard info</option>
+                  <option value="11">Ping</option>
+                  <option value="12">Get log</option>
+                  <option value="13">Command</option>
+                </select>
+                <button
+                  className="text-xs bg-gray-200 px-2 py-1 rounded hover:bg-gray-300 transition min-w-[60px]"
+                >
                   PERFORM
-                </p>
+                </button>
               </div>
             </div>
           </div>
