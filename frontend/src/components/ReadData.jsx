@@ -140,13 +140,13 @@ const ReadData = ({
                       onClick={() => {
                         setRightTab("Parameter");
                         setParameter({
-                          key: "di",
+                          key: "dis",
                           idx: index,
                           value: item,
                         });
                       }}
                       className={`p-2 pl-6 cursor-pointer border-b border-gray-100 hover:bg-blue-100 ${
-                        parameter.key === "di" && parameter.idx === index
+                        parameter.key === "dis" && parameter.idx === index
                           ? "bg-blue-200"
                           : "white"
                       }`}
@@ -170,13 +170,13 @@ const ReadData = ({
                       onClick={() => {
                         setRightTab("Parameter");
                         setParameter({
-                          key: "do",
+                          key: "dos",
                           idx: index,
                           value: item,
                         });
                       }}
                       className={`p-2 pl-6 cursor-pointer border-b border-gray-100 hover:bg-blue-100 ${
-                        parameter.key === "do" && parameter.idx === index
+                        parameter.key === "dos" && parameter.idx === index
                           ? "bg-blue-200"
                           : "white"
                       }`}
@@ -293,7 +293,7 @@ const ReadData = ({
                       ],
                     }));
                     setParameter({
-                      key: "program",
+                      key: "prog",
                       idx: (dataFile.prog || []).length,
                       value: {},
                     });
@@ -312,7 +312,7 @@ const ReadData = ({
                           : [],
                     }));
                     setParameter({
-                      key: "program",
+                      key: "prog",
                       idx: (dataFile.prog || []).length - 2,
                       value:
                         (dataFile.prog || [])[
@@ -335,13 +335,13 @@ const ReadData = ({
                       onClick={() => {
                         setRightTab("Parameter");
                         setParameter({
-                          key: "program",
+                          key: "prog",
                           idx: index,
                           value: item,
                         });
                       }}
                       className={`p-2 pl-6 cursor-pointer border-b border-gray-100 hover:bg-blue-100 ${
-                        parameter.key === "program" && parameter.idx === index
+                        parameter.key === "prog" && parameter.idx === index
                           ? "bg-blue-200"
                           : "white"
                       }`}
@@ -368,7 +368,7 @@ const ReadData = ({
                       ],
                     }));
                     setParameter({
-                      key: "timer",
+                      key: "timers",
                       idx: (dataFile.timers || []).length,
                       value: {},
                     });
@@ -387,7 +387,7 @@ const ReadData = ({
                           : [],
                     }));
                     setParameter({
-                      key: "timer",
+                      key: "timers",
                       idx: (dataFile.timers || []).length - 2,
                       value:
                         (dataFile.timers || [])[
@@ -410,13 +410,13 @@ const ReadData = ({
                       onClick={() => {
                         setRightTab("Parameter");
                         setParameter({
-                          key: "timer",
+                          key: "timers",
                           idx: index,
                           value: item,
                         });
                       }}
                       className={`p-2 pl-6 cursor-pointer border-b border-gray-100 hover:bg-blue-100 ${
-                        parameter.key === "timer" && parameter.idx === index
+                        parameter.key === "timers" && parameter.idx === index
                           ? "bg-blue-200"
                           : "white"
                       }`}
@@ -447,7 +447,7 @@ const ReadData = ({
                       ],
                     }));
                     setParameter({
-                      key: "modbus",
+                      key: "modbus_reader",
                       idx: (dataFile.modbus_reader || []).length,
                       value: {},
                     });
@@ -466,7 +466,7 @@ const ReadData = ({
                           : [],
                     }));
                     setParameter({
-                      key: "modbus",
+                      key: "modbus_reader",
                       idx: (dataFile.modbus_reader || []).length - 2,
                       value:
                         (dataFile.modbus_reader || [])[
@@ -489,13 +489,13 @@ const ReadData = ({
                       onClick={() => {
                         setRightTab("Parameter");
                         setParameter({
-                          key: "modbus",
+                          key: "modbus_reader",
                           idx: index,
                           value: item,
                         });
                       }}
                       className={`p-2 pl-6 cursor-pointer border-b border-gray-100 hover:bg-blue-100 ${
-                        parameter.key === "modbus" && parameter.idx === index
+                        parameter.key === "modbus_reader" && parameter.idx === index
                           ? "bg-blue-200"
                           : "white"
                       }`}

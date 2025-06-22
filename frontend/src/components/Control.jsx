@@ -250,7 +250,7 @@ const Control = () => {
             </div>
           </div>
           <div className="w-full">
-            <div style={{ maxHeight: 310, overflowY: "auto" }}>
+            <div className="analog-table-wrapper">
               <table className="w-full">
                 <colgroup>
                   <col style={{ minWidth: "150px" }} />

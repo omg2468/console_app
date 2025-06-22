@@ -28,6 +28,7 @@ export default function Main({ onLoginOut }) {
   const [rightTab, setRightTab] = useState("Parameter");
   const tabsLeft = ["Workspace", "Device"];
   const [dataFile, setDataFile] = useState(null);
+  const [error, setError] = useState([{ title: "", idx: null, message: "" }]);
   const [parameter, setParameter] = useState({
     key: "",
     idx: "",
@@ -43,7 +44,6 @@ export default function Main({ onLoginOut }) {
 
   const [fileLoaded, setFileLoaded] = useState("");
 
-  const context = useContext(ContextMenuContext);
   useEffect(() => {
     if (!parameter.key) return;
     let newValue = null;
@@ -238,15 +238,19 @@ export default function Main({ onLoginOut }) {
               </div>
             ))}
           </div>
+
           <div className='flex-1 w-auto h-0 bg-white flex flex-col'>
             <div className='p-2 flex-1 flex flex-col'>
-              <FileTree
-                treeData={treeData}
-                refreshFileList={refreshFileList}
-                setDataFile={setDataFile}
-                fileLoaded={fileLoaded}
-                setFileLoaded={setFileLoaded}
-              />
+              {leftTab === "Workspace" && (
+                <FileTree
+                  treeData={treeData}
+                  refreshFileList={refreshFileList}
+                  setDataFile={setDataFile}
+                  fileLoaded={fileLoaded}
+                  setFileLoaded={setFileLoaded}
+                />
+              )}
+              {leftTab === "Device" && <ConnectComponent />}
             </div>
           </div>
         </div>
@@ -312,6 +316,8 @@ export default function Main({ onLoginOut }) {
                 setParameter={setParameter}
                 dataFile={dataFile}
                 setDataFile={setDataFile}
+                error={error}
+                setError={setError}
               />
             )}
 

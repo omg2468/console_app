@@ -1,7 +1,22 @@
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import { handleUpdateParameter } from "./functions";
 
-const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
+const ReadParameter = ({
+  parameter,
+  setParameter,
+  dataFile,
+  setDataFile,
+  error,
+  setError,
+}) => {
+  const contentError = (title, err) => {
+    const value = err.find((item) => item.title === title);
+    if (!!value) {
+      return <p className='text-red-500 text-xs font-bold'>{value.message}</p>;
+    }
+    return null;
+  };
+
   const readParameter = useCallback(
     (item) => {
       switch (item.key) {
@@ -1580,7 +1595,7 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
               </table>
             </div>
           );
-        case "di":
+        case "dis":
           return (
             <div className='h-full flex-1'>
               <table className='w-full'>
@@ -1657,22 +1672,44 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                         <td className='px-2 py-1 text-xs text-right font-semibold'>
                           Value per pulse
                         </td>
-                        <td className='px-2 py-1 text-xs'>
+                        <td className='px-2 py-1 text-xs  flex flex-col gap-1'>
                           <input
                             type='number'
-                            value={parameter.value.increment}
-                            onChange={(e) =>
-                              handleUpdateParameter({
-                                dataFile,
-                                setDataFile,
-                                key: "dis",
-                                index: item.idx,
-                                paramKey: "increment",
-                                value: Number(e.target.value),
-                              })
-                            }
+                            value={Number(parameter.value.increment) || 0}
+                            onChange={(e) => {
+                              let val = e.target.value;
+                              if (val.length > 1) {
+                                val = val.replace(/^0+/, "");
+                                if (val === "0") val = "";
+                              }
+                              if (val.length > 9) {
+                                setError((prev) => [
+                                  ...prev,
+                                  {
+                                    title: "dis_increment",
+                                    idx: item.idx,
+                                    message: "Maximum 9 digits allowed",
+                                  },
+                                ]);
+                              } else {
+                                handleUpdateParameter({
+                                  dataFile,
+                                  setDataFile,
+                                  key: "dis",
+                                  index: item.idx,
+                                  paramKey: "increment",
+                                  value: Number(val),
+                                });
+                                setError((prev) =>
+                                  prev.filter(
+                                    (err) => err.title !== "dis_increment",
+                                  ),
+                                );
+                              }
+                            }}
                             className='bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg px-2 py-1 w-full'
                           />
+                          {contentError("dis_increment", error)}
                         </td>
                       </tr>
                     </>
@@ -1681,7 +1718,7 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
               </table>
             </div>
           );
-        case "do":
+        case "dos":
           return (
             <div className='h-full flex-1'>
               <table className='w-full'>
@@ -2033,7 +2070,7 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
               </table>
             </div>
           );
-        case "program":
+        case "prog":
           return (
             <div className='h-full flex-1'>
               <table className='w-full'>
@@ -2131,7 +2168,7 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
               </table>
             </div>
           );
-        case "timer":
+        case "timers":
           return (
             <div className='h-full flex-1'>
               <table className='w-full'>
@@ -2273,7 +2310,7 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
               </table>
             </div>
           );
-        case "modbus":
+        case "modbus_reader":
           return (
             <div className='h-full flex-1'>
               <table className='w-full'>
@@ -2610,7 +2647,7 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
           return null;
       }
     },
-    [parameter, setParameter],
+    [parameter, setParameter, error],
   );
 
   return <>{readParameter(parameter)}</>;

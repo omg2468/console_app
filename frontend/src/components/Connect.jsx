@@ -1,8 +1,5 @@
 import { useEffect, useState, useContext, useCallback } from "react";
 import * as AuthService from "../../wailsjs/go/auth/AuthService";
-
-import { DowloadConfig } from "../../wailsjs/go/workspace/WorkspaceService";
-
 import { ContextMenuContext } from "../store";
 
 function ConnectComponent({ onConnected }) {
@@ -36,16 +33,6 @@ function ConnectComponent({ onConnected }) {
       .catch((err) => setStatus("Disconnect error: " + err));
   };
 
-  const handleData = () => {
-    DowloadConfig()
-      .then(() => {
-        setStatus("Sent download config command");
-      })
-      .catch((err) => {
-        setStatus("Download config command error: " + err);
-      });
-  };
-
   useEffect(() => {
     AuthService.ListPorts()
       .then(setPorts)
@@ -53,9 +40,7 @@ function ConnectComponent({ onConnected }) {
   }, []);
 
   const handleSelectPort = useCallback(() => {
-    if (!selectedPort) {
-      return;
-    }
+    if (!selectedPort) return;
 
     let isListening = true;
 
@@ -81,14 +66,11 @@ function ConnectComponent({ onConnected }) {
                   break;
               }
             } catch (e) {
-              // If not valid JSON, do nothing or handle differently
-              console.warn("Response is not valid JSON:", response);
+              // Ignore invalid JSON
             }
           }
         } catch (err) {
-          console.log("err", err);
           if (!err.toString().includes("timeout")) {
-            console.error("Receive error:", err);
             setStatus("Receive data error: " + err);
           }
         }
@@ -98,28 +80,28 @@ function ConnectComponent({ onConnected }) {
     listenForData();
 
     return () => {
-      isListening = false; // Stop loop when component unmounts
+      isListening = false;
     };
-  }, [selectedPort]);
+  }, [selectedPort, context]);
 
   return (
-    <div className='flex-1 min-w-[384px] min-h-[420px] flex flex-col justify-center bg-white p-6 rounded-lg shadow-md max-w-sm w-full'>
-      <h2 className='text-xl font-semibold mb-4 flex items-center gap-2'>
-        COM Connection
+    <div className='w-full max-w-xs bg-white border border-gray-300 rounded-lg shadow p-4 flex flex-col gap-3'>
+      <div className='flex items-center gap-2 mb-1'>
+        <span className='text-base font-semibold'>COM Port</span>
         <span
           className={
             status.includes("Connected to")
-              ? "inline-block w-3 h-3 rounded-full bg-green-500"
+              ? "inline-block w-3 h-3 rounded-full bg-green-500 border border-green-700"
               : status.includes("error")
-              ? "inline-block w-3 h-3 rounded-full bg-red-500"
-              : "inline-block w-3 h-3 rounded-full bg-gray-400"
+              ? "inline-block w-3 h-3 rounded-full bg-red-500 border border-red-700"
+              : "inline-block w-3 h-3 rounded-full bg-gray-400 border border-gray-500"
           }
         ></span>
-      </h2>
-      <div className='mb-4'>
-        <label className='block text-gray-700 mb-1'>Select COM port</label>
+      </div>
+      <div>
+        <label className='block text-xs text-gray-700 mb-1'>Select port</label>
         <select
-          className='border border-gray-300 rounded px-3 py-2 w-full focus:outline-none focus:ring focus:border-blue-300'
+          className='border border-gray-300 rounded px-2 py-1 w-full text-xs focus:outline-none focus:ring focus:border-blue-400'
           value={selectedPort}
           onChange={(e) => setSelectedPort(e.target.value)}
         >
@@ -131,28 +113,22 @@ function ConnectComponent({ onConnected }) {
           ))}
         </select>
       </div>
-      <div className='flex gap-2 mb-4'>
+      <div className='flex flex-col md:flex-row items-center justify-center gap-2 w-full'>
         <button
           onClick={handleConnect}
-          className='flex-1 bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition'
+          className='flex-1 px-2 w-full bg-blue-600 text-white py-1 rounded border border-blue-700 hover:bg-blue-700 text-xs transition'
         >
           Connect
         </button>
         <button
           onClick={handleDisconnect}
-          className='flex-1 bg-gray-300 text-gray-700 py-2 rounded hover:bg-gray-400 transition'
+          className='flex-1 px-2 w-full bg-gray-200 text-gray-700 py-1 rounded border border-gray-400 hover:bg-gray-300 text-xs transition'
         >
           Disconnect
         </button>
       </div>
-      <button
-        onClick={handleData}
-        className='w-full bg-green-500 text-white py-2 rounded hover:bg-green-600 transition mb-4'
-      >
-        Send login command
-      </button>
       <div
-        className={`text-sm text-center ${
+        className={`text-xs text-center ${
           status.includes("error")
             ? "text-red-500"
             : status.includes("Connected to")

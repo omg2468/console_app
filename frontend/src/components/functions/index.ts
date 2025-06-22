@@ -56,5 +56,5 @@ export const handleUpdateParameter = ({
       break;
   }
 
-  setDataFile(newDataFile);
+  setDataFile({...newDataFile});
 };
