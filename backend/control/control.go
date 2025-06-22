@@ -52,8 +52,8 @@ func (c *ControlService) Calib4ma() error {
 	return c.authService.Send(`{"type":"calib_4ma"}`)
 }
 
-func (c *ControlService) Calib20ma() error {
-	return c.authService.Send(`{"type":"calib_20ma"}`)
+func (c *ControlService) Calib16ma() error {
+	return c.authService.Send(`{"type":"calib_16ma"}`)
 }
 
 func (c *ControlService) SetTime(timeArray []int) error {

@@ -5,7 +5,7 @@ import {
   SettingNetwork,
   GetNetworkInfo,
   Calib4ma,
-  Calib20ma,
+  Calib16ma,
 } from "../../wailsjs/go/control/ControlService";
 
 import { ShowQuestionDialog } from "../../wailsjs/go/main/App";
@@ -63,7 +63,7 @@ const Control = () => {
 
   const handleCalib16 = () => {
     ShowQuestionDialog("Calibration at 20mA", "Calibration");
-    Calib20ma();
+    Calib16ma();
   };
 
   useEffect(() => {
