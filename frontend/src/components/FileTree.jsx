@@ -46,7 +46,6 @@ const TreeNode = ({
   };
 
   const handleAction = async (action, name) => {
-
     const basePath =
       node.path.endsWith("/") || node.path.endsWith("\\")
         ? node.path.slice(0, -1)
@@ -85,9 +84,10 @@ const TreeNode = ({
           await CreateFolder(fullPath);
           setInput("");
           setShowModal({ show: false, action: null });
+          break;
 
         case "unload":
-          setFileLoaded('');
+          setFileLoaded("");
           setDataFile(null);
           break;
 
@@ -164,6 +164,7 @@ const TreeNode = ({
           const filePath = await SelectFileToImport();
 
           await ImportFileToFolderInWorkspace(filePath, node.path);
+          break;
         default:
           console.warn("Unknown action:", action);
           break;
@@ -393,7 +394,6 @@ const FileTree = ({
   const [input, setInput] = useState("");
 
   const handleAction = async (action, name) => {
-
     try {
       switch (action) {
         case "newProject":
