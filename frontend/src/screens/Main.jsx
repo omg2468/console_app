@@ -285,6 +285,7 @@ export default function Main({ onLoginOut }) {
               setDataFile={setDataFile}
               parameter={parameter}
               setParameter={setParameter}
+              setRightTab={setRightTab}
             />
           </div>
         </div>

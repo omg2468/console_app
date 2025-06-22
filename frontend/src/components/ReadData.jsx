@@ -14,6 +14,7 @@ const ReadData = ({
   setDataFile,
   setParameter,
   keyType,
+  setRightTab,
 }) => {
   const readData = useCallback(
     (key) => {
@@ -21,27 +22,28 @@ const ReadData = ({
         case "system":
           return (
             <div>
-              <p className='text-xs pl-2 border-b border-gray-100 bg-gray-200'>
+              <p className="text-xs pl-2 border-b border-gray-100 bg-gray-200">
                 SYSTEM SETTINGS
               </p>
               {dataFile && systemCenterData
                 ? systemCenterData.map((item, index) => (
                     <div
                       key={index}
-                      onClick={() =>
+                      onClick={() => {
                         setParameter({
                           key: item.key,
                           idx: index,
                           value: dataFile[item.key],
-                        })
-                      }
+                        });
+                        setRightTab("Parameter");
+                      }}
                       className={`p-2 pl-6 cursor-pointer border-b border-gray-100 hover:bg-blue-100 ${
                         parameter.key === item.key && parameter.idx === index
                           ? "bg-blue-200"
                           : "white"
                       }`}
                     >
-                      <p className='text-xs'>{item.label}</p>
+                      <p className="text-xs">{item.label}</p>
                     </div>
                   ))
                 : null}
@@ -50,27 +52,28 @@ const ReadData = ({
         case "ftp":
           return (
             <div>
-              <p className='text-xs pl-2 border-b border-gray-100 bg-gray-200'>
+              <p className="text-xs pl-2 border-b border-gray-100 bg-gray-200">
                 FTP SETTINGS
               </p>
               {dataFile?.ftp
                 ? dataFile.ftp.map((item, index) => (
                     <div
                       key={index}
-                      onClick={() =>
+                      onClick={() => {
+                        setRightTab("Parameter");
                         setParameter({
                           key: "ftp",
                           idx: index,
                           value: item,
-                        })
-                      }
+                        });
+                      }}
                       className={`p-2 pl-6 cursor-pointer border-b border-gray-100 hover:bg-blue-100 ${
                         parameter.key === "ftp" && parameter.idx === index
                           ? "bg-blue-200"
                           : "white"
                       }`}
                     >
-                      <p className='text-xs'>FTP.{index}</p>
+                      <p className="text-xs">FTP.{index}</p>
                     </div>
                   ))
                 : null}
@@ -79,7 +82,7 @@ const ReadData = ({
         case "control":
           return (
             <div>
-              <p className='text-xs pl-2 border-b border-gray-100 bg-gray-200'>
+              <p className="text-xs pl-2 border-b border-gray-100 bg-gray-200">
                 CONTROL SETTINGS
               </p>
               {dataFile?.control ? (
@@ -87,36 +90,38 @@ const ReadData = ({
                   dataFile.control.map((item, index) => (
                     <div
                       key={index}
-                      onClick={() =>
+                      onClick={() => {
+                        setRightTab("Parameter");
                         setParameter({
                           key: "control",
                           idx: index,
                           value: item,
-                        })
-                      }
+                        });
+                      }}
                       className={`p-2 pl-6 cursor-pointer border-b border-gray-100 hover:bg-blue-100 ${
                         parameter.key === "control" && parameter.idx === index
                           ? "bg-blue-200"
                           : "white"
                       }`}
                     >
-                      <p className='text-xs'>Control.{index}</p>
+                      <p className="text-xs">Control.{index}</p>
                     </div>
                   ))
                 ) : (
                   <div
-                    onClick={() =>
+                    onClick={() => {
+                      setRightTab("Parameter");
                       setParameter({
                         key: "control",
                         idx: 0,
                         value: dataFile.control,
-                      })
-                    }
+                      });
+                    }}
                     className={`p-2 pl-6 cursor-pointer border-b border-gray-100 hover:bg-blue-100 ${
                       parameter.key === "control" ? "bg-blue-200" : "white"
                     }`}
                   >
-                    <p className='text-xs'>CONTROL 0</p>
+                    <p className="text-xs">CONTROL 0</p>
                   </div>
                 )
               ) : null}
@@ -125,27 +130,28 @@ const ReadData = ({
         case "di":
           return (
             <div>
-              <p className='text-xs pl-2 border-b border-gray-100 bg-gray-200'>
+              <p className="text-xs pl-2 border-b border-gray-100 bg-gray-200">
                 DI SETTINGS
               </p>
               {dataFile?.dis
                 ? dataFile.dis.map((item, index) => (
                     <div
                       key={index}
-                      onClick={() =>
+                      onClick={() => {
+                        setRightTab("Parameter");
                         setParameter({
                           key: "di",
                           idx: index,
                           value: item,
-                        })
-                      }
+                        });
+                      }}
                       className={`p-2 pl-6 cursor-pointer border-b border-gray-100 hover:bg-blue-100 ${
                         parameter.key === "di" && parameter.idx === index
                           ? "bg-blue-200"
                           : "white"
                       }`}
                     >
-                      <p className='text-xs'>DI.{index}</p>
+                      <p className="text-xs">DI.{index}</p>
                     </div>
                   ))
                 : null}
@@ -154,27 +160,28 @@ const ReadData = ({
         case "do":
           return (
             <div>
-              <p className='text-xs pl-2 border-b border-gray-100 bg-gray-200'>
+              <p className="text-xs pl-2 border-b border-gray-100 bg-gray-200">
                 DO SETTINGS
               </p>
               {dataFile?.dos
                 ? dataFile.dos.map((item, index) => (
                     <div
                       key={index}
-                      onClick={() =>
+                      onClick={() => {
+                        setRightTab("Parameter");
                         setParameter({
                           key: "do",
                           idx: index,
                           value: item,
-                        })
-                      }
+                        });
+                      }}
                       className={`p-2 pl-6 cursor-pointer border-b border-gray-100 hover:bg-blue-100 ${
                         parameter.key === "do" && parameter.idx === index
                           ? "bg-blue-200"
                           : "white"
                       }`}
                     >
-                      <p className='text-xs'>DO.{index}</p>
+                      <p className="text-xs">DO.{index}</p>
                     </div>
                   ))
                 : null}
@@ -183,7 +190,7 @@ const ReadData = ({
         case "tag":
           return (
             <div>
-              <div className='flex flex-row w-full justify-around items-center py-1 px-3 gap-2'>
+              <div className="flex flex-row w-full justify-around items-center py-1 px-3 gap-2">
                 <div
                   onClick={() => {
                     setDataFile((prev) => {
@@ -209,15 +216,15 @@ const ReadData = ({
                     setParameter({
                       key: "tags",
                       idx: (dataFile.tags || []).length,
-                      value:
-                        (parameter.key === "tags" &&
-                          typeof parameter.idx === "number" &&
-                          (dataFile.tags || [])[parameter.idx]) ||
-                        (dataFile.tags || [])[((dataFile.tags || []).length - 1)] ||
-                        { name: "", value: 0, unit: "", status: "" },
+                      value: (parameter.key === "tags" &&
+                        typeof parameter.idx === "number" &&
+                        (dataFile.tags || [])[parameter.idx]) ||
+                        (dataFile.tags || [])[
+                          (dataFile.tags || []).length - 1
+                        ] || { name: "", value: 0, unit: "", status: "" },
                     });
                   }}
-                  className='hover:bg-blue-100 cursor-pointer select-none w-full text-center text-xs rounded-sm bg-gray-200 py-1 px-5'
+                  className="hover:bg-blue-100 cursor-pointer select-none w-full text-center text-xs rounded-sm bg-gray-200 py-1 px-5"
                 >
                   ADD
                 </div>
@@ -225,40 +232,46 @@ const ReadData = ({
                   onClick={() => {
                     setDataFile((prev) => ({
                       ...prev,
-                      tags: prev.tags && prev.tags.length > 0 ? prev.tags.slice(0, -1) : [],
+                      tags:
+                        prev.tags && prev.tags.length > 0
+                          ? prev.tags.slice(0, -1)
+                          : [],
                     }));
                     setParameter({
                       key: "tags",
                       idx: (dataFile.tags || []).length - 2,
-                      value: (dataFile.tags || [])[Math.max(0, (dataFile.tags || []).length - 2)] || { name: "", value: 0, unit: "", status: "" },
+                      value: (dataFile.tags || [])[
+                        Math.max(0, (dataFile.tags || []).length - 2)
+                      ] || { name: "", value: 0, unit: "", status: "" },
                     });
                   }}
-                  className='hover:bg-blue-100 cursor-pointer select-none w-full text-center text-xs rounded-sm bg-gray-200 py-1 px-5'
+                  className="hover:bg-blue-100 cursor-pointer select-none w-full text-center text-xs rounded-sm bg-gray-200 py-1 px-5"
                 >
                   REM
                 </div>
               </div>
-              <p className='text-xs pl-2 border-b border-gray-100 bg-gray-200'>
+              <p className="text-xs pl-2 border-b border-gray-100 bg-gray-200">
                 TAG SETTINGS
               </p>
               {dataFile?.tags
                 ? dataFile.tags.map((item, index) => (
                     <div
                       key={index}
-                      onClick={() =>
+                      onClick={() => {
+                        setRightTab("Parameter");
                         setParameter({
                           key: "tags",
                           idx: index,
                           value: item,
-                        })
-                      }
+                        });
+                      }}
                       className={`p-2 pl-6 cursor-pointer border-b border-gray-100 hover:bg-blue-100 ${
                         parameter.key === "tags" && parameter.idx === index
                           ? "bg-blue-200"
                           : "white"
                       }`}
                     >
-                      <p className='text-xs'>TAG.{index}</p>
+                      <p className="text-xs">TAG.{index}</p>
                     </div>
                   ))
                 : null}
@@ -267,7 +280,7 @@ const ReadData = ({
         case "program":
           return (
             <div>
-              <div className='flex flex-row w-full justify-around items-center py-1 px-3 gap-2'>
+              <div className="flex flex-row w-full justify-around items-center py-1 px-3 gap-2">
                 <div
                   onClick={() => {
                     setDataFile((prev) => ({
@@ -285,7 +298,7 @@ const ReadData = ({
                       value: {},
                     });
                   }}
-                  className='hover:bg-blue-100 cursor-pointer select-none w-full text-center text-xs rounded-sm bg-gray-200 py-1 px-5'
+                  className="hover:bg-blue-100 cursor-pointer select-none w-full text-center text-xs rounded-sm bg-gray-200 py-1 px-5"
                 >
                   ADD
                 </div>
@@ -293,40 +306,47 @@ const ReadData = ({
                   onClick={() => {
                     setDataFile((prev) => ({
                       ...prev,
-                      prog: prev.prog && prev.prog.length > 0 ? prev.prog.slice(0, -1) : [],
+                      prog:
+                        prev.prog && prev.prog.length > 0
+                          ? prev.prog.slice(0, -1)
+                          : [],
                     }));
                     setParameter({
                       key: "program",
                       idx: (dataFile.prog || []).length - 2,
-                      value: (dataFile.prog || [])[Math.max(0, (dataFile.prog || []).length - 2)] || {},
+                      value:
+                        (dataFile.prog || [])[
+                          Math.max(0, (dataFile.prog || []).length - 2)
+                        ] || {},
                     });
                   }}
-                  className='hover:bg-blue-100 cursor-pointer select-none w-full text-center text-xs rounded-sm bg-gray-200 py-1 px-5'
+                  className="hover:bg-blue-100 cursor-pointer select-none w-full text-center text-xs rounded-sm bg-gray-200 py-1 px-5"
                 >
                   REM
                 </div>
               </div>
-              <p className='text-xs pl-2 border-b border-gray-100 bg-gray-200'>
+              <p className="text-xs pl-2 border-b border-gray-100 bg-gray-200">
                 PROGRAM SETTINGS
               </p>
               {dataFile?.prog
                 ? dataFile.prog.map((item, index) => (
                     <div
                       key={index}
-                      onClick={() =>
+                      onClick={() => {
+                        setRightTab("Parameter");
                         setParameter({
                           key: "program",
                           idx: index,
                           value: item,
-                        })
-                      }
+                        });
+                      }}
                       className={`p-2 pl-6 cursor-pointer border-b border-gray-100 hover:bg-blue-100 ${
                         parameter.key === "program" && parameter.idx === index
                           ? "bg-blue-200"
                           : "white"
                       }`}
                     >
-                      <p className='text-xs'>PROG.{index}</p>
+                      <p className="text-xs">PROG.{index}</p>
                     </div>
                   ))
                 : null}
@@ -335,7 +355,7 @@ const ReadData = ({
         case "timer":
           return (
             <div>
-              <div className='flex flex-row w-full justify-around items-center py-1 px-3 gap-2'>
+              <div className="flex flex-row w-full justify-around items-center py-1 px-3 gap-2">
                 <div
                   onClick={() => {
                     setDataFile((prev) => ({
@@ -353,7 +373,7 @@ const ReadData = ({
                       value: {},
                     });
                   }}
-                  className='hover:bg-blue-100 cursor-pointer select-none w-full text-center text-xs rounded-sm bg-gray-200 py-1 px-5'
+                  className="hover:bg-blue-100 cursor-pointer select-none w-full text-center text-xs rounded-sm bg-gray-200 py-1 px-5"
                 >
                   ADD
                 </div>
@@ -361,40 +381,47 @@ const ReadData = ({
                   onClick={() => {
                     setDataFile((prev) => ({
                       ...prev,
-                      timers: prev.timers && prev.timers.length > 0 ? prev.timers.slice(0, -1) : [],
+                      timers:
+                        prev.timers && prev.timers.length > 0
+                          ? prev.timers.slice(0, -1)
+                          : [],
                     }));
                     setParameter({
                       key: "timer",
                       idx: (dataFile.timers || []).length - 2,
-                      value: (dataFile.timers || [])[Math.max(0, (dataFile.timers || []).length - 2)] || {},
+                      value:
+                        (dataFile.timers || [])[
+                          Math.max(0, (dataFile.timers || []).length - 2)
+                        ] || {},
                     });
                   }}
-                  className='hover:bg-blue-100 cursor-pointer select-none w-full text-center text-xs rounded-sm bg-gray-200 py-1 px-5'
+                  className="hover:bg-blue-100 cursor-pointer select-none w-full text-center text-xs rounded-sm bg-gray-200 py-1 px-5"
                 >
                   REM
                 </div>
               </div>
-              <p className='text-xs pl-2 border-b border-gray-100 bg-gray-200'>
+              <p className="text-xs pl-2 border-b border-gray-100 bg-gray-200">
                 TIMER SETTINGS
               </p>
               {dataFile?.timers
                 ? dataFile.timers.map((item, index) => (
                     <div
                       key={index}
-                      onClick={() =>
+                      onClick={() => {
+                        setRightTab("Parameter");
                         setParameter({
                           key: "timer",
                           idx: index,
                           value: item,
-                        })
-                      }
+                        });
+                      }}
                       className={`p-2 pl-6 cursor-pointer border-b border-gray-100 hover:bg-blue-100 ${
                         parameter.key === "timer" && parameter.idx === index
                           ? "bg-blue-200"
                           : "white"
                       }`}
                     >
-                      <p className='text-xs'>TIMER.{index}</p>
+                      <p className="text-xs">TIMER.{index}</p>
                     </div>
                   ))
                 : null}
@@ -403,7 +430,7 @@ const ReadData = ({
         case "modbus":
           return (
             <div>
-              <div className='flex flex-row w-full justify-around items-center py-1 px-3 gap-2'>
+              <div className="flex flex-row w-full justify-around items-center py-1 px-3 gap-2">
                 <div
                   onClick={() => {
                     setDataFile((prev) => ({
@@ -411,7 +438,11 @@ const ReadData = ({
                       modbus_reader: [
                         ...(prev.modbus_reader || []),
                         prev.modbus_reader && prev.modbus_reader.length > 0
-                          ? { ...prev.modbus_reader[prev.modbus_reader.length - 1] }
+                          ? {
+                              ...prev.modbus_reader[
+                                prev.modbus_reader.length - 1
+                              ],
+                            }
                           : {},
                       ],
                     }));
@@ -421,7 +452,7 @@ const ReadData = ({
                       value: {},
                     });
                   }}
-                  className='hover:bg-blue-100 cursor-pointer select-none w-full text-center text-xs rounded-sm bg-gray-200 py-1 px-5'
+                  className="hover:bg-blue-100 cursor-pointer select-none w-full text-center text-xs rounded-sm bg-gray-200 py-1 px-5"
                 >
                   ADD
                 </div>
@@ -429,40 +460,47 @@ const ReadData = ({
                   onClick={() => {
                     setDataFile((prev) => ({
                       ...prev,
-                      modbus_reader: prev.modbus_reader && prev.modbus_reader.length > 0 ? prev.modbus_reader.slice(0, -1) : [],
+                      modbus_reader:
+                        prev.modbus_reader && prev.modbus_reader.length > 0
+                          ? prev.modbus_reader.slice(0, -1)
+                          : [],
                     }));
                     setParameter({
                       key: "modbus",
                       idx: (dataFile.modbus_reader || []).length - 2,
-                      value: (dataFile.modbus_reader || [])[Math.max(0, (dataFile.modbus_reader || []).length - 2)] || {},
+                      value:
+                        (dataFile.modbus_reader || [])[
+                          Math.max(0, (dataFile.modbus_reader || []).length - 2)
+                        ] || {},
                     });
                   }}
-                  className='hover:bg-blue-100 cursor-pointer select-none w-full text-center text-xs rounded-sm bg-gray-200 py-1 px-5'
+                  className="hover:bg-blue-100 cursor-pointer select-none w-full text-center text-xs rounded-sm bg-gray-200 py-1 px-5"
                 >
                   REM
                 </div>
               </div>
-              <p className='text-xs pl-2 border-b border-gray-100 bg-gray-200'>
+              <p className="text-xs pl-2 border-b border-gray-100 bg-gray-200">
                 MODBUS SETTINGS
               </p>
               {dataFile?.modbus_reader
                 ? dataFile.modbus_reader.map((item, index) => (
                     <div
                       key={index}
-                      onClick={() =>
+                      onClick={() => {
+                        setRightTab("Parameter");
                         setParameter({
                           key: "modbus",
                           idx: index,
                           value: item,
-                        })
-                      }
+                        });
+                      }}
                       className={`p-2 pl-6 cursor-pointer border-b border-gray-100 hover:bg-blue-100 ${
                         parameter.key === "modbus" && parameter.idx === index
                           ? "bg-blue-200"
                           : "white"
                       }`}
                     >
-                      <p className='text-xs'>MODBUS.{index}</p>
+                      <p className="text-xs">MODBUS.{index}</p>
                     </div>
                   ))
                 : null}
@@ -479,7 +517,7 @@ const ReadData = ({
       systemCenterData,
       setParameter,
       parameter,
-    ],
+    ]
   );
   return <>{readData(keyType)}</>;
 };
