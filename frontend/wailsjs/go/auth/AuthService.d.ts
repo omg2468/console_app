@@ -10,6 +10,8 @@ export function ConnectToPort(arg1:string):Promise<void>;
 
 export function Disconnect():Promise<void>;
 
+export function GetCurrentPort():Promise<string>;
+
 export function GetResponse(arg1:time.Duration):Promise<string>;
 
 export function ListPorts():Promise<Array<string>>;

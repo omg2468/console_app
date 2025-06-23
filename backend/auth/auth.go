@@ -103,8 +103,20 @@ func (a *AuthService) readLoop() {
 
 			n, err := port.Read(buf)
 
-			if err != nil && !errors.Is(err, io.EOF) {
-				a.readChan <- AuthEvent{Err: err}
+			if err != nil {
+				// Kiểm tra các lỗi dự kiến khi ngắt kết nối
+				// Đặc biệt là lỗi "aborted" từ thư viện serial khi cổng đóng
+				if errors.Is(err, io.EOF) ||
+					strings.Contains(err.Error(), "aborted") ||
+					strings.Contains(err.Error(), "disconnected") ||
+					strings.Contains(err.Error(), "The handle is invalid") { // Thêm lỗi "handle is invalid" cho Windows
+					log.Printf("Lỗi đọc COM %s (ngắt kết nối hoặc cổng không hợp lệ): %v", a.portName, err)
+					// Đây là lỗi mong đợi khi ngắt kết nối, không gửi vào kênh lỗi
+					return // Thoát khỏi readLoop
+				}
+				// Các lỗi khác không mong muốn thì gửi vào kênh lỗi và thoát
+				log.Printf("Lỗi đọc COM %s không mong muốn: %v", a.portName, err)
+				a.readChan <- AuthEvent{Err: err} // <--- CHỈ GỬI LỖI NẾU KHÔNG PHẢI LỖI DO NGẮT KẾT NỐI
 				return
 			}
 
@@ -129,6 +141,13 @@ func (a *AuthService) readLoop() {
 			}
 		}
 	}
+}
+
+func (a *AuthService) GetCurrentPort() string {
+	a.mu.Lock()
+	defer a.mu.Unlock()
+
+	return a.portName
 }
 
 func (a *AuthService) GetResponse(timeout time.Duration) (string, error) {

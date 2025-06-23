@@ -1,4 +1,4 @@
-import { createContext, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 
 export const ContextMenuContext = createContext(undefined);
 
@@ -10,6 +10,8 @@ export const ContextMenuProvider = ({ children }) => {
   const [analogData, setAnalogData] = useState([]);
   const [memoryViewData, setMemoryViewData] = useState([]);
   const [tagViewData, setTagViewData] = useState([]);
+  const [isConnected, setIsConnected] = useState(false);
+  const [selectedPort, setSelectedPort] = useState("");
 
   const showMenu = (x, y, content) => {
     setPosition({ x, y });
@@ -21,6 +23,14 @@ export const ContextMenuProvider = ({ children }) => {
     setIsVisible(false);
     setContent(null);
   };
+
+  useEffect(() => {
+    if (!isConnected) {
+      setAnalogData([]);
+      setMemoryViewData([]);
+      setTagViewData([]);
+    }
+  }, [isConnected]);
 
   return (
     <ContextMenuContext.Provider
@@ -38,6 +48,10 @@ export const ContextMenuProvider = ({ children }) => {
         setMemoryViewData,
         tagViewData,
         setTagViewData,
+        isConnected,
+        setIsConnected,
+        selectedPort,
+        setSelectedPort
       }}
     >
       {children}

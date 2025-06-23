@@ -5,8 +5,6 @@ export function Calib16ma():Promise<void>;
 
 export function Calib4ma():Promise<void>;
 
-export function DownloadConfig():Promise<void>;
-
 export function GetNetworkInfo():Promise<void>;
 
 export function ReadAnalog():Promise<void>;

@@ -32,10 +32,6 @@ func (c *ControlService) SettingNetwork(data map[string]interface{}) error {
 	return c.authService.Send(string(finalData))
 }
 
-func (c *ControlService) DownloadConfig() error {
-	return c.authService.Send(`{"type":"download_config"}`)
-}
-
 func (c *ControlService) ReadAnalog() error {
 	return c.authService.Send(`{"type":"read_analog"}`)
 }

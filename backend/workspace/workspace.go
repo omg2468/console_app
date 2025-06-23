@@ -507,7 +507,7 @@ func (ws *WorkspaceService) NewProject(name string) error {
 	return nil
 }
 
-func (ws *WorkspaceService) DowloadConfig() error {
+func (ws *WorkspaceService) DownloadConfig() error {
 	return ws.authService.Send(`{"type":"download_config"}`)
 }
 

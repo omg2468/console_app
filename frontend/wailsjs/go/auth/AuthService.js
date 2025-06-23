@@ -18,6 +18,10 @@ export function Disconnect() {
   return window['go']['auth']['AuthService']['Disconnect']();
 }
 
+export function GetCurrentPort() {
+  return window['go']['auth']['AuthService']['GetCurrentPort']();
+}
+
 export function GetResponse(arg1) {
   return window['go']['auth']['AuthService']['GetResponse'](arg1);
 }

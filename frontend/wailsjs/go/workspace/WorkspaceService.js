@@ -14,8 +14,8 @@ export function DeleteItem(arg1) {
   return window['go']['workspace']['WorkspaceService']['DeleteItem'](arg1);
 }
 
-export function DowloadConfig() {
-  return window['go']['workspace']['WorkspaceService']['DowloadConfig']();
+export function DownloadConfig() {
+  return window['go']['workspace']['WorkspaceService']['DownloadConfig']();
 }
 
 export function ExportJSONFile(arg1, arg2) {

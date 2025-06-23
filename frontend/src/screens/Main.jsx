@@ -18,6 +18,7 @@ import {
   SelectFileToImport,
   SelectFileToExport,
   ShowErrorDialog,
+  ShowInfoDialog,
 } from "../../wailsjs/go/main/App";
 
 import ConnectComponent from "../components/Connect";
@@ -73,6 +74,7 @@ export default function Main({ onLoginOut }) {
 
       await ImportFileToWorkspace(filePath, fileName);
       refreshFileList();
+      ShowInfoDialog(`${fileName} Import file thành công!`, "Import");
     } catch (error) {
       ShowErrorDialog(error);
     }
@@ -94,6 +96,7 @@ export default function Main({ onLoginOut }) {
       const jsonString = JSON.stringify(jsonObject);
       const cleanPath = normalizeWorkspacePath(fileLoaded);
       await SaveJsonFile(cleanPath, jsonString);
+      ShowInfoDialog("Lưu project thành công!", "Save Project");
     } catch (error) {
       ShowErrorDialog(error);
     }
@@ -109,6 +112,7 @@ export default function Main({ onLoginOut }) {
       }
       try {
         await SaveJsonToPath(jsonData, filePath);
+        ShowInfoDialog("Lưu file thành công!", "Save As Project");
       } catch (error) {
         ShowErrorDialog(error);
       }
@@ -116,17 +120,23 @@ export default function Main({ onLoginOut }) {
   };
 
   const handleAction = async (name) => {
-    if (!name || !name.trim()) {
+    if (!name || !name.trim() || !name.toLowerCase().endsWith(".json")) {
+      setInput("");
+      setShowModal(false);
       ShowErrorDialog("Tên không hợp lệ");
       return;
     }
-    if (!name.toLowerCase().endsWith(".json")) {
-      ShowErrorDialog("Chỉ cho phép tạo file với phần mở rộng .json");
-      return;
+
+    try {
+      await NewProject(name);
+      setInput("");
+      setShowModal(false);
+      ShowInfoDialog(`Tạo project ${name} thành công!`, "New Project");
+    } catch (err) {
+      setInput("");
+      setShowModal(false);
+      ShowErrorDialog(`Không thể tạo project: ${err.message || err}`);
     }
-    await NewProject(name);
-    setInput("");
-    setShowModal({ show: false, action: null });
   };
 
   useEffect(() => {
@@ -212,20 +222,20 @@ export default function Main({ onLoginOut }) {
         </button>
         <button
           onClick={handleImport}
-          className='rounded-md bg-white border border-gray-300 px-2 py-0.5 text-[10px] font-medium shadow-sm hover:bg-blue-50 hover:border-blue-400 active:bg-blue-100 active:border-blue-400 transition-colors'
+          className="rounded-md bg-white border border-gray-300 px-2 py-0.5 text-[10px] font-medium shadow-sm hover:bg-blue-50 hover:border-blue-400 active:bg-blue-100 active:border-blue-400 transition-colors"
         >
           Import Project
         </button>
         <button
           onClick={onLoginOut}
-          className='rounded-md bg-white border border-gray-300 px-2 py-0.5 text-[10px] font-medium shadow-sm hover:bg-blue-50 hover:border-blue-400 active:bg-blue-100 active:border-blue-400 transition-colors'
+          className="rounded-md bg-white border border-gray-300 px-2 py-0.5 text-[10px] font-medium shadow-sm hover:bg-blue-50 hover:border-blue-400 active:bg-blue-100 active:border-blue-400 transition-colors"
         >
           Log Out
         </button>
       </div>
-      <div className='flex-1 mt-2 w-full overflow-hidden flex flex-row'>
-        <div className='w-1/4 flex flex-col'>
-          <div className='flex'>
+      <div className="flex-1 mt-2 w-full overflow-hidden flex flex-row">
+        <div className="w-1/4 flex flex-col">
+          <div className="flex">
             {tabsLeft.map((tab, index) => (
               <div
                 key={index}
@@ -239,8 +249,8 @@ export default function Main({ onLoginOut }) {
             ))}
           </div>
 
-          <div className='flex-1 w-auto h-0 bg-white flex flex-col'>
-            <div className='p-2 flex-1 flex flex-col'>
+          <div className="flex-1 w-auto h-0 bg-white flex flex-col">
+            <div className="p-2 flex-1 flex flex-col">
               {leftTab === "Workspace" && (
                 <FileTree
                   treeData={treeData}
@@ -254,8 +264,8 @@ export default function Main({ onLoginOut }) {
             </div>
           </div>
         </div>
-        <div className='w-1/4 flex flex-row bg-blue pl-2'>
-          <div className='flex flex-col justify-start items-center h-full'>
+        <div className="w-1/4 flex flex-row bg-blue pl-2">
+          <div className="flex flex-col justify-start items-center h-full">
             {centerList.map((item, index) => (
               <span
                 onClick={() => {
@@ -282,7 +292,7 @@ export default function Main({ onLoginOut }) {
               </span>
             ))}
           </div>
-          <div className='flex-1 w-1/4 h-full border-t border-b border-r border-gray-300 bg-white'>
+          <div className="flex-1 w-1/4 h-full border-t border-b border-r border-gray-300 bg-white">
             <ReadData
               keyType={middleTab}
               dataFile={dataFile}
@@ -293,8 +303,8 @@ export default function Main({ onLoginOut }) {
             />
           </div>
         </div>
-        <div className='flex flex-1 flex-col border border-gray-300'>
-          <div className='flex flex-row justify-start items-center '>
+        <div className="flex flex-1 flex-col border border-gray-300">
+          <div className="flex flex-row justify-start items-center ">
             {rightTabs.map((label, idx) => (
               <button
                 onClick={() => setRightTab(label)}
@@ -309,7 +319,7 @@ export default function Main({ onLoginOut }) {
               </button>
             ))}
           </div>
-          <div className='flex flex-1 bg-white'>
+          <div className="flex flex-1 bg-white">
             {rightTab === "Parameter" && parameter.key && (
               <ReadParameter
                 parameter={parameter}
@@ -330,28 +340,28 @@ export default function Main({ onLoginOut }) {
 
       {showModal && (
         <div
-          className='fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center'
+          className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center"
           onClick={() => setShowModal(false)} // Đóng modal khi click nền đen
         >
           <div
-            className='bg-white p-6 rounded-lg shadow-lg w-[300px]'
+            className="bg-white p-6 rounded-lg shadow-lg w-[300px]"
             onClick={(e) => e.stopPropagation()} // Ngăn sự kiện nổi bọt khi click vào modal
           >
             <input
-              type='text'
-              className='custom w-full px-3 py-2 border border-gray-300 rounded-md mb-4 focus:outline-none focus:border-blue-500'
+              type="text"
+              className="custom w-full px-3 py-2 border border-gray-300 rounded-md mb-4 focus:outline-none focus:border-blue-500"
               value={input}
               onChange={(e) => setInput(e.target.value)}
             />
-            <div className='flex flex-row justify-around'>
+            <div className="flex flex-row justify-around">
               <button
-                className='px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600'
+                className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
                 onClick={() => handleAction(input)}
               >
                 Save
               </button>
               <button
-                className='px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600'
+                className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
                 onClick={() => setShowModal(false)}
               >
                 Close

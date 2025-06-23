@@ -16,6 +16,7 @@ import {
   SelectFileToExport,
   SelectFileToImport,
   ShowErrorDialog,
+  ShowInfoDialog
 } from "../../wailsjs/go/main/App";
 
 import { ContextMenuContext } from "../store";
@@ -56,17 +57,14 @@ const TreeNode = ({
     try {
       switch (action) {
         case "newProject":
-          if (!name || !name.trim()) {
+          if (!name || !name.trim() || !name.toLowerCase().endsWith(".json")) {
             ShowErrorDialog("Tên không hợp lệ");
-            return;
-          }
-          if (!name.toLowerCase().endsWith(".json")) {
-            ShowErrorDialog("Chỉ cho phép tạo file với phần mở rộng .json");
             return;
           }
           await NewProject(fullPath);
           setInput("");
           setShowModal({ show: false, action: null });
+          ShowInfoDialog("Tạo file thành công", "New Project");
           break;
 
         case "load":
@@ -78,12 +76,14 @@ const TreeNode = ({
           const data = JSON.parse(content);
           setDataFile({ ...data });
           setFileLoaded(node.fullPath);
+          ShowInfoDialog(`Đã tải file ${node.name}`, "Load File");
           break;
 
         case "newGroup":
           await CreateFolder(fullPath);
           setInput("");
           setShowModal({ show: false, action: null });
+          ShowInfoDialog("Tạo thư mục thành công", "New Group");
           break;
 
         case "unload":
@@ -93,6 +93,7 @@ const TreeNode = ({
 
         case "delete":
           await DeleteItem(node.path);
+          ShowInfoDialog("Đã xóa thành công", "Delete Item");
           break;
 
         case "copy":
@@ -164,6 +165,7 @@ const TreeNode = ({
           const filePath = await SelectFileToImport();
 
           await ImportFileToFolderInWorkspace(filePath, node.path);
+          ShowInfoDialog("Đã nhập file thành công", "Import File");
           break;
         default:
           console.warn("Unknown action:", action);
@@ -406,17 +408,20 @@ const FileTree = ({
           await NewProject(name);
           setInput("");
           setShowModal({ show: false, action: null });
+          ShowInfoDialog("Tạo file thành công", "New Project");
           break;
 
         case "newGroup":
           await CreateFolder(name);
           setInput("");
           setShowModal({ show: false, action: null });
+          ShowInfoDialog("Tạo thư mục thành công", "New Group");
           break;
 
         case "import":
           const filePath = await SelectFileToImport();
           await ImportFileToFolderInWorkspace(filePath, "");
+          ShowInfoDialog("Đã nhập file thành công", "Import File");
           break;
 
         case "showInExplore":

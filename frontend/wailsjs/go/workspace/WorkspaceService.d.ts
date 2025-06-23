@@ -9,7 +9,7 @@ export function DeleteFile(arg1:string):Promise<void>;
 
 export function DeleteItem(arg1:string):Promise<void>;
 
-export function DowloadConfig():Promise<void>;
+export function DownloadConfig():Promise<void>;
 
 export function ExportJSONFile(arg1:string,arg2:string):Promise<void>;
 

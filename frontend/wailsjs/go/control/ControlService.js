@@ -10,10 +10,6 @@ export function Calib4ma() {
   return window['go']['control']['ControlService']['Calib4ma']();
 }
 
-export function DownloadConfig() {
-  return window['go']['control']['ControlService']['DownloadConfig']();
-}
-
 export function GetNetworkInfo() {
   return window['go']['control']['ControlService']['GetNetworkInfo']();
 }

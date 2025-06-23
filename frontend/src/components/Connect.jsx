@@ -1,24 +1,27 @@
 import { useEffect, useState, useContext, useCallback } from "react";
 import * as AuthService from "../../wailsjs/go/auth/AuthService";
+import {
+  DownloadConfig,
+  UploadConfig,
+} from "../../wailsjs/go/workspace/WorkspaceService";
 import { ContextMenuContext } from "../store";
 
 function ConnectComponent({ onConnected }) {
   const [ports, setPorts] = useState([]);
-  const [selectedPort, setSelectedPort] = useState("");
   const [status, setStatus] = useState("Not connected");
   const context = useContext(ContextMenuContext);
 
   const handleConnect = () => {
-    if (!selectedPort) {
+    if (!context.selectedPort) {
       setStatus("Please select a COM port");
       return;
     }
 
-    handleSelectPort();
-
-    AuthService.ConnectToPort(selectedPort)
+    AuthService.ConnectToPort(context.selectedPort)
       .then(() => {
-        setStatus("Connected to " + selectedPort);
+        context.setIsConnected(true);
+        context.setSelectedPort(context.selectedPort);
+        setStatus("Connected to " + context.selectedPort);
         if (onConnected) onConnected();
       })
       .catch((err) => setStatus("Connection error: " + err));
@@ -28,19 +31,41 @@ function ConnectComponent({ onConnected }) {
     AuthService.Disconnect()
       .then(() => {
         setStatus("Disconnected");
-        setSelectedPort("");
+        context.setSelectedPort("");
+        context.setIsConnected(false);
       })
       .catch((err) => setStatus("Disconnect error: " + err));
+  };
+
+  const handleUploadConfig = () => {
+    // Cần nhét data vào đây
+    UploadConfig();
   };
 
   useEffect(() => {
     AuthService.ListPorts()
       .then(setPorts)
-      .catch((err) => setStatus("Get COM error: " + err));
+      .catch((err) => console.log("Get COM error: " + err));
+
+    if (context.selectedPort && context.isConnected) {
+      setStatus("Connected to " + context.selectedPort);
+    } else {
+      AuthService.GetCurrentPort()
+        .then((port) => {
+          if (port) {
+            context.setSelectedPort(port);
+            context.setIsConnected(true);
+            setStatus("Connected to " + port);
+          } else {
+            setStatus("Not connected");
+          }
+        })
+        .catch((err) => console.log("Get current port error: " + err));
+    }
   }, []);
 
-  const handleSelectPort = useCallback(() => {
-    if (!selectedPort) return;
+  useEffect(() => {
+    if (!context.selectedPort || !context.isConnected) return;
 
     let isListening = true;
 
@@ -62,6 +87,11 @@ function ConnectComponent({ onConnected }) {
                 case "read_memory_view":
                   context.setMemoryViewData(jsonData.data);
                   break;
+                case "download_config":
+                  // Handle download config response
+
+                  break;
+
                 default:
                   break;
               }
@@ -71,7 +101,7 @@ function ConnectComponent({ onConnected }) {
           }
         } catch (err) {
           if (!err.toString().includes("timeout")) {
-            setStatus("Receive data error: " + err);
+            // Handle other errors
           }
         }
       }
@@ -82,12 +112,12 @@ function ConnectComponent({ onConnected }) {
     return () => {
       isListening = false;
     };
-  }, [selectedPort, context]);
+  }, [context.selectedPort, context.isConnected]);
 
   return (
-    <div className='w-full max-w-xs bg-white border border-gray-300 rounded-lg shadow p-4 flex flex-col gap-3'>
-      <div className='flex items-center gap-2 mb-1'>
-        <span className='text-base font-semibold'>COM Port</span>
+    <div className="w-full max-w-xs bg-white border border-gray-300 rounded-lg shadow p-4 flex flex-col gap-3">
+      <div className="flex items-center gap-2 mb-1">
+        <span className="text-base font-semibold">COM Port</span>
         <span
           className={
             status.includes("Connected to")
@@ -99,13 +129,13 @@ function ConnectComponent({ onConnected }) {
         ></span>
       </div>
       <div>
-        <label className='block text-xs text-gray-700 mb-1'>Select port</label>
+        <label className="block text-xs text-gray-700 mb-1">Select port</label>
         <select
-          className='border border-gray-300 rounded px-2 py-1 w-full text-xs focus:outline-none focus:ring focus:border-blue-400'
-          value={selectedPort}
-          onChange={(e) => setSelectedPort(e.target.value)}
+          className="border border-gray-300 rounded px-2 py-1 w-full text-xs focus:outline-none focus:ring focus:border-blue-400"
+          value={context.selectedPort}
+          onChange={(e) => context.setSelectedPort(e.target.value)}
         >
-          <option value=''>-- Select COM port --</option>
+          <option value="">-- Select COM port --</option>
           {ports?.map((port) => (
             <option key={port} value={port}>
               {port}
@@ -113,20 +143,32 @@ function ConnectComponent({ onConnected }) {
           ))}
         </select>
       </div>
-      <div className='flex flex-col md:flex-row items-center justify-center gap-2 w-full'>
+      <div className="flex flex-col md:flex-row items-center justify-center gap-2 w-full">
         <button
           onClick={handleConnect}
-          className='flex-1 px-2 w-full bg-blue-600 text-white py-1 rounded border border-blue-700 hover:bg-blue-700 text-xs transition'
+          className="flex-1 px-2 w-full bg-blue-600 text-white py-1 rounded border border-blue-700 hover:bg-blue-700 text-xs transition"
         >
           Connect
         </button>
         <button
           onClick={handleDisconnect}
-          className='flex-1 px-2 w-full bg-gray-200 text-gray-700 py-1 rounded border border-gray-400 hover:bg-gray-300 text-xs transition'
+          className="flex-1 px-2 w-full bg-gray-200 text-gray-700 py-1 rounded border border-gray-400 hover:bg-gray-300 text-xs transition"
         >
           Disconnect
         </button>
       </div>
+      <button
+        onClick={handleUploadConfig}
+        className="flex-1 px-2 w-full bg-gray-200 text-gray-700 py-1 rounded border border-gray-400 hover:bg-gray-300 text-xs transition"
+      >
+        Upload
+      </button>
+      <button
+        onClick={DownloadConfig}
+        className="flex-1 px-2 w-full bg-gray-200 text-gray-700 py-1 rounded border border-gray-400 hover:bg-gray-300 text-xs transition"
+      >
+        Download
+      </button>
       <div
         className={`text-xs text-center ${
           status.includes("error")
