@@ -66,10 +66,6 @@ export function SaveJsonToPath(arg1, arg2) {
   return window['go']['workspace']['WorkspaceService']['SaveJsonToPath'](arg1, arg2);
 }
 
-export function SetContext(arg1) {
-  return window['go']['workspace']['WorkspaceService']['SetContext'](arg1);
-}
-
 export function ShowInExplorer(arg1) {
   return window['go']['workspace']['WorkspaceService']['ShowInExplorer'](arg1);
 }

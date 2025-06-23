@@ -250,7 +250,7 @@ const TreeNode = ({
     <>
       <div
         className={`
-          flex items-center justify-start gap-2 cursor-pointer select-none rounded-lg px-3 py-1.5 transition
+          flex items-center justify-start gap-2 cursor-pointer select-none rounded-lg px-3 py-1.5 transition w-full
           ${
             node.type === "folder"
               ? "font-semibold text-slate-800"
@@ -326,7 +326,7 @@ const TreeNode = ({
         )}
 
         {/* Tên file/folder */}
-        <span className="truncate text-xs font-medium">{node.name}</span>
+        <span className="flex-1 truncate text-xs font-medium">{node.name}</span>
 
         {/* {node.modified && (
           <span className="ml-2 text-xs text-gray-400">({node.modified})</span>

@@ -6,8 +6,8 @@ import {
   NewProject,
   SaveJsonFile,
   SaveJsonToPath,
+  GetDefaultData
 } from "../../wailsjs/go/workspace/WorkspaceService";
-import { ContextMenuContext } from "../store";
 import ReadData from "../components/ReadData";
 import ReadParameter from "../components/ReadParameter";
 import Control from "../components/Control";
@@ -44,6 +44,18 @@ export default function Main({ onLoginOut }) {
   }
 
   const [fileLoaded, setFileLoaded] = useState("");
+
+  useEffect(() => {
+    if (dataFile) return;
+    GetDefaultData()
+      .then((data) => {
+        setDataFile(JSON.parse(data));
+        setFileLoaded("default.json");
+      })
+      .catch((err) => {
+        ShowErrorDialog("Failed to load default data: " + err.message);
+      });
+  }, []);
 
   useEffect(() => {
     if (!parameter.key) return;
@@ -222,20 +234,20 @@ export default function Main({ onLoginOut }) {
         </button>
         <button
           onClick={handleImport}
-          className="rounded-md bg-white border border-gray-300 px-2 py-0.5 text-[10px] font-medium shadow-sm hover:bg-blue-50 hover:border-blue-400 active:bg-blue-100 active:border-blue-400 transition-colors"
+          className='rounded-md bg-white border border-gray-300 px-2 py-0.5 text-[10px] font-medium shadow-sm hover:bg-blue-50 hover:border-blue-400 active:bg-blue-100 active:border-blue-400 transition-colors'
         >
           Import Project
         </button>
         <button
           onClick={onLoginOut}
-          className="rounded-md bg-white border border-gray-300 px-2 py-0.5 text-[10px] font-medium shadow-sm hover:bg-blue-50 hover:border-blue-400 active:bg-blue-100 active:border-blue-400 transition-colors"
+          className='rounded-md bg-white border border-gray-300 px-2 py-0.5 text-[10px] font-medium shadow-sm hover:bg-blue-50 hover:border-blue-400 active:bg-blue-100 active:border-blue-400 transition-colors'
         >
           Log Out
         </button>
       </div>
-      <div className="flex-1 mt-2 w-full overflow-hidden flex flex-row">
-        <div className="w-1/4 flex flex-col">
-          <div className="flex">
+      <div className='flex-1 mt-2 w-full overflow-hidden flex flex-row'>
+        <div className='w-1/4 flex flex-col'>
+          <div className='flex'>
             {tabsLeft.map((tab, index) => (
               <div
                 key={index}
@@ -249,8 +261,8 @@ export default function Main({ onLoginOut }) {
             ))}
           </div>
 
-          <div className="flex-1 w-auto h-0 bg-white flex flex-col">
-            <div className="p-2 flex-1 flex flex-col">
+          <div className='flex-1 w-auto h-0 bg-white flex flex-col'>
+            <div className='p-2 flex-1 flex flex-col'>
               {leftTab === "Workspace" && (
                 <FileTree
                   treeData={treeData}
@@ -264,8 +276,8 @@ export default function Main({ onLoginOut }) {
             </div>
           </div>
         </div>
-        <div className="w-1/4 flex flex-row bg-blue pl-2">
-          <div className="flex flex-col justify-start items-center h-full">
+        <div className='w-1/4 flex flex-row bg-blue pl-2'>
+          <div className='flex flex-col justify-start items-center h-full'>
             {centerList.map((item, index) => (
               <span
                 onClick={() => {
@@ -292,7 +304,7 @@ export default function Main({ onLoginOut }) {
               </span>
             ))}
           </div>
-          <div className="flex-1 w-1/4 h-full border-t border-b border-r border-gray-300 bg-white">
+          <div className='flex-1 w-1/4 h-full border-t border-b border-r border-gray-300 bg-white'>
             <ReadData
               keyType={middleTab}
               dataFile={dataFile}
@@ -303,8 +315,8 @@ export default function Main({ onLoginOut }) {
             />
           </div>
         </div>
-        <div className="flex flex-1 flex-col border border-gray-300">
-          <div className="flex flex-row justify-start items-center ">
+        <div className='flex flex-1 flex-col border border-gray-300'>
+          <div className='flex flex-row justify-start items-center '>
             {rightTabs.map((label, idx) => (
               <button
                 onClick={() => setRightTab(label)}
@@ -319,7 +331,7 @@ export default function Main({ onLoginOut }) {
               </button>
             ))}
           </div>
-          <div className="flex flex-1 bg-white">
+          <div className='flex flex-1 bg-white'>
             {rightTab === "Parameter" && parameter.key && (
               <ReadParameter
                 parameter={parameter}
@@ -340,28 +352,31 @@ export default function Main({ onLoginOut }) {
 
       {showModal && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center"
-          onClick={() => setShowModal(false)} // Đóng modal khi click nền đen
+          className='fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50'
+          onClick={() => setShowModal(false)}
         >
           <div
-            className="bg-white p-6 rounded-lg shadow-lg w-[300px]"
-            onClick={(e) => e.stopPropagation()} // Ngăn sự kiện nổi bọt khi click vào modal
+            className='bg-white p-6 rounded-xl shadow-2xl w-full max-w-xs flex flex-col gap-4'
+            onClick={(e) => e.stopPropagation()}
           >
+            <div className="text-lg font-bold text-center mb-2 text-blue-700">New Project</div>
             <input
-              type="text"
-              className="custom w-full px-3 py-2 border border-gray-300 rounded-md mb-4 focus:outline-none focus:border-blue-500"
+              type='text'
+              className='w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500 text-sm'
+              placeholder="Nhập tên file .json"
               value={input}
               onChange={(e) => setInput(e.target.value)}
+              autoFocus
             />
-            <div className="flex flex-row justify-around">
+            <div className='flex flex-row gap-3 justify-center'>
               <button
-                className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+                className='flex-1 px-4 py-2 bg-blue-500 text-white rounded-lg font-medium hover:bg-blue-600 transition'
                 onClick={() => handleAction(input)}
               >
                 Save
               </button>
               <button
-                className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+                className='flex-1 px-4 py-2 bg-gray-200 text-gray-700 rounded-lg font-medium hover:bg-gray-300 transition'
                 onClick={() => setShowModal(false)}
               >
                 Close

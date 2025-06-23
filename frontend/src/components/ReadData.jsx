@@ -22,7 +22,7 @@ const ReadData = ({
         case "system":
           return (
             <div>
-              <p className="text-xs pl-2 border-b border-gray-100 bg-gray-200">
+              <p className='text-xs pl-2 border-b border-gray-100 bg-gray-200'>
                 SYSTEM SETTINGS
               </p>
               {dataFile && systemCenterData
@@ -43,7 +43,7 @@ const ReadData = ({
                           : "white"
                       }`}
                     >
-                      <p className="text-xs">{item.label}</p>
+                      <p className='text-xs'>{item.label}</p>
                     </div>
                   ))
                 : null}
@@ -52,7 +52,7 @@ const ReadData = ({
         case "ftp":
           return (
             <div>
-              <p className="text-xs pl-2 border-b border-gray-100 bg-gray-200">
+              <p className='text-xs pl-2 border-b border-gray-100 bg-gray-200'>
                 FTP SETTINGS
               </p>
               {dataFile?.ftp
@@ -73,7 +73,7 @@ const ReadData = ({
                           : "white"
                       }`}
                     >
-                      <p className="text-xs">FTP.{index}</p>
+                      <p className='text-xs'>FTP.{index}</p>
                     </div>
                   ))
                 : null}
@@ -82,7 +82,7 @@ const ReadData = ({
         case "control":
           return (
             <div>
-              <p className="text-xs pl-2 border-b border-gray-100 bg-gray-200">
+              <p className='text-xs pl-2 border-b border-gray-100 bg-gray-200'>
                 CONTROL SETTINGS
               </p>
               {dataFile?.control ? (
@@ -104,7 +104,7 @@ const ReadData = ({
                           : "white"
                       }`}
                     >
-                      <p className="text-xs">Control.{index}</p>
+                      <p className='text-xs'>Control.{index}</p>
                     </div>
                   ))
                 ) : (
@@ -121,7 +121,7 @@ const ReadData = ({
                       parameter.key === "control" ? "bg-blue-200" : "white"
                     }`}
                   >
-                    <p className="text-xs">CONTROL 0</p>
+                    <p className='text-xs'>CONTROL 0</p>
                   </div>
                 )
               ) : null}
@@ -130,7 +130,7 @@ const ReadData = ({
         case "di":
           return (
             <div>
-              <p className="text-xs pl-2 border-b border-gray-100 bg-gray-200">
+              <p className='text-xs pl-2 border-b border-gray-100 bg-gray-200'>
                 DI SETTINGS
               </p>
               {dataFile?.dis
@@ -151,7 +151,7 @@ const ReadData = ({
                           : "white"
                       }`}
                     >
-                      <p className="text-xs">DI.{index}</p>
+                      <p className='text-xs'>DI.{index}</p>
                     </div>
                   ))
                 : null}
@@ -160,7 +160,7 @@ const ReadData = ({
         case "do":
           return (
             <div>
-              <p className="text-xs pl-2 border-b border-gray-100 bg-gray-200">
+              <p className='text-xs pl-2 border-b border-gray-100 bg-gray-200'>
                 DO SETTINGS
               </p>
               {dataFile?.dos
@@ -181,7 +181,7 @@ const ReadData = ({
                           : "white"
                       }`}
                     >
-                      <p className="text-xs">DO.{index}</p>
+                      <p className='text-xs'>DO.{index}</p>
                     </div>
                   ))
                 : null}
@@ -190,7 +190,7 @@ const ReadData = ({
         case "tag":
           return (
             <div>
-              <div className="flex flex-row w-full justify-around items-center py-1 px-3 gap-2">
+              <div className='flex flex-row w-full justify-around items-center py-1 px-3 gap-2'>
                 <div
                   onClick={() => {
                     setDataFile((prev) => {
@@ -224,39 +224,51 @@ const ReadData = ({
                         ] || { name: "", value: 0, unit: "", status: "" },
                     });
                   }}
-                  className="hover:bg-blue-100 cursor-pointer select-none w-full text-center text-xs rounded-sm bg-gray-200 py-1 px-5"
+                  className='hover:bg-blue-100 cursor-pointer select-none w-full text-center text-xs rounded-sm bg-gray-200 py-1 px-5'
                 >
                   ADD
                 </div>
                 <div
                   onClick={() => {
-                    setDataFile((prev) => ({
-                      ...prev,
-                      tags:
+                    setDataFile((prev) => {
+                      const newTags =
                         prev.tags && prev.tags.length > 0
                           ? prev.tags.slice(0, -1)
-                          : [],
-                    }));
-                    setParameter({
-                      key: "tags",
-                      idx: (dataFile.tags || []).length - 2,
-                      value: (dataFile.tags || [])[
-                        Math.max(0, (dataFile.tags || []).length - 2)
-                      ] || { name: "", value: 0, unit: "", status: "" },
+                          : [];
+                      if (newTags.length > 0) {
+                        setParameter({
+                          key: "tags",
+                          idx: (dataFile.tags || []).length - 2,
+                          value: (dataFile.tags || [])[
+                            Math.max(0, (dataFile.tags || []).length - 2)
+                          ] || { name: "", value: 0, unit: "", status: "" },
+                        });
+                      } else {
+                        setParameter({
+                          key: "",
+                          idx: "",
+                          value: null,
+                        });
+                      }
+
+                      return {
+                        ...prev,
+                        tags: newTags,
+                      };
                     });
                   }}
-                  className="hover:bg-blue-100 cursor-pointer select-none w-full text-center text-xs rounded-sm bg-gray-200 py-1 px-5"
+                  className='hover:bg-blue-100 cursor-pointer select-none w-full text-center text-xs rounded-sm bg-gray-200 py-1 px-5'
                 >
                   REM
                 </div>
               </div>
-              <p className="text-xs pl-2 border-b border-gray-100 bg-gray-200">
+              <p className='text-xs pl-2 border-b border-gray-100 bg-gray-200'>
                 TAG SETTINGS
               </p>
               {dataFile?.tags
                 ? dataFile.tags.map((item, index) => (
                     <div
-                      key={index}
+                      key={`${item.name}-${index}`}
                       onClick={() => {
                         setRightTab("Parameter");
                         setParameter({
@@ -271,7 +283,7 @@ const ReadData = ({
                           : "white"
                       }`}
                     >
-                      <p className="text-xs">TAG.{index}</p>
+                      <p className='text-xs'>TAG.{index}</p>
                     </div>
                   ))
                 : null}
@@ -280,7 +292,7 @@ const ReadData = ({
         case "program":
           return (
             <div>
-              <div className="flex flex-row w-full justify-around items-center py-1 px-3 gap-2">
+              <div className='flex flex-row w-full justify-around items-center py-1 px-3 gap-2'>
                 <div
                   onClick={() => {
                     setDataFile((prev) => ({
@@ -298,34 +310,45 @@ const ReadData = ({
                       value: {},
                     });
                   }}
-                  className="hover:bg-blue-100 cursor-pointer select-none w-full text-center text-xs rounded-sm bg-gray-200 py-1 px-5"
+                  className='hover:bg-blue-100 cursor-pointer select-none w-full text-center text-xs rounded-sm bg-gray-200 py-1 px-5'
                 >
                   ADD
                 </div>
                 <div
                   onClick={() => {
-                    setDataFile((prev) => ({
-                      ...prev,
-                      prog:
+                    setDataFile((prev) => {
+                      const newProg =
                         prev.prog && prev.prog.length > 0
                           ? prev.prog.slice(0, -1)
-                          : [],
-                    }));
-                    setParameter({
-                      key: "prog",
-                      idx: (dataFile.prog || []).length - 2,
-                      value:
-                        (dataFile.prog || [])[
-                          Math.max(0, (dataFile.prog || []).length - 2)
-                        ] || {},
+                          : [];
+                      if (newProg.length > 0) {
+                        setParameter({
+                          key: "prog",
+                          idx: (dataFile.prog || []).length - 2,
+                          value: (dataFile.prog || [])[
+                            Math.max(0, (dataFile.prog || []).length - 2)
+                          ] || { name: "", value: 0, unit: "", status: "" },
+                        });
+                      } else {
+                        setParameter({
+                          key: "",
+                          idx: "",
+                          value: null,
+                        });
+                      }
+
+                      return {
+                        ...prev,
+                        prog: newProg,
+                      };
                     });
                   }}
-                  className="hover:bg-blue-100 cursor-pointer select-none w-full text-center text-xs rounded-sm bg-gray-200 py-1 px-5"
+                  className='hover:bg-blue-100 cursor-pointer select-none w-full text-center text-xs rounded-sm bg-gray-200 py-1 px-5'
                 >
                   REM
                 </div>
               </div>
-              <p className="text-xs pl-2 border-b border-gray-100 bg-gray-200">
+              <p className='text-xs pl-2 border-b border-gray-100 bg-gray-200'>
                 PROGRAM SETTINGS
               </p>
               {dataFile?.prog
@@ -346,7 +369,7 @@ const ReadData = ({
                           : "white"
                       }`}
                     >
-                      <p className="text-xs">PROG.{index}</p>
+                      <p className='text-xs'>PROG.{index}</p>
                     </div>
                   ))
                 : null}
@@ -355,7 +378,7 @@ const ReadData = ({
         case "timer":
           return (
             <div>
-              <div className="flex flex-row w-full justify-around items-center py-1 px-3 gap-2">
+              <div className='flex flex-row w-full justify-around items-center py-1 px-3 gap-2'>
                 <div
                   onClick={() => {
                     setDataFile((prev) => ({
@@ -373,34 +396,45 @@ const ReadData = ({
                       value: {},
                     });
                   }}
-                  className="hover:bg-blue-100 cursor-pointer select-none w-full text-center text-xs rounded-sm bg-gray-200 py-1 px-5"
+                  className='hover:bg-blue-100 cursor-pointer select-none w-full text-center text-xs rounded-sm bg-gray-200 py-1 px-5'
                 >
                   ADD
                 </div>
                 <div
                   onClick={() => {
-                    setDataFile((prev) => ({
-                      ...prev,
-                      timers:
+                    setDataFile((prev) => {
+                      const newTimers =
                         prev.timers && prev.timers.length > 0
                           ? prev.timers.slice(0, -1)
-                          : [],
-                    }));
-                    setParameter({
-                      key: "timers",
-                      idx: (dataFile.timers || []).length - 2,
-                      value:
-                        (dataFile.timers || [])[
-                          Math.max(0, (dataFile.timers || []).length - 2)
-                        ] || {},
+                          : [];
+                      if (newTimers.length > 0) {
+                        setParameter({
+                          key: "timers",
+                          idx: (dataFile.timers || []).length - 2,
+                          value: (dataFile.timers || [])[
+                            Math.max(0, (dataFile.timers || []).length - 2)
+                          ] || { name: "", value: 0, unit: "", status: "" },
+                        });
+                      } else {
+                        setParameter({
+                          key: "",
+                          idx: "",
+                          value: null,
+                        });
+                      }
+
+                      return {
+                        ...prev,
+                        timers: newTimers,
+                      };
                     });
                   }}
-                  className="hover:bg-blue-100 cursor-pointer select-none w-full text-center text-xs rounded-sm bg-gray-200 py-1 px-5"
+                  className='hover:bg-blue-100 cursor-pointer select-none w-full text-center text-xs rounded-sm bg-gray-200 py-1 px-5'
                 >
                   REM
                 </div>
               </div>
-              <p className="text-xs pl-2 border-b border-gray-100 bg-gray-200">
+              <p className='text-xs pl-2 border-b border-gray-100 bg-gray-200'>
                 TIMER SETTINGS
               </p>
               {dataFile?.timers
@@ -421,7 +455,7 @@ const ReadData = ({
                           : "white"
                       }`}
                     >
-                      <p className="text-xs">TIMER.{index}</p>
+                      <p className='text-xs'>TIMER.{index}</p>
                     </div>
                   ))
                 : null}
@@ -430,7 +464,7 @@ const ReadData = ({
         case "modbus":
           return (
             <div>
-              <div className="flex flex-row w-full justify-around items-center py-1 px-3 gap-2">
+              <div className='flex flex-row w-full justify-around items-center py-1 px-3 gap-2'>
                 <div
                   onClick={() => {
                     setDataFile((prev) => ({
@@ -452,34 +486,45 @@ const ReadData = ({
                       value: {},
                     });
                   }}
-                  className="hover:bg-blue-100 cursor-pointer select-none w-full text-center text-xs rounded-sm bg-gray-200 py-1 px-5"
+                  className='hover:bg-blue-100 cursor-pointer select-none w-full text-center text-xs rounded-sm bg-gray-200 py-1 px-5'
                 >
                   ADD
                 </div>
                 <div
                   onClick={() => {
-                    setDataFile((prev) => ({
-                      ...prev,
-                      modbus_reader:
+                    setDataFile((prev) => {
+                      const newModbus=
                         prev.modbus_reader && prev.modbus_reader.length > 0
                           ? prev.modbus_reader.slice(0, -1)
-                          : [],
-                    }));
-                    setParameter({
-                      key: "modbus_reader",
-                      idx: (dataFile.modbus_reader || []).length - 2,
-                      value:
-                        (dataFile.modbus_reader || [])[
-                          Math.max(0, (dataFile.modbus_reader || []).length - 2)
-                        ] || {},
+                          : [];
+                      if (newModbus.length > 0) {
+                        setParameter({
+                          key: "modbus_reader",
+                          idx: (dataFile.modbus_reader || []).length - 2,
+                          value: (dataFile.modbus_reader || [])[
+                            Math.max(0, (dataFile.modbus_reader || []).length - 2)
+                          ] || { name: "", value: 0, unit: "", status: "" },
+                        });
+                      } else {
+                        setParameter({
+                          key: "",
+                          idx: "",
+                          value: null,
+                        });
+                      }
+
+                      return {
+                        ...prev,
+                        modbus_reader: newModbus,
+                      };
                     });
                   }}
-                  className="hover:bg-blue-100 cursor-pointer select-none w-full text-center text-xs rounded-sm bg-gray-200 py-1 px-5"
+                  className='hover:bg-blue-100 cursor-pointer select-none w-full text-center text-xs rounded-sm bg-gray-200 py-1 px-5'
                 >
                   REM
                 </div>
               </div>
-              <p className="text-xs pl-2 border-b border-gray-100 bg-gray-200">
+              <p className='text-xs pl-2 border-b border-gray-100 bg-gray-200'>
                 MODBUS SETTINGS
               </p>
               {dataFile?.modbus_reader
@@ -495,12 +540,13 @@ const ReadData = ({
                         });
                       }}
                       className={`p-2 pl-6 cursor-pointer border-b border-gray-100 hover:bg-blue-100 ${
-                        parameter.key === "modbus_reader" && parameter.idx === index
+                        parameter.key === "modbus_reader" &&
+                        parameter.idx === index
                           ? "bg-blue-200"
                           : "white"
                       }`}
                     >
-                      <p className="text-xs">MODBUS.{index}</p>
+                      <p className='text-xs'>MODBUS.{index}</p>
                     </div>
                   ))
                 : null}
@@ -517,7 +563,7 @@ const ReadData = ({
       systemCenterData,
       setParameter,
       parameter,
-    ]
+    ],
   );
   return <>{readData(keyType)}</>;
 };
