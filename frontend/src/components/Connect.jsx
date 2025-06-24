@@ -6,7 +6,9 @@ import {
 } from "../../wailsjs/go/workspace/WorkspaceService";
 import { ContextMenuContext } from "../store";
 
-function ConnectComponent({ onConnected }) {
+import { ShowErrorDialog, ShowInfoDialog } from "../../wailsjs/go/main/App";
+
+function ConnectComponent({ onConnected, dataFile, setDataFile }) {
   const [ports, setPorts] = useState([]);
   const [status, setStatus] = useState("Not connected");
   const context = useContext(ContextMenuContext);
@@ -38,8 +40,17 @@ function ConnectComponent({ onConnected }) {
   };
 
   const handleUploadConfig = () => {
-    // Cần nhét data vào đây
-    UploadConfig();
+    if (!dataFile) {
+      ShowErrorDialog("Không có data để upload");
+      return;
+    }
+    UploadConfig(JSON.stringify(dataFile))
+      .then(() => {
+        ShowInfoDialog("Cấu hình đã được upload thành công", "Upload file");
+      })
+      .catch((err) => {
+        ShowErrorDialog("Lỗi upload cấu hình: " + err);
+      });
   };
 
   useEffect(() => {
@@ -88,8 +99,8 @@ function ConnectComponent({ onConnected }) {
                   context.setMemoryViewData(jsonData.data);
                   break;
                 case "download_config":
-                  // Handle download config response
-
+                  setDataFile(jsonData.data);
+                  ShowInfoDialog("Đã tải xuống cấu hình thành công", "Download Config");
                   break;
 
                 default:
