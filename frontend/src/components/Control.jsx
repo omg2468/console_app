@@ -256,7 +256,7 @@ const Control = () => {
             </div>
           </div>
           <div className="w-full">
-            <div className="analog-table-wrapper">
+            <div className="analog-table-wrapper min-h-[200px]">
               <table className="w-full">
                 <colgroup>
                   <col style={{ minWidth: "150px" }} />

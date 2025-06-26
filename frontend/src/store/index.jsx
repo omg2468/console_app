@@ -20,6 +20,7 @@ export const ContextMenuProvider = ({ children }) => {
   };
 
   const hideMenu = () => {
+
     setIsVisible(false);
     setContent(null);
   };
@@ -51,7 +52,7 @@ export const ContextMenuProvider = ({ children }) => {
         isConnected,
         setIsConnected,
         selectedPort,
-        setSelectedPort
+        setSelectedPort,
       }}
     >
       {children}

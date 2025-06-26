@@ -68,9 +68,7 @@ const ContextMenu = () => {
             handleClick(option.action);
           }}
           className={`px-3 py-1.5 cursor-pointer ${
-            !!option?.disabled
-              ? "text-gray-400"
-              : "hover:bg-gray-100"
+            !!option?.disabled ? "text-gray-400" : "hover:bg-gray-100"
           } `}
         >
           {option.label}
