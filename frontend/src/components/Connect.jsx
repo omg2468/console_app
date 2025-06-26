@@ -8,7 +8,7 @@ import { ContextMenuContext } from "../store";
 
 import { ShowErrorDialog, ShowInfoDialog } from "../../wailsjs/go/main/App";
 
-function ConnectComponent({ onConnected, dataFile, setDataFile }) {
+function ConnectComponent({ onConnected, dataFile, setDataFile, fileLoaded }) {
   const [ports, setPorts] = useState([]);
   const [status, setStatus] = useState("Not connected");
   const context = useContext(ContextMenuContext);
@@ -44,11 +44,7 @@ function ConnectComponent({ onConnected, dataFile, setDataFile }) {
       ShowErrorDialog("Không có data để upload");
       return;
     }
-    UploadConfig(JSON.stringify(dataFile))
-      .then(() => {
-        ShowInfoDialog("Cấu hình đã được upload thành công", "Upload file");
-      })
-      .catch((err) => {
+    UploadConfig(JSON.stringify(dataFile)).catch((err) => {
         ShowErrorDialog("Lỗi upload cấu hình: " + err);
       });
   };
@@ -100,7 +96,10 @@ function ConnectComponent({ onConnected, dataFile, setDataFile }) {
                   break;
                 case "download_config":
                   setDataFile(jsonData.data);
-                  ShowInfoDialog("Đã tải xuống cấu hình thành công", "Download Config");
+                  ShowInfoDialog(
+                    "Đã tải xuống cấu hình thành công",
+                    "Download Config"
+                  );
                   break;
 
                 default:
@@ -191,6 +190,11 @@ function ConnectComponent({ onConnected, dataFile, setDataFile }) {
       >
         {status}
       </div>
+      {!!fileLoaded && (
+        <div className="fixed bottom-0 left-0 z-20 p-2 bg-stone-100 shadow-md text-sm text-gray-600">
+          {fileLoaded}
+        </div>
+      )}
     </div>
   );
 }

@@ -29,7 +29,7 @@
         {
             "act_lev": 0,
             "act_type": 0,
-            "increment": 233,
+            "increment": 100,
             "memory": 22,
             "period": 100
         },
@@ -86,14 +86,14 @@
     "dos": [
         {
             "act_lev": 0,
-            "act_type": 0,
+            "act_type": 1,
             "duty": 1,
             "memory": 30,
             "period": 2
         },
         {
             "act_lev": 0,
-            "act_type": 0,
+            "act_type": 1,
             "duty": 1,
             "memory": 31,
             "period": 2
@@ -299,6 +299,66 @@
             "n_obj": 1,
             "reg_a": 605,
             "type": 2
+        },
+        {
+            "d_f": 3,
+            "d_o": 0,
+            "d_t": 4,
+            "desc": "O2",
+            "dev_a": "192.168.1.11:502",
+            "en": true,
+            "id": 1,
+            "kf": false,
+            "loc_stat": 79,
+            "loc_val": 38,
+            "n_obj": 1,
+            "reg_a": 607,
+            "type": 2
+        },
+        {
+            "d_f": 3,
+            "d_o": 0,
+            "d_t": 4,
+            "desc": "CO",
+            "dev_a": "192.168.1.11:502",
+            "en": true,
+            "id": 1,
+            "kf": false,
+            "loc_stat": 80,
+            "loc_val": 39,
+            "n_obj": 1,
+            "reg_a": 613,
+            "type": 2
+        },
+        {
+            "d_f": 1,
+            "d_o": 0,
+            "d_t": 3,
+            "desc": "Status",
+            "dev_a": "172.30.10.105:502",
+            "en": true,
+            "id": 1,
+            "kf": false,
+            "loc_stat": 81,
+            "loc_val": 41,
+            "n_obj": 3,
+            "reg_a": 0,
+            "type": 2
+        },
+        {
+            "d_f": 3,
+            "d_o": 0,
+            "d_t": 3,
+            "desc": "",
+            "dev_a": "192.168.1.10:502",
+            "en": true,
+            "id": 1,
+            "kf": true,
+            "loc_stat": 83,
+            "loc_val": 50,
+            "n_obj": 10,
+            "reg_a": 0,
+            "type": 1
         }
     ],
     "prog": [
@@ -389,7 +449,7 @@
         "device": "",
         "en": true,
         "parity": "N",
-        "rddelay": 100,
+        "rddelay": 1000,
         "retry": 3,
         "stopbits": 1,
         "wait": 100
@@ -410,7 +470,7 @@
             "en": true,
             "flag": 0,
             "name": "Minhasd",
-            "stat_flag": 3,
+            "stat_flag": 6,
             "stat_idx": 216,
             "unit": "mg/Nm3",
             "val_idx": 60
@@ -520,7 +580,7 @@
             "en": false,
             "flag": 0,
             "name": "default",
-            "stat_flag": 0,
+            "stat_flag": 6,
             "stat_idx": 0,
             "unit": "default",
             "val_idx": 0

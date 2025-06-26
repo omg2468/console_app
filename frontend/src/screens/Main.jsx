@@ -272,7 +272,7 @@ export default function Main({ onLoginOut }) {
                   setFileLoaded={setFileLoaded}
                 />
               )}
-              {leftTab === "Device" && <ConnectComponent dataFile={dataFile} setDataFile={setDataFile} />}
+              {leftTab === "Device" && <ConnectComponent dataFile={dataFile} setDataFile={setDataFile} fileLoaded={fileLoaded}/>}
             </div>
           </div>
         </div>
