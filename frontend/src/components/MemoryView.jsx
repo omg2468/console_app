@@ -1,6 +1,8 @@
 import React, { useContext, useState, useEffect } from "react";
 import { ContextMenuContext } from "../store";
 
+import { ReadMemoryView } from "../../wailsjs/go/control/ControlService";
+
 const MemoryView = () => {
   const [display, setDisplay] = useState(false);
   const [loadingPos, setLoadingPos] = useState(0);
@@ -29,18 +31,18 @@ const MemoryView = () => {
       const idx = colArrays[col][row];
       if (idx !== undefined) {
         cells.push(
-          <td key={`reg-${col}-${row}`} className='border px-2 py-1 text-right'>
+          <td key={`reg-${col}-${row}`} className="border px-2 py-1 text-right">
             {`Reg${idx}`}
-          </td>,
+          </td>
         );
         cells.push(
-          <td key={`val-${col}-${row}`} className='border px-2 py-1 '>
+          <td key={`val-${col}-${row}`} className="border px-2 py-1 ">
             {memory && display ? memory[idx] : "-"}
-          </td>,
+          </td>
         );
       } else {
-        cells.push(<td key={`reg-empty-${col}-${row}`} className='border' />);
-        cells.push(<td key={`val-empty-${col}-${row}`} className='border' />);
+        cells.push(<td key={`reg-empty-${col}-${row}`} className="border" />);
+        cells.push(<td key={`val-empty-${col}-${row}`} className="border" />);
       }
     }
     tableRows.push(<tr key={row}>{cells}</tr>);
@@ -49,14 +51,14 @@ const MemoryView = () => {
   const header = [];
   for (let i = 0; i < columns / 2; i++) {
     header.push(
-      <th key={`hreg-${i}`} className='border bg-gray-100 px-2 py-1'>
+      <th key={`hreg-${i}`} className="border bg-gray-100 px-2 py-1">
         Register
-      </th>,
+      </th>
     );
     header.push(
-      <th key={`hval-${i}`} className='border bg-gray-100 px-2 py-1'>
+      <th key={`hval-${i}`} className="border bg-gray-100 px-2 py-1">
         Value
-      </th>,
+      </th>
     );
   }
 
@@ -69,19 +71,24 @@ const MemoryView = () => {
   }, [memory]);
 
   return (
-    <div className='flex flex-col items-start justify-start p-2 w-full h-full'>
-      <p className='text-md font-semibold'>MEMORY VIEW</p>
-      <div className='flex flex-row items-center justify-start gap-1 w-full'>
+    <div className="flex flex-col items-start justify-start p-2 w-full h-full">
+      <p className="text-md font-semibold">MEMORY VIEW</p>
+      <div className="flex flex-row items-center justify-start gap-1 w-full">
         <input
-          type='checkbox'
-          className='custom'
+          type="checkbox"
+          className="custom"
           checked={display}
-          onChange={() => setDisplay(!display)}
+          onChange={(e) => {
+            if (e.target.checked) {
+              ReadMemoryView();
+            }
+            setDisplay(e.target.checked);
+          }}
         />
-        <span className='text-sm'>Display memory value</span>
-        <div className='w-[100px] h-2 bg-gray-200 rounded overflow-hidden relative'>
+        <span className="text-sm">Display memory value</span>
+        <div className="w-[100px] h-2 bg-gray-200 rounded overflow-hidden relative">
           <div
-            className='absolute h-full bg-blue-500 rounded transition-all'
+            className="absolute h-full bg-blue-500 rounded transition-all"
             style={{
               width: `${memory?.length ? barWidth : 0}%`,
               left: `${loadingPos}%`,
@@ -92,7 +99,7 @@ const MemoryView = () => {
         </div>
       </div>
       <div
-        className='border flex-1 w-full'
+        className="border flex-1 w-full"
         style={{ minHeight: 0, height: "1px" }}
       >
         <div
@@ -103,7 +110,7 @@ const MemoryView = () => {
             overflowY: "auto",
           }}
         >
-          <table className='w-full text-xs border-collapse'>
+          <table className="w-full text-xs border-collapse">
             <thead>
               <tr>
                 {header.map((cell, idx) => (

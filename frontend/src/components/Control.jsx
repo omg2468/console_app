@@ -6,6 +6,7 @@ import {
   GetNetworkInfo,
   Calib4ma,
   Calib16ma,
+  ReadAnalog,
 } from "../../wailsjs/go/control/ControlService";
 
 import { ShowQuestionDialog } from "../../wailsjs/go/main/App";
@@ -234,7 +235,12 @@ const Control = () => {
               type="checkbox"
               className="w-4 h-4"
               checked={display}
-              onChange={(e) => setDisplay(e.target.checked)}
+              onChange={(e) => {
+                if (e.target.checked) {
+                  ReadAnalog();
+                }
+                setDisplay(e.target.checked);
+              }}
             />
             <span className="text-sm">Display analog value</span>
             <div className="w-[100px] h-2 bg-gray-200 rounded overflow-hidden relative">
@@ -297,7 +303,9 @@ const Control = () => {
           <div className="flex flex-col gap-2">
             <div className="flex-1 min-w-[200px] flex flex-col gap-2 border rounded-md p-2 bg-gray-50">
               <div className="flex flex-col sm:flex-row items-center gap-2 flex-wrap">
-                <span className="text-xs whitespace-nowrap">Generate current</span>
+                <span className="text-xs whitespace-nowrap">
+                  Generate current
+                </span>
                 <select className="bg-white border border-gray-300 text-gray-900 text-sm py-[2px] w-20">
                   <option value="4">4mA</option>
                   <option value="8">8mA</option>
@@ -344,10 +352,15 @@ const Control = () => {
             </div>
             {/* Digital output control */}
             <div className="flex-1 min-w-[200px] flex flex-col gap-2 border rounded-md p-2 bg-gray-50">
-              <span className="text-xs font-semibold">Digital output control</span>
+              <span className="text-xs font-semibold">
+                Digital output control
+              </span>
               <div className="flex flex-wrap gap-2">
                 {digitalOutput.map((_, index) => (
-                  <label key={index} className="flex items-center gap-1 text-xs">
+                  <label
+                    key={index}
+                    className="flex items-center gap-1 text-xs"
+                  >
                     <span>{index}</span>
                     <input
                       checked={digitalOutput[index]}
@@ -389,9 +402,7 @@ const Control = () => {
                   <option value="12">Get log</option>
                   <option value="13">Command</option>
                 </select>
-                <button
-                  className="text-xs bg-gray-200 px-2 py-1 rounded hover:bg-gray-300 transition min-w-[60px]"
-                >
+                <button className="text-xs bg-gray-200 px-2 py-1 rounded hover:bg-gray-300 transition min-w-[60px]">
                   PERFORM
                 </button>
               </div>
