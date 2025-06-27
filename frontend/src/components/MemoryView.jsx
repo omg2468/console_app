@@ -75,6 +75,7 @@ const MemoryView = () => {
       <p className="text-md font-semibold">MEMORY VIEW</p>
       <div className="flex flex-row items-center justify-start gap-1 w-full">
         <input
+          disabled={!context.isConnected}
           type="checkbox"
           className="custom"
           checked={display}

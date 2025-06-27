@@ -25,6 +25,7 @@ const TagView = () => {
 
       <div className="flex flex-row items-center justify-center gap-1 mb-2">
         <input
+          disabled={!context.isConnected}
           type="checkbox"
           className="custom"
           checked={display}

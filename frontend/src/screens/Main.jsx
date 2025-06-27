@@ -276,7 +276,7 @@ export default function Main({ onLoginOut }) {
             </div>
           </div>
         </div>
-        <div className="w-1/4 flex flex-row bg-blue pl-2">
+        <div className="w-1/5 flex flex-row bg-blue pl-2">
           <div className="flex flex-col justify-start items-center h-full">
             {centerList.map((item, index) => (
               <span

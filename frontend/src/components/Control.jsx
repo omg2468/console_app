@@ -216,14 +216,28 @@ const Control = () => {
         </div>
         <div className="flex flex-col gap-1">
           <div className="flex flex-row w-full items-center justify-center gap-2">
-            <div
-              className="flex-1 text-center text-xs border py-1 bg-gray-200 cursor-pointer hover:bg-gray-300"
+            <button
+              disabled={!context.isConnected}
               onClick={handleGetNetwork}
+              className={`flex-1 text-center text-xs border py-1
+    ${
+      context.isConnected
+        ? "bg-gray-200 text-black hover:bg-gray-300 cursor-pointer"
+        : "bg-gray-100 text-gray-400"
+    }
+  `}
             >
               GET NETWORK
-            </div>
+            </button>
             <div
-              className="flex-1 text-center text-xs border py-1 bg-gray-200 cursor-pointer hover:bg-gray-300"
+              disabled={!context.isConnected}
+              className={`flex-1 text-center text-xs border py-1
+    ${
+      context.isConnected
+        ? "bg-gray-200 text-black hover:bg-gray-300 cursor-pointer"
+        : "bg-gray-100 text-gray-400"
+    }
+  `}
               onClick={handleSetNetwork}
             >
               SET NETWORK
@@ -232,6 +246,7 @@ const Control = () => {
           <span className="font-black text-xs pt-2">ANALOG INPUT</span>
           <div className="gap-2 flex items-center justify-start ">
             <input
+              disabled={!context.isConnected}
               type="checkbox"
               className="w-4 h-4"
               checked={display}
@@ -318,6 +333,7 @@ const Control = () => {
                   checked={generateCurrent}
                   onChange={(e) => setGenerateCurrent(e.target.checked)}
                   className="ml-2"
+                  disabled={!context.isConnected}
                 />
               </div>
               <div className="flex flex-col sm:flex-row items-center gap-2 mt-2 flex-wrap">
@@ -329,21 +345,41 @@ const Control = () => {
                   onChange={(e) => setRealCurrent(e.target.value)}
                 />
                 <button
-                  className="text-xs bg-gray-200 px-2 py-1 rounded hover:bg-gray-300 transition"
-                  style={{ minWidth: 60 }}
+                  disabled={!context.isConnected}
+                  className={`text-xs px-2 py-1 rounded min-w-[60px] transition
+    ${
+      !context.isConnected
+        ? "bg-gray-100 text-gray-400"
+        : "bg-gray-200 hover:bg-gray-300 cursor-pointer"
+    }
+  `}
                 >
                   UPDATE
                 </button>
               </div>
               <div className="flex flex-col sm:flex-row gap-2 mt-2 flex-wrap">
                 <button
-                  className="flex-1 text-xs bg-gray-200 px-2 py-1 rounded hover:bg-gray-300 transition min-w-[90px]"
+                  disabled={!context.isConnected}
+                  className={`flex-1 text-xs px-2 py-1 rounded min-w-[90px] transition
+    ${
+      !context.isConnected
+        ? "bg-gray-100 text-gray-400"
+        : "bg-gray-200 hover:bg-gray-300 cursor-pointer"
+    }
+  `}
                   onClick={handleCalib4}
                 >
                   CALIB 4mA
                 </button>
                 <button
-                  className="flex-1 text-xs bg-gray-200 px-2 py-1 rounded hover:bg-gray-300 transition min-w-[90px]"
+                  disabled={!context.isConnected}
+                  className={`flex-1 text-xs px-2 py-1 rounded min-w-[90px] transition
+    ${
+      !context.isConnected
+        ? "bg-gray-100 text-gray-400"
+        : "bg-gray-200 hover:bg-gray-300 cursor-pointer"
+    }
+  `}
                   onClick={handleCalib16}
                 >
                   CALIB 16mA
@@ -376,7 +412,14 @@ const Control = () => {
                 ))}
               </div>
               <button
-                className="text-xs bg-gray-200 px-2 py-1 rounded hover:bg-gray-300 transition mt-2"
+                disabled={!context.isConnected}
+                className={`text-xs px-2 py-1 rounded min-w-[60px] transition
+    ${
+      !context.isConnected
+        ? "bg-gray-100 text-gray-400"
+        : "bg-gray-200 hover:bg-gray-300 cursor-pointer"
+    }
+  `}
                 style={{ minWidth: 60 }}
               >
                 SET
@@ -402,7 +445,16 @@ const Control = () => {
                   <option value="12">Get log</option>
                   <option value="13">Command</option>
                 </select>
-                <button className="text-xs bg-gray-200 px-2 py-1 rounded hover:bg-gray-300 transition min-w-[60px]">
+                <button
+                  disabled={!context.isConnected}
+                  className={`text-xs px-2 py-1 rounded min-w-[60px] transition
+    ${
+      !context.isConnected
+        ? "bg-gray-100 text-gray-400"
+        : "bg-gray-200 hover:bg-gray-300 cursor-pointer"
+    }
+  `}
+                >
                   PERFORM
                 </button>
               </div>

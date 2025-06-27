@@ -2,10 +2,10 @@ package main
 
 import (
 	"embed"
-	"myproject/backend/user"
-	"myproject/backend/workspace"
 	"myproject/backend/auth"
 	"myproject/backend/control"
+	"myproject/backend/user"
+	"myproject/backend/workspace"
 
 	"github.com/wailsapp/wails/v2"
 	"github.com/wailsapp/wails/v2/pkg/options"
@@ -25,9 +25,10 @@ func main() {
 
 	// Create application with options
 	err := wails.Run(&options.App{
-		Title:  "Console App",
-		Width:  1024,
-		Height: 768,
+		Title:         "Console App",
+		Width:         1224,
+		Height:        800,
+		DisableResize: true,
 		AssetServer: &assetserver.Options{
 			Assets: assets,
 		},

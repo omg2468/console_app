@@ -45,8 +45,8 @@ function ConnectComponent({ onConnected, dataFile, setDataFile, fileLoaded }) {
       return;
     }
     UploadConfig(JSON.stringify(dataFile)).catch((err) => {
-        ShowErrorDialog("Lỗi upload cấu hình: " + err);
-      });
+      ShowErrorDialog("Lỗi upload cấu hình: " + err);
+    });
   };
 
   useEffect(() => {
@@ -168,14 +168,29 @@ function ConnectComponent({ onConnected, dataFile, setDataFile, fileLoaded }) {
         </button>
       </div>
       <button
+        disabled={!context.isConnected}
         onClick={handleUploadConfig}
-        className="flex-1 px-2 w-full bg-gray-200 text-gray-700 py-1 rounded border border-gray-400 hover:bg-gray-300 text-xs transition"
+        className={`flex-1 px-2 w-full py-1 rounded border text-xs transition
+    ${
+      context.isConnected
+        ? "bg-gray-200 text-gray-700 border-gray-400 hover:bg-gray-300 cursor-pointer"
+        : "bg-gray-100 text-gray-400 border-gray-300"
+    }
+  `}
       >
         Upload
       </button>
+
       <button
+        disabled={!context.isConnected}
         onClick={DownloadConfig}
-        className="flex-1 px-2 w-full bg-gray-200 text-gray-700 py-1 rounded border border-gray-400 hover:bg-gray-300 text-xs transition"
+        className={`flex-1 px-2 w-full py-1 rounded border text-xs transition
+    ${
+      context.isConnected
+        ? "bg-gray-200 text-gray-700 border-gray-400 hover:bg-gray-300 cursor-pointer"
+        : "bg-gray-100 text-gray-400 border-gray-300"
+    }
+  `}
       >
         Download
       </button>
