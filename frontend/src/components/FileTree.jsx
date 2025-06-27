@@ -188,8 +188,6 @@ const TreeNode = ({
     e.preventDefault();
     e.stopPropagation();
 
-    if (showModal.show) return;
-
     if (node.type == "file") {
       // Nếu là file, chỉ hiển thị các hành động liên quan đến file
       context?.showMenu(e.clientX, e.clientY, [
@@ -472,7 +470,7 @@ const FileTree = ({
   const handleContextMenu = (e) => {
     e.preventDefault();
     e.stopPropagation();
-    if (showModal.show) return;
+
     context?.showMenu(e.clientX, e.clientY, [
       {
         label: "New Project",
