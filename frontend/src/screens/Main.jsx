@@ -23,6 +23,8 @@ import {
 
 import ConnectComponent from "../components/Connect";
 
+import { ContextMenuContext } from "../store";
+
 export default function Main({ onLoginOut }) {
   const [leftTab, setLeftTab] = useState("Workspace");
   const [middleTab, setMiddleTab] = useState("system");
@@ -38,6 +40,8 @@ export default function Main({ onLoginOut }) {
 
   const [showModal, setShowModal] = useState(false);
   const [input, setInput] = useState("");
+
+  const context = useContext(ContextMenuContext);
 
   function normalizeWorkspacePath(path) {
     return path.replace(/^workspace\//, "");
@@ -272,7 +276,19 @@ export default function Main({ onLoginOut }) {
                   setFileLoaded={setFileLoaded}
                 />
               )}
-              {leftTab === "Device" && <ConnectComponent dataFile={dataFile} setDataFile={setDataFile} fileLoaded={fileLoaded}/>}
+              {leftTab === "Device" && (
+                <ConnectComponent
+                  dataFile={dataFile}
+                  setDataFile={setDataFile}
+                  fileLoaded={fileLoaded}
+                />
+              )}
+              <textarea
+                className="mt-2 px-2 py-1 border border-gray-300 rounded text-xs focus:outline-none focus:border-blue-500 w-full resize-none"
+                placeholder="Data từ thiết bị"
+                value={context.dataTest}
+                rows={30}
+              />
             </div>
           </div>
         </div>

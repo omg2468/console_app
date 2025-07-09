@@ -16,3 +16,9 @@ export function ReadTagView():Promise<void>;
 export function SetTime(arg1:Array<number>):Promise<void>;
 
 export function SettingNetwork(arg1:Record<string, any>):Promise<void>;
+
+export function StopReadAnalog():Promise<void>;
+
+export function StopReadMemoryView():Promise<void>;
+
+export function StopReadTagView():Promise<void>;

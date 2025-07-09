@@ -7,6 +7,7 @@ import {
   Calib4ma,
   Calib16ma,
   ReadAnalog,
+  StopReadAnalog
 } from "../../wailsjs/go/control/ControlService";
 
 import { ShowQuestionDialog } from "../../wailsjs/go/main/App";
@@ -21,7 +22,7 @@ const Control = () => {
     gateway: "",
     dns: "",
     proxy: "",
-    "secondary ip": "",
+    secondary_ip: "",
     global: "",
     modem: false,
   });
@@ -175,9 +176,9 @@ const Control = () => {
                   <input
                     className="w-full"
                     type="text"
-                    name="secondary ip"
+                    name="secondary_ip"
                     placeholder="Enter secondary IP"
-                    value={formData["secondary ip"]}
+                    value={formData.secondary_ip}
                     onChange={handleChange}
                   />
                 </td>
@@ -253,6 +254,8 @@ const Control = () => {
               onChange={(e) => {
                 if (e.target.checked) {
                   ReadAnalog();
+                } else {
+                  StopReadAnalog();
                 }
                 setDisplay(e.target.checked);
               }}

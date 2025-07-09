@@ -1,7 +1,7 @@
 import React, { useContext, useState, useEffect } from "react";
 import { ContextMenuContext } from "../store";
 
-import { ReadMemoryView } from "../../wailsjs/go/control/ControlService";
+import { ReadMemoryView, StopReadMemoryView } from "../../wailsjs/go/control/ControlService";
 
 const MemoryView = () => {
   const [display, setDisplay] = useState(false);
@@ -82,6 +82,8 @@ const MemoryView = () => {
           onChange={(e) => {
             if (e.target.checked) {
               ReadMemoryView();
+            } else {
+              StopReadMemoryView();
             }
             setDisplay(e.target.checked);
           }}

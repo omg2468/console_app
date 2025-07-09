@@ -33,3 +33,15 @@ export function SetTime(arg1) {
 export function SettingNetwork(arg1) {
   return window['go']['control']['ControlService']['SettingNetwork'](arg1);
 }
+
+export function StopReadAnalog() {
+  return window['go']['control']['ControlService']['StopReadAnalog']();
+}
+
+export function StopReadMemoryView() {
+  return window['go']['control']['ControlService']['StopReadMemoryView']();
+}
+
+export function StopReadTagView() {
+  return window['go']['control']['ControlService']['StopReadTagView']();
+}

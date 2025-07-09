@@ -1,7 +1,10 @@
 import React, { useContext, useState, useEffect } from "react";
 import { ContextMenuContext } from "../store";
 
-import { ReadTagView } from "../../wailsjs/go/control/ControlService";
+import {
+  ReadTagView,
+  StopReadTagView,
+} from "../../wailsjs/go/control/ControlService";
 
 const TagView = () => {
   const [display, setDisplay] = useState(false);
@@ -31,9 +34,12 @@ const TagView = () => {
           checked={display}
           onChange={(e) => {
             if (e.target.checked) {
-              ReadTagView()
+              ReadTagView();
+            } else {
+              StopReadTagView();
             }
-            setDisplay(e.target.checked)}}
+            setDisplay(e.target.checked);
+          }}
         />
         <span>Display value</span>
         <div className="w-[100px] h-2 bg-gray-200 rounded overflow-hidden relative">

@@ -33,15 +33,27 @@ func (c *ControlService) SettingNetwork(data map[string]interface{}) error {
 }
 
 func (c *ControlService) ReadAnalog() error {
-	return c.authService.Send(`{"type":"read_analog"}`)
+	return c.authService.Send(`{"type":"read_analog", "data":"enable"}`)
+}
+
+func (c *ControlService) StopReadAnalog() error {
+	return c.authService.Send(`{"type":"read_analog", "data":"disable"}`)
 }
 
 func (c *ControlService) ReadMemoryView() error {
-	return c.authService.Send(`{"type":"read_memory_view"}`)
+	return c.authService.Send(`{"type":"read_memory_view", "data":"enable"}`)
+}
+
+func (c *ControlService) StopReadMemoryView() error {
+	return c.authService.Send(`{"type":"read_memory_view", "data":"disable"}`)
 }
 
 func (c *ControlService) ReadTagView() error {
-	return c.authService.Send(`{"type":"read_tag_view"}`)
+	return c.authService.Send(`{"type":"read_tag_view", "data":"enable"}`)
+}
+
+func (c *ControlService) StopReadTagView() error {
+	return c.authService.Send(`{"type":"read_tag_view", "data":"disable"}`)
 }
 
 func (c *ControlService) Calib4ma() error {

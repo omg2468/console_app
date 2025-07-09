@@ -13,6 +13,9 @@ export const ContextMenuProvider = ({ children }) => {
   const [isConnected, setIsConnected] = useState(false);
   const [selectedPort, setSelectedPort] = useState("");
 
+  //Will remove this later
+  const [dataTest, setDataTest] = useState("");
+
   const showMenu = (x, y, content) => {
     setPosition({ x, y });
     setContent(content);
@@ -53,6 +56,8 @@ export const ContextMenuProvider = ({ children }) => {
         setIsConnected,
         selectedPort,
         setSelectedPort,
+        dataTest,
+        setDataTest
       }}
     >
       {children}

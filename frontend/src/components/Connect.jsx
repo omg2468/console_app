@@ -84,17 +84,30 @@ function ConnectComponent({ onConnected, dataFile, setDataFile, fileLoaded }) {
           if (response) {
             try {
               const jsonData = JSON.parse(response);
+              context.setDataTest(response); // Update dataTest with the raw response
               switch (jsonData.type) {
                 case "read_analog":
+                  if (!jsonData.data) {
+                    return;
+                  }
                   context.setAnalogData(jsonData.data);
                   break;
                 case "read_tag_view":
+                  if (!jsonData.data) {
+                    return;
+                  }
                   context.setTagViewData(jsonData.data);
                   break;
                 case "read_memory_view":
+                  if (!jsonData.data) {
+                    return;
+                  }
                   context.setMemoryViewData(jsonData.data);
                   break;
                 case "download_config":
+                  if (!jsonData.data) {
+                    return;
+                  }
                   setDataFile(jsonData.data);
                   ShowInfoDialog(
                     "Đã tải xuống cấu hình thành công",
