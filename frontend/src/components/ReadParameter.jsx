@@ -832,6 +832,48 @@ const ReadParameter = ({
                       </tr>
                       <tr className="">
                         <td className="px-2 py-1 text-xs text-right font-semibold">
+                          Data Fields Order
+                        </td>
+                        <td className="px-2 py-1 text-xs">
+                          <input
+                            type="number"
+                            value={parameter.value.data_fields_order}
+                            onChange={(e) =>
+                              handleUpdateParameter({
+                                dataFile,
+                                setDataFile,
+                                key: item.key,
+                                paramKey: "data_fields_order",
+                                value: Number(e.target.value),
+                              })
+                            }
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg px-2 py-1 w-full"
+                          />
+                        </td>
+                      </tr>
+                      <tr className="">
+                        <td className="px-2 py-1 text-xs text-right font-semibold">
+                          LCD tag change
+                        </td>
+                        <td className="px-2 py-1 text-xs">
+                          <input
+                            type="number"
+                            value={parameter.value.lcd_tag_change}
+                            onChange={(e) =>
+                              handleUpdateParameter({
+                                dataFile,
+                                setDataFile,
+                                key: item.key,
+                                paramKey: "lcd_tag_change",
+                                value: Number(e.target.value),
+                              })
+                            }
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg px-2 py-1 w-full"
+                          />
+                        </td>
+                      </tr>
+                      <tr className="">
+                        <td className="px-2 py-1 text-xs text-right font-semibold">
                           Memory persistent
                         </td>
                         <td className="px-2 py-1 text-xs">

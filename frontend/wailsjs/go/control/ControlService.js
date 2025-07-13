@@ -14,6 +14,10 @@ export function GetNetworkInfo() {
   return window['go']['control']['ControlService']['GetNetworkInfo']();
 }
 
+export function Ping() {
+  return window['go']['control']['ControlService']['Ping']();
+}
+
 export function ReadAnalog() {
   return window['go']['control']['ControlService']['ReadAnalog']();
 }
@@ -22,8 +26,32 @@ export function ReadMemoryView() {
   return window['go']['control']['ControlService']['ReadMemoryView']();
 }
 
+export function ReadSdcardInfo() {
+  return window['go']['control']['ControlService']['ReadSdcardInfo']();
+}
+
+export function ReadSimInfo() {
+  return window['go']['control']['ControlService']['ReadSimInfo']();
+}
+
+export function ReadSystemInfo() {
+  return window['go']['control']['ControlService']['ReadSystemInfo']();
+}
+
 export function ReadTagView() {
   return window['go']['control']['ControlService']['ReadTagView']();
+}
+
+export function Reboot() {
+  return window['go']['control']['ControlService']['Reboot']();
+}
+
+export function ResetConfiguration() {
+  return window['go']['control']['ControlService']['ResetConfiguration']();
+}
+
+export function SetDigitalOutput(arg1) {
+  return window['go']['control']['ControlService']['SetDigitalOutput'](arg1);
 }
 
 export function SetTime(arg1) {
@@ -44,4 +72,12 @@ export function StopReadMemoryView() {
 
 export function StopReadTagView() {
   return window['go']['control']['ControlService']['StopReadTagView']();
+}
+
+export function WriteMacAddress(arg1) {
+  return window['go']['control']['ControlService']['WriteMacAddress'](arg1);
+}
+
+export function WriteSerialNumber(arg1) {
+  return window['go']['control']['ControlService']['WriteSerialNumber'](arg1);
 }

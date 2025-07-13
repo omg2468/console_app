@@ -178,6 +178,7 @@ func (a *AuthService) Send(data string) error {
 }
 
 func (a *AuthService) Disconnect() error {
+	a.Send(`{"type":"logout"}`)
 	a.mu.Lock()
 	defer a.mu.Unlock()
 
@@ -209,10 +210,9 @@ func (a *AuthService) Login(username, password string) error {
 	return a.Send(string(jsonBytes))
 }
 
-func (a *AuthService) ChangePassword(username, oldPassword, newPassword string) error {
+func (a *AuthService) ChangePassword(oldPassword, newPassword string) error {
 	changeData := map[string]string{
 		"type":         "change_password",
-		"username":     username,
 		"old_password": oldPassword,
 		"new_password": newPassword,
 	}

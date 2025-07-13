@@ -7,25 +7,22 @@ import {
   Calib4ma,
   Calib16ma,
   ReadAnalog,
-  StopReadAnalog
+  StopReadAnalog,
+  SetDigitalOutput,
+  ReadSystemInfo,
+  WriteSerialNumber,
+  WriteMacAddress,
+  ResetConfiguration,
+  Reboot,
+  ReadSimInfo,
+  ReadSdcardInfo,
+  Ping,
 } from "../../wailsjs/go/control/ControlService";
-
 import { ShowQuestionDialog } from "../../wailsjs/go/main/App";
 
 const Control = () => {
   const [realCurrent, setRealCurrent] = useState("4.000mA");
   const [display, setDisplay] = useState(false);
-  const [formData, setFormData] = useState({
-    dhcp: false,
-    ip: "",
-    netmask: "",
-    gateway: "",
-    dns: "",
-    proxy: "",
-    secondary_ip: "",
-    global: "",
-    modem: false,
-  });
   const [generateCurrent, setGenerateCurrent] = useState(false);
   const [digitalOutput, setDigitalOutput] = useState([
     false,
@@ -33,8 +30,19 @@ const Control = () => {
     false,
     false,
     false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
   ]);
   const [loadingPos, setLoadingPos] = useState(0);
+
+  const [dataCommand, setDataCommand] = useState("");
+  const [selectedCommand, setSelectedCommand] = useState("read_system_info");
+
   const barWidth = 40;
 
   const context = useContext(ContextMenuContext);
@@ -43,29 +51,40 @@ const Control = () => {
 
   const handleChange = (e) => {
     const { name, type, checked, value } = e.target;
-    setFormData((prev) => ({
+    context.setFormData((prev) => ({
       ...prev,
       [name]: type === "checkbox" ? checked : value,
     }));
   };
 
   const handleSetNetwork = () => {
-    SettingNetwork(formData);
+    SettingNetwork(context.formData);
   };
 
   const handleGetNetwork = () => {
     GetNetworkInfo();
   };
 
-  const handleCalib4 = () => {
-    ShowQuestionDialog("Calibration at 4mA", "Calibration");
+  const handleCalib4 = async () => {
+    const result = await ShowQuestionDialog(
+      "Calibration at 4mA",
+      "Calibration"
+    );
 
-    Calib4ma();
+    if (result === "Yes") {
+      Calib4ma(); // Chỉ chạy khi người dùng chọn Yes
+    }
   };
 
-  const handleCalib16 = () => {
-    ShowQuestionDialog("Calibration at 20mA", "Calibration");
-    Calib16ma();
+  const handleCalib16 = async () => {
+    const result = await ShowQuestionDialog(
+      "Calibration at 4mA",
+      "Calibration"
+    );
+
+    if (result === "Yes") {
+      Calib16ma(); // Chỉ chạy khi người dùng chọn Yes
+    }
   };
 
   useEffect(() => {
@@ -93,7 +112,7 @@ const Control = () => {
                       type="checkbox"
                       name="dhcp"
                       className="w-4 h-4"
-                      checked={formData.dhcp}
+                      checked={context.formData.dhcp}
                       onChange={handleChange}
                     />
                   </div>
@@ -108,7 +127,7 @@ const Control = () => {
                     type="text"
                     name="ip"
                     placeholder="Enter IP address"
-                    value={formData.ip}
+                    value={context.formData.ip}
                     onChange={handleChange}
                   />
                 </td>
@@ -122,7 +141,7 @@ const Control = () => {
                     type="text"
                     name="netmask"
                     placeholder="Enter subnet mask"
-                    value={formData.netmask}
+                    value={context.formData.netmask}
                     onChange={handleChange}
                   />
                 </td>
@@ -136,7 +155,7 @@ const Control = () => {
                     type="text"
                     name="gateway"
                     placeholder="Enter gateway IP"
-                    value={formData.gateway}
+                    value={context.formData.gateway}
                     onChange={handleChange}
                   />
                 </td>
@@ -150,7 +169,7 @@ const Control = () => {
                     type="text"
                     name="dns"
                     placeholder="Enter DNS server"
-                    value={formData.dns}
+                    value={context.formData.dns}
                     onChange={handleChange}
                   />
                 </td>
@@ -164,7 +183,7 @@ const Control = () => {
                     type="text"
                     name="proxy"
                     placeholder="Enter proxy address"
-                    value={formData.proxy}
+                    value={context.formData.proxy}
                     onChange={handleChange}
                   />
                 </td>
@@ -178,7 +197,7 @@ const Control = () => {
                     type="text"
                     name="secondary_ip"
                     placeholder="Enter secondary IP"
-                    value={formData.secondary_ip}
+                    value={context.formData.secondary_ip}
                     onChange={handleChange}
                   />
                 </td>
@@ -192,7 +211,7 @@ const Control = () => {
                     type="text"
                     name="global"
                     placeholder="Enter global IP"
-                    value={formData.global}
+                    value={context.formData.global}
                     onChange={handleChange}
                   />
                 </td>
@@ -206,7 +225,7 @@ const Control = () => {
                       type="checkbox"
                       name="modem"
                       className="w-4 h-4"
-                      checked={formData.modem}
+                      checked={context.formData.modem}
                       onChange={handleChange}
                     />
                   </div>
@@ -398,7 +417,7 @@ const Control = () => {
                 {digitalOutput.map((_, index) => (
                   <label
                     key={index}
-                    className="flex items-center gap-1 text-xs"
+                    className="flex items-center gap-2 text-xs"
                   >
                     <span>{index}</span>
                     <input
@@ -424,6 +443,9 @@ const Control = () => {
     }
   `}
                 style={{ minWidth: 60 }}
+                onClick={() => {
+                  SetDigitalOutput(digitalOutput);
+                }}
               >
                 SET
               </button>
@@ -432,21 +454,23 @@ const Control = () => {
             <div className="flex-1 min-w-[200px] flex flex-col gap-2 border rounded-md p-2 bg-gray-50">
               <span className="text-xs font-semibold">System control</span>
               <div className="flex flex-col sm:flex-row gap-2 items-center flex-wrap">
-                <select className="bg-white border border-gray-300 text-gray-900 text-xs py-[2px] w-full">
-                  <option value="0">Read system info</option>
-                  <option value="1">Write serial number</option>
-                  <option value="2">Write mac address</option>
-                  <option value="3">Retry configuration</option>
-                  <option value="4">Reboot</option>
-                  <option value="5">Reload</option>
-                  <option value="6">get time</option>
-                  <option value="7">set time</option>
-                  <option value="8">enable ntp</option>
-                  <option value="9">Read sim info</option>
-                  <option value="10">Read sdcard info</option>
-                  <option value="11">Ping</option>
-                  <option value="12">Get log</option>
-                  <option value="13">Command</option>
+                <select
+                  value={selectedCommand}
+                  onChange={(e) => setSelectedCommand(e.target.value)}
+                  className="bg-white border border-gray-300 text-gray-900 text-xs py-[2px] w-full"
+                >
+                  <option value="read_system_info">Read system info</option>
+                  <option value="write_serial_number">
+                    Write serial number
+                  </option>
+                  <option value="write_mac">Write mac address</option>
+                  <option value="reset_configuration">
+                    Reset Configuration
+                  </option>
+                  <option value="reboot">Reboot</option>
+                  <option value="read_sim_info">Read sim info</option>
+                  <option value="read_sdcard_info">Read sdcard info</option>
+                  <option value="ping">Ping</option>
                 </select>
                 <button
                   disabled={!context.isConnected}
@@ -457,6 +481,52 @@ const Control = () => {
         : "bg-gray-200 hover:bg-gray-300 cursor-pointer"
     }
   `}
+                  onClick={() => {
+                    setDataCommand("");
+                    try {
+                      switch (selectedCommand) {
+                        case "read_system_info":
+                          context.setInfoDialog("Reading system info...");
+                          ReadSystemInfo();
+                          break;
+                        case "write_serial_number":
+                          context.setInfoDialog("Writing serial number...");
+                          WriteSerialNumber(dataCommand);
+                          break;
+                        case "write_mac":
+                          context.setInfoDialog("Writing MAC address...");
+                          WriteMacAddress(dataCommand);
+                          break;
+                        case "reset_configuration":
+                          context.setInfoDialog("Resetting configuration...");
+                          ResetConfiguration();
+
+                          break;
+                        case "reboot":
+                          context.setInfoDialog("Rebooting system...");
+                          Reboot();
+                          break;
+                        case "read_sim_info":
+                          context.setInfoDialog("Reading SIM info...");
+                          ReadSimInfo();
+                          break;
+                        case "read_sdcard_info":
+                          context.setInfoDialog("Reading SD card info...");
+                          ReadSdcardInfo();
+                          break;
+                        case "ping":
+                          context.setInfoDialog("Pinging...");
+                          Ping();
+                          break;
+                        default:
+                          break;
+                      }
+                    } catch (error) {
+                      context.setInfoDialog(
+                        "An error occurred while executing the command."
+                      );
+                    }
+                  }}
                 >
                   PERFORM
                 </button>
@@ -465,8 +535,16 @@ const Control = () => {
           </div>
         </div>
         <div className="gap-2 flex flex-1 flex-col mx-1">
-          <div className="w-full min-h-[20px] border "></div>
-          <div className="flex-1 w-full border"></div>
+          <input
+            type="text"
+            value={dataCommand}
+            onChange={(e) => setDataCommand(e.target.value)}
+            className="w-full min-h-[20px] border p-2 text-xs"
+          />
+          <textarea
+            className="w-full h-full border p-2 text-xs"
+            value={context.infoDialog}
+          ></textarea>
         </div>
       </div>
     </div>

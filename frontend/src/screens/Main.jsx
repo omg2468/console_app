@@ -242,12 +242,6 @@ export default function Main({ onLoginOut }) {
         >
           Import Project
         </button>
-        {/* <button
-          onClick={onLoginOut}
-          className="rounded-md bg-white border border-gray-300 px-2 py-0.5 text-[10px] font-medium shadow-sm hover:bg-blue-50 hover:border-blue-400 active:bg-blue-100 active:border-blue-400 transition-colors"
-        >
-          Log Out
-        </button> */}
       </div>
       <div className="flex-1 mt-2 w-full overflow-hidden flex flex-row">
         <div className="w-1/4 flex flex-col">

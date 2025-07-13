@@ -64,6 +64,56 @@ func (c *ControlService) Calib16ma() error {
 	return c.authService.Send(`{"type":"calib_16ma"}`)
 }
 
+func (c *ControlService) ReadSystemInfo() error {
+	return c.authService.Send(`{"type":"read_system_info"}`)
+}
+
+func (c *ControlService) WriteMacAddress(macAddress string) error {
+	message := map[string]interface{}{
+		"type": "write_mac",
+		"data": macAddress,
+	}
+	finalData, err := json.Marshal(message)
+	if err != nil {
+		return fmt.Errorf("marshal lỗi: %w", err)
+	}
+	return c.authService.Send(string(finalData))
+}	
+
+func (c *ControlService) ResetConfiguration() error {
+	return c.authService.Send(`{"type":"reset_configuration"}`)
+}
+
+func (c *ControlService) Reboot() error {
+	return c.authService.Send(`{"type":"reboot"}`)
+}
+
+func (c *ControlService) ReadSimInfo() error {
+	return c.authService.Send(`{"type":"read_sim_info"}`)
+}
+
+func (c *ControlService) ReadSdcardInfo() error {
+	return c.authService.Send(`{"type":"read_sdcard_info"}`)
+}
+
+func (c *ControlService) Ping() error {
+	return c.authService.Send(`{"type":"ping"}`)
+}
+
+func (c *ControlService) WriteSerialNumber(serialNumber string) error {
+	message := map[string]interface{}{
+		"type": "write_serial_number",
+		"data": serialNumber,
+	}
+
+	finalData, err := json.Marshal(message)
+	if err != nil {
+		return fmt.Errorf("marshal lỗi: %w", err)
+	}
+
+	return c.authService.Send(string(finalData))
+}
+
 func (c *ControlService) SetTime(timeArray []int) error {
 	message := map[string]interface{}{
 		"type": "set_time",
@@ -77,3 +127,31 @@ func (c *ControlService) SetTime(timeArray []int) error {
 
 	return c.authService.Send(string(finalData))
 }
+
+func (c *ControlService) SetDigitalOutput(outputStates []bool) error {
+	if len(outputStates) != 12 {
+		return fmt.Errorf("outputStates phải có đúng 12 phần tử")
+	}
+
+	intStates := make([]int, len(outputStates))
+	for i, v := range outputStates {
+		if v {
+			intStates[i] = 1
+		} else {
+			intStates[i] = 0
+		}
+	}
+
+	message := map[string]interface{}{
+		"type": "set_digital_output",
+		"data": intStates,
+	}
+
+	finalData, err := json.Marshal(message)
+	if err != nil {
+		return fmt.Errorf("marshal lỗi: %w", err)
+	}
+
+	return c.authService.Send(string(finalData))
+}
+

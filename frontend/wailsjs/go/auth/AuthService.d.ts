@@ -4,7 +4,7 @@ import {time} from '../models';
 
 export function AddUser(arg1:string,arg2:string):Promise<void>;
 
-export function ChangePassword(arg1:string,arg2:string,arg3:string):Promise<void>;
+export function ChangePassword(arg1:string,arg2:string):Promise<void>;
 
 export function ConnectToPort(arg1:string):Promise<void>;
 

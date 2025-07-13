@@ -12,6 +12,20 @@ export const ContextMenuProvider = ({ children }) => {
   const [tagViewData, setTagViewData] = useState([]);
   const [isConnected, setIsConnected] = useState(false);
   const [selectedPort, setSelectedPort] = useState("");
+  const [isLogin, setIsLogin] = useState(false);
+  const [role, setRole] = useState("");
+  const [formData, setFormData] = useState({
+    dhcp: false,
+    ip: "",
+    netmask: "",
+    gateway: "",
+    dns: "",
+    proxy: "",
+    secondary_ip: "",
+    global: "",
+    modem: false,
+  });
+  const [infoDialog, setInfoDialog] = useState(null);
 
   //Will remove this later
   const [dataTest, setDataTest] = useState("");
@@ -23,7 +37,6 @@ export const ContextMenuProvider = ({ children }) => {
   };
 
   const hideMenu = () => {
-
     setIsVisible(false);
     setContent(null);
   };
@@ -57,7 +70,15 @@ export const ContextMenuProvider = ({ children }) => {
         selectedPort,
         setSelectedPort,
         dataTest,
-        setDataTest
+        setDataTest,
+        isLogin,
+        setIsLogin,
+        role,
+        setRole,
+        formData,
+        setFormData,
+        infoDialog,
+        setInfoDialog,
       }}
     >
       {children}

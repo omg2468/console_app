@@ -40,11 +40,12 @@ func (a *App) ShowErrorDialog(message string) {
 	})
 }
 
-func (a *App) ShowQuestionDialog(message, title string) {
-	runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
+func (a *App) ShowQuestionDialog(message, title string) (string, error) {
+	return runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
 		Title:   title,
 		Message: message,
 		Type:    runtime.QuestionDialog,
+		Buttons: []string{"Yes", "No"}, // cần khai báo nếu muốn có nhiều nút
 	})
 }
 

@@ -7,11 +7,25 @@ export function Calib4ma():Promise<void>;
 
 export function GetNetworkInfo():Promise<void>;
 
+export function Ping():Promise<void>;
+
 export function ReadAnalog():Promise<void>;
 
 export function ReadMemoryView():Promise<void>;
 
+export function ReadSdcardInfo():Promise<void>;
+
+export function ReadSimInfo():Promise<void>;
+
+export function ReadSystemInfo():Promise<void>;
+
 export function ReadTagView():Promise<void>;
+
+export function Reboot():Promise<void>;
+
+export function ResetConfiguration():Promise<void>;
+
+export function SetDigitalOutput(arg1:Array<boolean>):Promise<void>;
 
 export function SetTime(arg1:Array<number>):Promise<void>;
 
@@ -22,3 +36,7 @@ export function StopReadAnalog():Promise<void>;
 export function StopReadMemoryView():Promise<void>;
 
 export function StopReadTagView():Promise<void>;
+
+export function WriteMacAddress(arg1:string):Promise<void>;
+
+export function WriteSerialNumber(arg1:string):Promise<void>;

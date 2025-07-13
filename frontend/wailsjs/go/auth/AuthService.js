@@ -6,8 +6,8 @@ export function AddUser(arg1, arg2) {
   return window['go']['auth']['AuthService']['AddUser'](arg1, arg2);
 }
 
-export function ChangePassword(arg1, arg2, arg3) {
-  return window['go']['auth']['AuthService']['ChangePassword'](arg1, arg2, arg3);
+export function ChangePassword(arg1, arg2) {
+  return window['go']['auth']['AuthService']['ChangePassword'](arg1, arg2);
 }
 
 export function ConnectToPort(arg1) {

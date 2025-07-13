@@ -9,4 +9,4 @@ export function ShowErrorDialog(arg1:string):Promise<void>;
 
 export function ShowInfoDialog(arg1:string,arg2:string):Promise<void>;
 
-export function ShowQuestionDialog(arg1:string,arg2:string):Promise<void>;
+export function ShowQuestionDialog(arg1:string,arg2:string):Promise<string>;

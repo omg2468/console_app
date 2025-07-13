@@ -1,11 +1,15 @@
 import React, { useContext, useState, useEffect } from "react";
 import { ContextMenuContext } from "../store";
 
-import { ReadMemoryView, StopReadMemoryView } from "../../wailsjs/go/control/ControlService";
+import {
+  ReadMemoryView,
+  StopReadMemoryView,
+} from "../../wailsjs/go/control/ControlService";
 
 const MemoryView = () => {
   const [display, setDisplay] = useState(false);
   const [loadingPos, setLoadingPos] = useState(0);
+  const [precision, setPrecision] = useState(2);
   const barWidth = 40;
 
   const context = useContext(ContextMenuContext);
@@ -37,7 +41,7 @@ const MemoryView = () => {
         );
         cells.push(
           <td key={`val-${col}-${row}`} className="border px-2 py-1 ">
-            {memory && display ? memory[idx] : "-"}
+            {memory && display ? memory[idx]?.toFixed(precision) : "-"}
           </td>
         );
       } else {
@@ -72,7 +76,30 @@ const MemoryView = () => {
 
   return (
     <div className="flex flex-col items-start justify-start p-2 w-full h-full">
-      <p className="text-md font-semibold">MEMORY VIEW</p>
+      <div className="flex flex-row justify-between items-center w-full mb-2">
+        <div>
+          <p className="text-md font-semibold">MEMORY VIEW</p>
+        </div>
+        <div className="flex flex-row items-center gap-1">
+          <div>Precision</div>
+          <input
+            type="number"
+            className="w-12 px-1 py-0.5 text-sm border border-gray-300 rounded"
+            value={precision}
+            min={1}
+            max={6}
+            step={1}
+            onChange={(e) => {
+              const val = parseInt(e.target.value, 10);
+              if (val >= 1 && val <= 6) {
+                setPrecision(val);
+              } else if (e.target.value === "") {
+                setPrecision("");
+              }
+            }}
+          />
+        </div>
+      </div>
       <div className="flex flex-row items-center justify-start gap-1 w-full">
         <input
           disabled={!context.isConnected}
