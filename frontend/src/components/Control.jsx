@@ -21,14 +21,8 @@ import {
 import { ShowQuestionDialog } from "../../wailsjs/go/main/App";
 
 const Control = () => {
-  const [realCurrent, setRealCurrent] = useState("4.000mA");
   const [display, setDisplay] = useState(false);
-  const [generateCurrent, setGenerateCurrent] = useState(false);
   const [digitalOutput, setDigitalOutput] = useState([
-    false,
-    false,
-    false,
-    false,
     false,
     false,
     false,
@@ -339,46 +333,6 @@ const Control = () => {
         <div className="w-full flex flex-col gap-2 p-1">
           <div className="flex flex-col gap-2">
             <div className="flex-1 min-w-[200px] flex flex-col gap-2 border rounded-md p-2 bg-gray-50">
-              <div className="flex flex-col sm:flex-row items-center gap-2 flex-wrap">
-                <span className="text-xs whitespace-nowrap">
-                  Generate current
-                </span>
-                <select className="bg-white border border-gray-300 text-gray-900 text-sm py-[2px] w-20">
-                  <option value="4">4mA</option>
-                  <option value="8">8mA</option>
-                  <option value="12">12mA</option>
-                  <option value="16">16mA</option>
-                  <option value="20">20mA</option>
-                </select>
-                <input
-                  type="checkbox"
-                  checked={generateCurrent}
-                  onChange={(e) => setGenerateCurrent(e.target.checked)}
-                  className="ml-2"
-                  disabled={!context.isConnected}
-                />
-              </div>
-              <div className="flex flex-col sm:flex-row items-center gap-2 mt-2 flex-wrap">
-                <span className="text-xs">Real current</span>
-                <input
-                  className="custom text-xs bg-white border rounded-md border-gray-300 text-gray-900 pl-2 h-[24px] w-20"
-                  type="text"
-                  value={realCurrent}
-                  onChange={(e) => setRealCurrent(e.target.value)}
-                />
-                <button
-                  disabled={!context.isConnected}
-                  className={`text-xs px-2 py-1 rounded min-w-[60px] transition
-    ${
-      !context.isConnected
-        ? "bg-gray-100 text-gray-400"
-        : "bg-gray-200 hover:bg-gray-300 cursor-pointer"
-    }
-  `}
-                >
-                  UPDATE
-                </button>
-              </div>
               <div className="flex flex-col sm:flex-row gap-2 mt-2 flex-wrap">
                 <button
                   disabled={!context.isConnected}
@@ -395,7 +349,7 @@ const Control = () => {
                 </button>
                 <button
                   disabled={!context.isConnected}
-                  className={`flex-1 text-xs px-2 py-1 rounded min-w-[90px] transition
+                  className={`flex-1 text-xs px-2 rounded min-w-[90px] transition
     ${
       !context.isConnected
         ? "bg-gray-100 text-gray-400"
