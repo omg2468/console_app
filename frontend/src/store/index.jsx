@@ -11,6 +11,7 @@ export const ContextMenuProvider = ({ children }) => {
   const [memoryViewData, setMemoryViewData] = useState([]);
   const [tagViewData, setTagViewData] = useState([]);
   const [isConnected, setIsConnected] = useState(false);
+  const [selectedConnection, setSelectedConnection] = useState("serial");
   const [selectedPort, setSelectedPort] = useState("");
   const [isLogin, setIsLogin] = useState(false);
   const [role, setRole] = useState("");
@@ -69,6 +70,8 @@ export const ContextMenuProvider = ({ children }) => {
         setIsConnected,
         selectedPort,
         setSelectedPort,
+        selectedConnection,
+        setSelectedConnection,
         dataTest,
         setDataTest,
         isLogin,

@@ -10,6 +10,13 @@ import { ChangePassword } from "../../wailsjs/go/auth/AuthService";
 
 import { ShowErrorDialog, ShowInfoDialog } from "../../wailsjs/go/main/App";
 
+import {
+  connectSocket,
+  disconnectSocket,
+  getAllSocketData,
+  validateSocketParams,
+} from "./functions/socket";
+
 function ConnectComponent({ onConnected, dataFile, setDataFile, fileLoaded }) {
   const [ports, setPorts] = useState([]);
   const [status, setStatus] = useState("Not connected");
@@ -19,9 +26,23 @@ function ConnectComponent({ onConnected, dataFile, setDataFile, fileLoaded }) {
   const [oldPassword, setOldPassword] = useState("");
   const [passwordInput, setPasswordInput] = useState("");
   const [passwordConfirm, setPasswordConfirm] = useState("");
+  
+  // Socket states
+  const [socketAddress, setSocketAddress] = useState("localhost");
+  const [socketPort, setSocketPort] = useState("8080");
+  const [isSocketConnected, setIsSocketConnected] = useState(false);
+  
   const context = useContext(ContextMenuContext);
 
   const handleConnect = () => {
+    if (context.selectedConnection === "serial") {
+      handleSerialConnect();
+    } else if (context.selectedConnection === "ethernet") {
+      handleSocketConnect();
+    }
+  };
+
+  const handleSerialConnect = () => {
     if (!context.selectedPort) {
       setStatus("Please select a COM port");
       return;
@@ -35,6 +56,24 @@ function ConnectComponent({ onConnected, dataFile, setDataFile, fileLoaded }) {
         if (onConnected) onConnected();
       })
       .catch((err) => setStatus("Connection error: " + err));
+  };
+
+  const handleSocketConnect = async () => {
+    if (!validateSocketParams(socketAddress, socketPort)) {
+      setStatus("Invalid address or port");
+      return;
+    }
+
+    try {
+      await connectSocket(socketAddress, socketPort);
+      setIsSocketConnected(true);
+      context.setIsConnected(true);
+      setStatus(`Connected to ${socketAddress}:${socketPort}`);
+      if (onConnected) onConnected();
+    } catch (err) {
+      setStatus("Socket connection error: " + err.message);
+      setIsSocketConnected(false);
+    }
   };
 
   const handleLogin = () => {
@@ -60,13 +99,53 @@ function ConnectComponent({ onConnected, dataFile, setDataFile, fileLoaded }) {
   };
 
   const handleDisconnect = () => {
+    if (context.selectedConnection === "serial") {
+      handleSerialDisconnect();
+    } else if (context.selectedConnection === "ethernet") {
+      handleSocketDisconnect();
+    }
+    // Reset connection state regardless of connection type
+    context.setIsConnected(false);
+    context.setIsLogin(false);
+    context.setRole("");
+    setStatus("Disconnected");
+  };
+
+  const handleSerialDisconnect = () => {
     AuthService.Disconnect()
       .then(() => {
-        setStatus("Disconnected");
+        setStatus("Disconnected from serial");
         context.setSelectedPort("");
         context.setIsConnected(false);
+        context.setIsLogin(false);
+        context.setRole("");
       })
-      .catch((err) => setStatus("Disconnect error: " + err));
+      .catch((err) => {
+        setStatus("Disconnect error: " + err);
+        // Even if there's an error, reset the state
+        context.setSelectedPort("");
+        context.setIsConnected(false);
+        context.setIsLogin(false);
+        context.setRole("");
+      });
+  };
+
+  const handleSocketDisconnect = async () => {
+    try {
+      await disconnectSocket(socketAddress, socketPort);
+      setIsSocketConnected(false);
+      context.setIsConnected(false);
+      context.setIsLogin(false);
+      context.setRole("");
+      setStatus("Disconnected from socket");
+    } catch (err) {
+      setStatus("Disconnect error: " + err.message);
+      // Even if there's an error, reset the state
+      setIsSocketConnected(false);
+      context.setIsConnected(false);
+      context.setIsLogin(false);
+      context.setRole("");
+    }
   };
 
   const handleUploadConfig = () => {
@@ -77,6 +156,137 @@ function ConnectComponent({ onConnected, dataFile, setDataFile, fileLoaded }) {
     UploadConfig(JSON.stringify(dataFile)).catch((err) => {
       ShowErrorDialog("Lỗi upload cấu hình: " + err);
     });
+  };
+
+  // Function xử lý data response
+  const handleDataResponse = (jsonData) => {
+    switch (jsonData.type) {
+      case "read_analog":
+        if (jsonData.data) {
+          context.setAnalogData(jsonData.data);
+        }
+        break;
+      case "read_tag_view":
+        if (jsonData.data) {
+          context.setTagViewData(jsonData.data);
+        }
+        break;
+      case "read_memory_view":
+        if (jsonData.data) {
+          context.setMemoryViewData(jsonData.data);
+        }
+        break;
+      case "download_config":
+        if (jsonData.data) {
+          setDataFile(jsonData.data);
+          ShowInfoDialog("Đã tải xuống cấu hình thành công", "Download Config");
+        }
+        break;
+      case "login":
+        if (jsonData.status === "success") {
+          context.setIsLogin(true);
+          context.setRole(jsonData.role || "user");
+          ShowInfoDialog("Đăng nhập thành công", "Login");
+        } else {
+          ShowErrorDialog("Đăng nhập thất bại");
+        }
+        break;
+      case "logout":
+        context.setIsLogin(false);
+        context.setRole("");
+        ShowInfoDialog("Đăng xuất thành công", "Logout");
+        break;
+      case "change_password":
+        if (jsonData.status === "success") {
+          ShowInfoDialog("Đổi mật khẩu thành công", "Change Password");
+        } else {
+          ShowErrorDialog(jsonData.message);
+        }
+        break;
+      case "network_setting":
+        if (jsonData.status === "success") {
+          ShowInfoDialog("Cài đặt mạng thành công", "Network Setting");
+        } else {
+          ShowErrorDialog("Cài đặt mạng thất bại");
+        }
+        break;
+      case "network":
+        context.setFormData(jsonData);
+        break;
+      case "calib_4ma":
+        if (jsonData.status === "success") {
+          ShowInfoDialog("Calib 4mA thành công", "Calib 4mA");
+        } else {
+          ShowErrorDialog("Calib 4mA thất bại");
+        }
+        break;
+      case "calib_16ma":
+        if (jsonData.status === "success") {
+          ShowInfoDialog("Calib 16mA thành công", "Calib 16mA");
+        } else {
+          ShowErrorDialog("Calib 16mA thất bại");
+        }
+        break;
+      case "set_digital_output":
+        if (jsonData.status === "success") {
+          ShowInfoDialog("Đã cập nhật đầu Digital Output thành công", "Set Digital Output");
+        } else {
+          ShowErrorDialog("Cập nhật đầu Digital Output thất bại");
+        }
+        break;
+      case "read_system_info":
+        if (jsonData.data) {
+          context.setInfoDialog(jsonData.data);
+        } else {
+          context.setInfoDialog("Không có dữ liệu hệ thống");
+        }
+        break;
+      case "read_sim_info":
+        if (jsonData.data) {
+          context.setInfoDialog(jsonData.data);
+        } else {
+          context.setInfoDialog("Không có thông tin SIM");
+        }
+        break;
+      case "read_sdcard_info":
+        if (jsonData.data) {
+          context.setInfoDialog(jsonData.data);
+        } else {
+          context.setInfoDialog("Không có thông tin thẻ SD");
+        }
+        break;
+      case "ping":
+        if (jsonData.status === "success") {
+          context.setInfoDialog("Ping thành công");
+        } else {
+          context.setInfoDialog("Ping thất bại");
+        }
+        break;
+      default:
+        break;
+    }
+  };
+
+  // Socket data reader
+  const readSocketData = async () => {
+    if (!isSocketConnected) return;
+    
+    try {
+      const data = await getAllSocketData(socketAddress, socketPort);
+      if (data && data.length > 0) {
+        const latestData = data[data.length - 1];
+        context.setDataTest(latestData);
+        
+        try {
+          const jsonData = JSON.parse(latestData);
+          handleDataResponse(jsonData);
+        } catch (parseErr) {
+          console.log("Non-JSON data received:", latestData);
+        }
+      }
+    } catch (err) {
+      console.error("Error reading socket data:", err);
+    }
   };
 
   useEffect(() => {
@@ -102,197 +312,32 @@ function ConnectComponent({ onConnected, dataFile, setDataFile, fileLoaded }) {
   }, []);
 
   useEffect(() => {
-    // will add context.isLogin
-    if (!context.selectedPort || !context.isConnected) return;
+    // Handle data listening for both serial and socket
+    if (!context.isConnected) return;
 
     let isListening = true;
 
     const listenForData = async () => {
       while (isListening) {
         try {
-          const response = await AuthService.GetResponse(10000);
-          if (response) {
-            try {
-              const jsonData = JSON.parse(response);
-              context.setDataTest(response); // Update dataTest with the raw response
-              switch (jsonData.type) {
-                case "read_analog":
-                  if (jsonData.data) {
-                    context.setAnalogData(jsonData.data);
-                  }
-                  break;
-                case "read_tag_view":
-                  if (jsonData.data) {
-                    context.setTagViewData(jsonData.data);
-                  }
-                  break;
-                case "read_memory_view":
-                  if (jsonData.data) {
-                    context.setMemoryViewData(jsonData.data);
-                  }
-                  break;
-                case "download_config":
-                  if (jsonData.data) {
-                    setDataFile(jsonData.data);
-                    ShowInfoDialog(
-                      "Đã tải xuống cấu hình thành công",
-                      "Download Config"
-                    );
-                  }
-                  break;
-
-                case "set_digital_output":
-                  if (jsonData.status === "success") {
-                    ShowInfoDialog(
-                      "Đã cập nhật đầu Digital Output thành công",
-                      "Set Digital Output"
-                    );
-                  } else {
-                    ShowErrorDialog("Cập nhật đầu Digital Output thất bại: ");
-                  }
-                  break;
-
-                case "login":
-                  if (jsonData.status === "success") {
-                    context.setIsLogin(true);
-                    context.setRole(jsonData.role || "user");
-                    ShowInfoDialog("Đăng nhập thành công", "Login");
-                  } else {
-                    ShowErrorDialog("Đăng nhập thất bại");
-                  }
-                  break;
-
-                case "logout":
-                  context.setIsLogin(false);
-                  context.setRole("");
-                  ShowInfoDialog("Đăng xuất thành công", "Logout");
-                  break;
-
-                case "change_password":
-                  if (jsonData.status === "success") {
-                    ShowInfoDialog(
-                      "Đổi mật khẩu thành công",
-                      "Change Password"
-                    );
-                  } else {
-                    ShowErrorDialog(jsonData.message);
-                  }
-                  break;
-
-                case "network_setting":
-                  if (jsonData.status === "success") {
-                    ShowInfoDialog(
-                      "Cài đặt mạng thành công",
-                      "Network Setting"
-                    );
-                  } else {
-                    ShowErrorDialog("Cài đặt mạng thất bại");
-                  }
-                  break;
-
-                case "network":
-                  context.setFormData(jsonData);
-                  break;
-
-                case "calib_4ma":
-                  if (jsonData.status === "success") {
-                    ShowInfoDialog("Calib 4mA thành công", "Calib 4mA");
-                  } else {
-                    ShowErrorDialog("Calib 4mA thất bại");
-                  }
-                  break;
-
-                case "calib_16ma":
-                  if (jsonData.status === "success") {
-                    ShowInfoDialog("Calib 16mA thành công", "Calib 16mA");
-                  } else {
-                    ShowErrorDialog("Calib 16mA thất bại");
-                  }
-                  break;
-
-                case "upload_config":
-                  if (jsonData.status === "success") {
-                    ShowInfoDialog(
-                      "Upload cấu hình thành công",
-                      "Upload Config"
-                    );
-                  } else {
-                    ShowErrorDialog("Upload cấu hình thất bại");
-                  }
-                  break;
-
-                case "read_system_info":
-                  if (jsonData.data) {
-                    context.setInfoDialog(jsonData.data.replace(/, /g, "\n"));
-                  }
-                  break;
-
-                case "write_serial_number":
-                  if (jsonData.status === "success") {
-                    context.setInfoDialog("Ghi số serial thành công");
-                  } else {
-                    context.setInfoDialog("Ghi số serial thất bại");
-                  }
-                  break;
-
-                case "write_mac":
-                  if (jsonData.status === "success") {
-                    context.setInfoDialog("Ghi địa chỉ MAC thành công");
-                  } else {
-                    context.setInfoDialog("Ghi địa chỉ MAC thất bại");
-                  }
-                  break;
-
-                case "reset_configuration":
-                  if (jsonData.status === "success") {
-                    context.setInfoDialog("Đặt lại cấu hình thành công");
-                  } else {
-                    context.setInfoDialog("Đặt lại cấu hình thất bại");
-                  }
-                  break;
-
-                case "reboot":
-                  if (jsonData.status === "success") {
-                    context.setInfoDialog("Thiết bị đã khởi động lại");
-                  } else {
-                    context.setInfoDialog("Khởi động lại thiết bị thất bại");
-                  }
-                  break;
-
-                case "read_sim_info":
-                  if (jsonData.data) {
-                    context.setInfoDialog(jsonData.data);
-                  } else {
-                    context.setInfoDialog("Không có thông tin SIM");
-                  }
-                  break;
-
-                case "read_sdcard_info":
-                  if (jsonData.data) {
-                    context.setInfoDialog(jsonData.data);
-                  } else {
-                    context.setInfoDialog("Không có thông tin thẻ SD");
-                  }
-                  break;
-
-                case "ping":
-                  if (jsonData.status === "success") {
-                    context.setInfoDialog("Ping thành công");
-                  } else {
-                    context.setInfoDialog("Ping thất bại");
-                  }
-                  break;
-
-                default:
-                  break;
+          if (context.selectedConnection === "serial" && context.selectedPort) {
+            const response = await AuthService.GetResponse(10000);
+            if (response) {
+              try {
+                const jsonData = JSON.parse(response);
+                context.setDataTest(response);
+                handleDataResponse(jsonData);
+              } catch (e) {
+                context.setDataTest(response);
               }
-            } catch (e) {
-              // Ignore invalid JSON
             }
+          } else if (context.selectedConnection === "ethernet" && isSocketConnected) {
+            await readSocketData();
+            await new Promise(resolve => setTimeout(resolve, 1000));
           }
         } catch (err) {
           if (!err.toString().includes("timeout")) {
-            // Handle other errors
+            console.error("Data listening error:", err);
           }
         }
       }
@@ -303,49 +348,58 @@ function ConnectComponent({ onConnected, dataFile, setDataFile, fileLoaded }) {
     return () => {
       isListening = false;
     };
-  }, [context.selectedPort, context.isConnected]);
+  }, [context.isConnected, context.selectedPort, context.selectedConnection, isSocketConnected]);
+
+  // Cleanup effect to disconnect when component unmounts
+  useEffect(() => {
+    return () => {
+      if (context.isConnected) {
+        handleDisconnect();
+      }
+    };
+  }, []);
 
   return (
-    <div className="w-full max-w-xs bg-white border border-gray-300 rounded-lg shadow p-4 flex flex-col gap-3">
+    <div className='w-full max-w-xs bg-white border border-gray-300 rounded-lg shadow p-4 flex flex-col gap-3'>
       {showModal && (
         <div
-          className="fixed inset-0 bg-black/40 flex items-center justify-center z-[1100]"
+          className='fixed inset-0 bg-black/40 flex items-center justify-center z-[1100]'
           onClick={() => setShowModal(false)} // Đóng modal khi click nền đen
         >
           <div
-            className="bg-white rounded-xl shadow-2xl w-full max-w-xs sm:max-w-sm p-7 relative animate-fadeIn"
+            className='bg-white rounded-xl shadow-2xl w-full max-w-xs sm:max-w-sm p-7 relative animate-fadeIn'
             onClick={(e) => e.stopPropagation()} // Ngăn sự kiện nổi bọt khi click vào modal
             style={{ boxShadow: "0 8px 32px rgba(0,0,0,0.18)" }}
           >
-            <div className="flex flex-col items-center mb-4">
-              <span className="text-lg font-semibold text-gray-800">
+            <div className='flex flex-col items-center mb-4'>
+              <span className='text-lg font-semibold text-gray-800'>
                 Change Password
               </span>
             </div>
             <input
-              type="password"
-              className="w-full px-3 py-2 border border-gray-200 rounded-lg mb-5 focus:outline-none focus:border-blue-500 transition"
+              type='password'
+              className='w-full px-3 py-2 border border-gray-200 rounded-lg mb-5 focus:outline-none focus:border-blue-500 transition'
               value={oldPassword}
               autoFocus
               onChange={(e) => setOldPassword(e.target.value)}
             />
             <input
-              type="password"
-              className="w-full px-3 py-2 border border-gray-200 rounded-lg mb-5 focus:outline-none focus:border-blue-500 transition"
+              type='password'
+              className='w-full px-3 py-2 border border-gray-200 rounded-lg mb-5 focus:outline-none focus:border-blue-500 transition'
               value={passwordInput}
               autoFocus
               onChange={(e) => setPasswordInput(e.target.value)}
             />
             <input
-              type="password"
-              className="w-full px-3 py-2 border border-gray-200 rounded-lg mb-5 focus:outline-none focus:border-blue-500 transition"
+              type='password'
+              className='w-full px-3 py-2 border border-gray-200 rounded-lg mb-5 focus:outline-none focus:border-blue-500 transition'
               value={passwordConfirm}
               autoFocus
               onChange={(e) => setPasswordConfirm(e.target.value)}
             />
-            <div className="flex gap-3 mt-2">
+            <div className='flex gap-3 mt-2'>
               <button
-                className="flex-1 px-4 py-2 bg-blue-500 text-white rounded-lg font-medium hover:bg-blue-600 transition"
+                className='flex-1 px-4 py-2 bg-blue-500 text-white rounded-lg font-medium hover:bg-blue-600 transition'
                 onClick={() => {
                   if (!oldPassword || !passwordInput || !passwordConfirm) {
                     ShowErrorDialog("Vui lòng điền đầy đủ thông tin");
@@ -353,7 +407,9 @@ function ConnectComponent({ onConnected, dataFile, setDataFile, fileLoaded }) {
                   }
 
                   if (passwordInput === oldPassword) {
-                    ShowErrorDialog("Mật khẩu mới không được trùng với mật khẩu cũ");
+                    ShowErrorDialog(
+                      "Mật khẩu mới không được trùng với mật khẩu cũ",
+                    );
                     return;
                   }
 
@@ -367,7 +423,7 @@ function ConnectComponent({ onConnected, dataFile, setDataFile, fileLoaded }) {
                 Save
               </button>
               <button
-                className="flex-1 px-4 py-2 bg-gray-200 text-gray-700 rounded-lg font-medium hover:bg-gray-300 transition"
+                className='flex-1 px-4 py-2 bg-gray-200 text-gray-700 rounded-lg font-medium hover:bg-gray-300 transition'
                 onClick={() => setShowModal(false)} // Đóng modal khi click nút Close
               >
                 Close
@@ -376,8 +432,8 @@ function ConnectComponent({ onConnected, dataFile, setDataFile, fileLoaded }) {
           </div>
         </div>
       )}
-      <div className="flex items-center gap-2 mb-1">
-        <span className="text-base font-semibold">COM Port</span>
+      <div className='flex items-center gap-2 mb-1'>
+        <span className='text-base font-semibold'>COM Port</span>
         <span
           className={
             status.includes("Connected to")
@@ -389,57 +445,103 @@ function ConnectComponent({ onConnected, dataFile, setDataFile, fileLoaded }) {
         ></span>
       </div>
       <div>
-        <label className="block text-xs text-gray-700 mb-1">Select port</label>
+        <label className='block text-xs text-gray-700 mb-1'>Connection</label>
         <select
-          className="border border-gray-300 rounded px-2 py-1 w-full text-xs focus:outline-none focus:ring focus:border-blue-400"
-          value={context.selectedPort}
-          onChange={(e) => context.setSelectedPort(e.target.value)}
+          className='border border-gray-300 rounded px-2 py-1 w-full text-xs focus:outline-none focus:ring focus:border-blue-400'
+          value={context.selectedConnection}
+          onChange={(e) => {
+            // Disconnect current connection before switching
+            if (context.isConnected) {
+              handleDisconnect();
+            }
+            context.setSelectedConnection(e.target.value);
+          }}
         >
-          <option value="">-- Select COM port --</option>
-          {ports?.map((port) => (
-            <option key={port} value={port}>
-              {port}
+          <option value=''>-- Select connection --</option>
+          {["serial", "ethernet"]?.map((type) => (
+            <option key={type} value={type}>
+              {type.toUpperCase()}
             </option>
           ))}
         </select>
       </div>
-      <div className="text-xs text-gray-500 mb-2 flex flex-col gap-1">
+      {context.selectedConnection === "serial" && (
+        <div>
+          <label className='block text-xs text-gray-700 mb-1'>
+            Serial port
+          </label>
+          <select
+            className='border border-gray-300 rounded px-2 py-1 w-full text-xs focus:outline-none focus:ring focus:border-blue-400'
+            value={context.selectedPort}
+            onChange={(e) => context.setSelectedPort(e.target.value)}
+          >
+            <option value=''>-- Select COM port --</option>
+            {ports?.map((port) => (
+              <option key={port} value={port}>
+                {port}
+              </option>
+            ))}
+          </select>
+        </div>
+      )}
+      {context.selectedConnection === "ethernet" && (
+        <div>
+          <label className='block text-xs text-gray-700 mb-1'>IP Address</label>
+          <input 
+            className="mb-1 border border-gray-300 rounded px-2 py-1 w-full text-xs focus:outline-none focus:ring focus:border-blue-400" 
+            value={socketAddress}
+            onChange={(e) => setSocketAddress(e.target.value)}
+            placeholder="localhost"
+          />
+          <label className='block text-xs text-gray-700 mb-1'>Port</label>
+          <input 
+            className="mb-1 border border-gray-300 rounded px-2 py-1 w-full text-xs focus:outline-none focus:ring focus:border-blue-400" 
+            value={socketPort}
+            onChange={(e) => setSocketPort(e.target.value)}
+            placeholder="8080"
+            type="number"
+          />
+        </div>
+      )}
+
+      <div className='text-xs text-gray-500 mb-2 flex flex-col gap-1'>
+        <label className='block text-xs text-gray-700'>Login</label>
         <input
-          type="text"
+          type='text'
           value={username}
-          placeholder="Username"
+          placeholder='Username'
           onChange={(e) => setUsername(e.target.value)}
-          className="w-full border border-gray-300 rounded px-2 py-1 mb-1 focus:outline-none focus:ring focus:border-blue-400"
+          className='w-full border border-gray-300 rounded px-2 py-1 mb-1 focus:outline-none focus:ring focus:border-blue-400'
         />
         <input
-          type="password"
+          type='password'
           value={password}
-          placeholder="Password"
+          placeholder='Password'
           onChange={(e) => setPassword(e.target.value)}
-          className="w-full border border-gray-300 rounded px-2 py-1 mb-1 focus:outline-none focus:ring focus:border-blue-400"
+          className='w-full border border-gray-300 rounded px-2 py-1 mb-1 focus:outline-none focus:ring focus:border-blue-400'
         />
       </div>
-      <div className="flex flex-col md:flex-row items-center justify-center gap-2 w-full">
+      <div className='flex flex-col md:flex-row items-center justify-center gap-2 w-full'>
         {!context.isConnected ? (
           <button
             onClick={handleConnect}
-            className="flex-1 px-2 w-full bg-blue-600 text-white py-1 rounded border border-blue-700 hover:bg-blue-700 text-xs transition"
+            className='flex-1 px-2 w-full bg-blue-600 text-white py-1 rounded border border-blue-700 hover:bg-blue-700 text-xs transition'
           >
             Connect
           </button>
         ) : (
           <button
             onClick={handleDisconnect}
-            className="flex-1 px-2 w-full bg-gray-200 text-gray-700 py-1 rounded border border-gray-400 hover:bg-gray-300 text-xs transition"
+            className='flex-1 px-2 w-full bg-gray-200 text-gray-700 py-1 rounded border border-gray-400 hover:bg-gray-300 text-xs transition'
           >
             Disconnect
           </button>
         )}
       </div>
-      <div className="flex flex-col md:flex-row items-center justify-center gap-2 w-full">
+      <div className='flex flex-col md:flex-row items-center justify-center gap-2 w-full'>
         <button
           onClick={handleLogin}
-          className="flex-1 px-2 w-full bg-blue-600 text-white py-1 rounded border border-blue-700 hover:bg-blue-700 text-xs transition"
+          className='flex-1 px-2 w-full bg-blue-600 text-white py-1 rounded border border-blue-700 hover:bg-blue-700 text-xs transition'
           disabled={!context.isConnected}
         >
           Login
@@ -447,7 +549,7 @@ function ConnectComponent({ onConnected, dataFile, setDataFile, fileLoaded }) {
       </div>
       <button
         onClick={() => setShowModal(true)}
-        className="flex-1 px-2 w-full bg-gray-200 text-gray-700 py-1 rounded border border-gray-400 hover:bg-gray-300 text-xs transition"
+        className='flex-1 px-2 w-full bg-gray-200 text-gray-700 py-1 rounded border border-gray-400 hover:bg-gray-300 text-xs transition'
         // disabled={!context.isConnected || !context.isLogin}
       >
         Change Password
@@ -490,7 +592,7 @@ function ConnectComponent({ onConnected, dataFile, setDataFile, fileLoaded }) {
         {status}
       </div>
       {!!fileLoaded && (
-        <div className="fixed bottom-0 left-0 z-20 p-2 bg-stone-100 shadow-md text-sm text-gray-600">
+        <div className='fixed bottom-0 left-0 z-20 p-2 bg-stone-100 shadow-md text-sm text-gray-600'>
           {fileLoaded}
         </div>
       )}

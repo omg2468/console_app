@@ -3,23 +3,35 @@
 import {workspace} from '../models';
 import {context} from '../models';
 
+export function CheckSocketConnection(arg1:string,arg2:string):Promise<boolean>;
+
+export function ConnectSocket(arg1:string,arg2:string):Promise<string>;
+
 export function CreateFolder(arg1:string):Promise<string>;
 
 export function DeleteFile(arg1:string):Promise<void>;
 
 export function DeleteItem(arg1:string):Promise<void>;
 
+export function DisconnectSocket(arg1:string,arg2:string):Promise<void>;
+
 export function DownloadConfig():Promise<void>;
 
 export function ExportJSONFile(arg1:string,arg2:string):Promise<void>;
 
+export function GetAllSocketData(arg1:string,arg2:string):Promise<Array<string>>;
+
 export function GetDefaultData():Promise<string>;
+
+export function GetSocketData(arg1:string,arg2:string):Promise<string>;
 
 export function GetWorkspacePath():Promise<string>;
 
 export function ImportFileToFolderInWorkspace(arg1:string,arg2:string):Promise<void>;
 
 export function ImportFileToWorkspace(arg1:string,arg2:string):Promise<void>;
+
+export function ListActiveConnections():Promise<Array<string>>;
 
 export function ListFiles():Promise<Array<workspace.FileNode>>;
 
@@ -34,6 +46,8 @@ export function RenameItem(arg1:string,arg2:string):Promise<void>;
 export function SaveJsonFile(arg1:string,arg2:string):Promise<void>;
 
 export function SaveJsonToPath(arg1:string,arg2:string):Promise<void>;
+
+export function SendSocketData(arg1:string,arg2:string,arg3:string):Promise<void>;
 
 export function SetContext(arg1:context.Context):Promise<void>;
 

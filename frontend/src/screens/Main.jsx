@@ -26,7 +26,7 @@ import ConnectComponent from "../components/Connect";
 import { ContextMenuContext } from "../store";
 
 export default function Main({ onLoginOut }) {
-  const [leftTab, setLeftTab] = useState("Workspace");
+  const [leftTab, setLeftTab] = useState("Device");
   const [middleTab, setMiddleTab] = useState("system");
   const [rightTab, setRightTab] = useState("Parameter");
   const tabsLeft = ["Workspace", "Device"];
@@ -171,7 +171,7 @@ export default function Main({ onLoginOut }) {
     { label: "Modbus", value: "modbus" },
   ];
 
-  const rightTabs = ["Parameter", "Control", "Memory view", "Tag view"];
+  const rightTabs = ["Parameter", "Control", "Memory view", "Tag view", "Socket"];
 
   return (
     <div

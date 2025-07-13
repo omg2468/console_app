@@ -8,21 +8,46 @@ import (
 	"fmt"
 	"io"
 	"myproject/backend/auth"
+	"net"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"runtime"
 	"strings"
+	"sync"
+	"time"
 )
 
 //go:embed test.json
 var testTemplate []byte
 
+// SocketConnection quản lý kết nối socket
+type SocketConnection struct {
+	conn      net.Conn
+	isActive  bool
+	mutex     sync.Mutex
+	dataChain chan string
+}
+
+// SocketManager quản lý các kết nối socket
+type SocketManager struct {
+	connections map[string]*SocketConnection
+	mutex       sync.RWMutex
+}
+
+// NewSocketManager tạo mới socket manager
+func NewSocketManager() *SocketManager {
+	return &SocketManager{
+		connections: make(map[string]*SocketConnection),
+	}
+}
+
 type WorkspaceService struct {
-	basePath    string
-	ctx         context.Context
-	clipboard   *Clipboard
-	authService *auth.AuthService
+	basePath      string
+	ctx           context.Context
+	clipboard     *Clipboard
+	authService   *auth.AuthService
+	socketManager *SocketManager
 }
 
 type FileNode struct {
@@ -47,8 +72,9 @@ type Clipboard struct {
 
 func NewWorkspaceService(authService *auth.AuthService) *WorkspaceService {
 	return &WorkspaceService{
-		authService: authService,
-		basePath:    "./workspace",
+		authService:   authService,
+		basePath:      "./workspace",
+		socketManager: NewSocketManager(),
 	}
 }
 
@@ -652,4 +678,253 @@ func (ws *WorkspaceService) SaveJsonToPath(jsonData string, fullPath string) err
 
 	fmt.Printf("✅ Đã lưu JSON vào: %s\n", fullPath)
 	return nil
+}
+
+// ConnectSocket kết nối tới socket server tại địa chỉ và port được chỉ định
+func (ws *WorkspaceService) ConnectSocket(address string, port string) (string, error) {
+	// Tạo key duy nhất cho connection
+	connectionKey := fmt.Sprintf("%s:%s", address, port)
+
+	ws.socketManager.mutex.Lock()
+	defer ws.socketManager.mutex.Unlock()
+
+	// Kiểm tra xem đã có kết nối nào tồn tại chưa
+	if conn, exists := ws.socketManager.connections[connectionKey]; exists {
+		if conn.isActive {
+			return fmt.Sprintf("Đã có kết nối tới %s", connectionKey), nil
+		}
+		// Nếu connection cũ không active, xóa nó
+		delete(ws.socketManager.connections, connectionKey)
+	}
+
+	// Tạo kết nối mới
+	fullAddress := fmt.Sprintf("%s:%s", address, port)
+	conn, err := net.DialTimeout("tcp", fullAddress, 10*time.Second)
+	if err != nil {
+		return "", fmt.Errorf("không thể kết nối tới %s: %w", fullAddress, err)
+	}
+
+	// Tạo socket connection object
+	socketConn := &SocketConnection{
+		conn:      conn,
+		isActive:  true,
+		dataChain: make(chan string, 100), // Buffer 100 messages
+	}
+
+	// Lưu connection
+	ws.socketManager.connections[connectionKey] = socketConn
+
+	// Bắt đầu goroutine để đọc dữ liệu
+	go ws.readSocketData(connectionKey, socketConn)
+
+	fmt.Printf("✅ Đã kết nối thành công tới socket: %s\n", fullAddress)
+	return fmt.Sprintf("Kết nối thành công tới %s", fullAddress), nil
+}
+
+// readSocketData đọc dữ liệu từ socket connection
+func (ws *WorkspaceService) readSocketData(connectionKey string, socketConn *SocketConnection) {
+	defer func() {
+		socketConn.mutex.Lock()
+		socketConn.isActive = false
+		socketConn.conn.Close()
+		close(socketConn.dataChain)
+		socketConn.mutex.Unlock()
+
+		// Xóa connection khỏi manager
+		ws.socketManager.mutex.Lock()
+		delete(ws.socketManager.connections, connectionKey)
+		ws.socketManager.mutex.Unlock()
+
+		fmt.Printf("🔌 Đã đóng kết nối socket: %s\n", connectionKey)
+	}()
+
+	buffer := make([]byte, 4096)
+
+	for {
+		socketConn.mutex.Lock()
+		if !socketConn.isActive {
+			socketConn.mutex.Unlock()
+			break
+		}
+		socketConn.mutex.Unlock()
+
+		// Set timeout cho việc đọc
+		socketConn.conn.SetReadDeadline(time.Now().Add(30 * time.Second))
+
+		n, err := socketConn.conn.Read(buffer)
+		if err != nil {
+			if netErr, ok := err.(net.Error); ok && netErr.Timeout() {
+				// Timeout - tiếp tục đọc
+				continue
+			}
+			// Lỗi khác - dừng
+			fmt.Printf("❌ Lỗi đọc dữ liệu từ socket %s: %v\n", connectionKey, err)
+			break
+		}
+
+		if n > 0 {
+			data := string(buffer[:n])
+			fmt.Printf("📥 Nhận dữ liệu từ socket %s: %s\n", connectionKey, data)
+
+			// Gửi dữ liệu vào channel (non-blocking)
+			select {
+			case socketConn.dataChain <- data:
+			default:
+				fmt.Printf("⚠️ Buffer đầy, bỏ qua dữ liệu từ socket %s\n", connectionKey)
+			}
+		}
+	}
+}
+
+// GetSocketData lấy dữ liệu mới nhất từ socket
+func (ws *WorkspaceService) GetSocketData(address string, port string) (string, error) {
+	connectionKey := fmt.Sprintf("%s:%s", address, port)
+
+	ws.socketManager.mutex.RLock()
+	socketConn, exists := ws.socketManager.connections[connectionKey]
+	ws.socketManager.mutex.RUnlock()
+
+	if !exists {
+		return "", fmt.Errorf("không có kết nối tới %s", connectionKey)
+	}
+
+	socketConn.mutex.Lock()
+	if !socketConn.isActive {
+		socketConn.mutex.Unlock()
+		return "", fmt.Errorf("kết nối tới %s không còn hoạt động", connectionKey)
+	}
+	socketConn.mutex.Unlock()
+
+	// Thử lấy dữ liệu từ channel (non-blocking)
+	select {
+	case data := <-socketConn.dataChain:
+		return data, nil
+	default:
+		return "", fmt.Errorf("không có dữ liệu mới từ socket %s", connectionKey)
+	}
+}
+
+// GetAllSocketData lấy tất cả dữ liệu có sẵn từ socket
+func (ws *WorkspaceService) GetAllSocketData(address string, port string) ([]string, error) {
+	connectionKey := fmt.Sprintf("%s:%s", address, port)
+
+	ws.socketManager.mutex.RLock()
+	socketConn, exists := ws.socketManager.connections[connectionKey]
+	ws.socketManager.mutex.RUnlock()
+
+	if !exists {
+		return nil, fmt.Errorf("không có kết nối tới %s", connectionKey)
+	}
+
+	socketConn.mutex.Lock()
+	if !socketConn.isActive {
+		socketConn.mutex.Unlock()
+		return nil, fmt.Errorf("kết nối tới %s không còn hoạt động", connectionKey)
+	}
+	socketConn.mutex.Unlock()
+
+	var allData []string
+
+	// Lấy tất cả dữ liệu có sẵn
+	for {
+		select {
+		case data := <-socketConn.dataChain:
+			allData = append(allData, data)
+		default:
+			// Không còn dữ liệu
+			return allData, nil
+		}
+	}
+}
+
+// SendSocketData gửi dữ liệu tới socket
+func (ws *WorkspaceService) SendSocketData(address string, port string, data string) error {
+	connectionKey := fmt.Sprintf("%s:%s", address, port)
+
+	ws.socketManager.mutex.RLock()
+	socketConn, exists := ws.socketManager.connections[connectionKey]
+	ws.socketManager.mutex.RUnlock()
+
+	if !exists {
+		return fmt.Errorf("không có kết nối tới %s", connectionKey)
+	}
+
+	socketConn.mutex.Lock()
+	defer socketConn.mutex.Unlock()
+
+	if !socketConn.isActive {
+		return fmt.Errorf("kết nối tới %s không còn hoạt động", connectionKey)
+	}
+
+	// Set timeout cho việc ghi
+	socketConn.conn.SetWriteDeadline(time.Now().Add(10 * time.Second))
+
+	_, err := socketConn.conn.Write([]byte(data))
+	if err != nil {
+		return fmt.Errorf("không thể gửi dữ liệu tới socket %s: %w", connectionKey, err)
+	}
+
+	fmt.Printf("📤 Đã gửi dữ liệu tới socket %s: %s\n", connectionKey, data)
+	return nil
+}
+
+// DisconnectSocket ngắt kết nối socket
+func (ws *WorkspaceService) DisconnectSocket(address string, port string) error {
+	connectionKey := fmt.Sprintf("%s:%s", address, port)
+
+	ws.socketManager.mutex.Lock()
+	socketConn, exists := ws.socketManager.connections[connectionKey]
+	if !exists {
+		ws.socketManager.mutex.Unlock()
+		return fmt.Errorf("không có kết nối tới %s", connectionKey)
+	}
+
+	socketConn.mutex.Lock()
+	if socketConn.isActive {
+		socketConn.isActive = false
+		socketConn.conn.Close()
+	}
+	socketConn.mutex.Unlock()
+
+	delete(ws.socketManager.connections, connectionKey)
+	ws.socketManager.mutex.Unlock()
+
+	fmt.Printf("🔌 Đã ngắt kết nối socket: %s\n", connectionKey)
+	return nil
+}
+
+// ListActiveConnections liệt kê tất cả kết nối đang hoạt động
+func (ws *WorkspaceService) ListActiveConnections() []string {
+	ws.socketManager.mutex.RLock()
+	defer ws.socketManager.mutex.RUnlock()
+
+	var activeConnections []string
+	for key, conn := range ws.socketManager.connections {
+		conn.mutex.Lock()
+		if conn.isActive {
+			activeConnections = append(activeConnections, key)
+		}
+		conn.mutex.Unlock()
+	}
+
+	return activeConnections
+}
+
+// CheckSocketConnection kiểm tra trạng thái kết nối socket
+func (ws *WorkspaceService) CheckSocketConnection(address string, port string) bool {
+	connectionKey := fmt.Sprintf("%s:%s", address, port)
+
+	ws.socketManager.mutex.RLock()
+	socketConn, exists := ws.socketManager.connections[connectionKey]
+	ws.socketManager.mutex.RUnlock()
+
+	if !exists {
+		return false
+	}
+
+	socketConn.mutex.Lock()
+	isActive := socketConn.isActive
+	socketConn.mutex.Unlock()
+
+	return isActive
 }

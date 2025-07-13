@@ -40,7 +40,7 @@ func (a *AuthService) ListPorts() ([]string, error) {
 	if len(ports) == 0 {
 		return nil, errors.New("không tìm thấy cổng COM nào")
 	}
-	fmt.Println("Các cổng COM tìm thấy:", ports)
+	// fmt.Println("Các cổng COM tìm thấy:", ports)
 	return ports, nil
 }
 
