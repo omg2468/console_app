@@ -89,19 +89,16 @@ function ConnectComponent({ onConnected, dataFile, setDataFile, fileLoaded }) {
                   if (jsonData.data) {
                     context.setAnalogData(jsonData.data);
                   }
-                  context.setAnalogData(jsonData.data);
                   break;
                 case "read_tag_view":
                   if (jsonData.data) {
                     context.setTagViewData(jsonData.data);
                   }
-                  context.setTagViewData(jsonData.data);
                   break;
                 case "read_memory_view":
                   if (jsonData.data) {
                     context.setMemoryViewData(jsonData.data);
                   }
-                  context.setMemoryViewData(jsonData.data);
                   break;
                 case "download_config":
                   if (jsonData.data) {
