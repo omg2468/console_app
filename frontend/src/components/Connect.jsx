@@ -80,41 +80,38 @@ function ConnectComponent({ onConnected, dataFile, setDataFile, fileLoaded }) {
       while (isListening) {
         try {
           const response = await AuthService.GetResponse(10000);
-
           if (response) {
             try {
               const jsonData = JSON.parse(response);
               context.setDataTest(response); // Update dataTest with the raw response
               switch (jsonData.type) {
                 case "read_analog":
-                  if (!jsonData.data) {
-                    return;
+                  if (jsonData.data) {
+                    context.setAnalogData(jsonData.data);
                   }
                   context.setAnalogData(jsonData.data);
                   break;
                 case "read_tag_view":
-                  if (!jsonData.data) {
-                    return;
+                  if (jsonData.data) {
+                    context.setTagViewData(jsonData.data);
                   }
                   context.setTagViewData(jsonData.data);
                   break;
                 case "read_memory_view":
-                  if (!jsonData.data) {
-                    return;
+                  if (jsonData.data) {
+                    context.setMemoryViewData(jsonData.data);
                   }
                   context.setMemoryViewData(jsonData.data);
                   break;
                 case "download_config":
-                  if (!jsonData.data) {
-                    return;
+                  if (jsonData.data) {
+                    setDataFile(jsonData.data);
+                    ShowInfoDialog(
+                      "Đã tải xuống cấu hình thành công",
+                      "Download Config"
+                    );
                   }
-                  setDataFile(jsonData.data);
-                  ShowInfoDialog(
-                    "Đã tải xuống cấu hình thành công",
-                    "Download Config"
-                  );
                   break;
-
                 default:
                   break;
               }
