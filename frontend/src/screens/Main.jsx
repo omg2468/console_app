@@ -171,7 +171,7 @@ export default function Main({ onLoginOut }) {
     { label: "Modbus", value: "modbus" },
   ];
 
-  const rightTabs = ["Parameter", "Control", "Memory view", "Tag view", "Socket"];
+  const rightTabs = ["Parameter", "Control", "Memory view", "Tag view"];
 
   return (
     <div
