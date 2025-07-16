@@ -839,6 +839,7 @@ func (ws *WorkspaceService) GetAllSocketData(address string, port string) ([]str
 
 // SendSocketData gửi dữ liệu tới socket
 func (ws *WorkspaceService) SendSocketData(address string, port string, data string) error {
+
 	connectionKey := fmt.Sprintf("%s:%s", address, port)
 
 	ws.socketManager.mutex.RLock()
@@ -868,8 +869,24 @@ func (ws *WorkspaceService) SendSocketData(address string, port string, data str
 	return nil
 }
 
+func (ws *WorkspaceService) Login(address, port, username, password string) error {
+	// Tạo message JSON đúng format thiết bị yêu cầu
+	loginMessage := fmt.Sprintf(`{"type":"login","username":"%s","password":"%s"}\n`, username, password)
+
+	// Gửi xuống thiết bị qua socket
+	err := ws.SendSocketData(address, port, loginMessage)
+	if err != nil {
+		return fmt.Errorf("không thể gửi login request: %w", err)
+	}
+
+	fmt.Println("✅ Đã gửi login request tới thiết bị.")
+	return nil
+}
+
 // DisconnectSocket ngắt kết nối socket
 func (ws *WorkspaceService) DisconnectSocket(address string, port string) error {
+	logoutSignal := `{"type":"logout"}\n` // <-- dấu \n là cần thiết nếu thiết bị đọc từng dòng
+	_ = ws.SendSocketData(address, port, logoutSignal)
 	connectionKey := fmt.Sprintf("%s:%s", address, port)
 
 	ws.socketManager.mutex.Lock()

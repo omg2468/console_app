@@ -1,4 +1,4 @@
-import { useEffect, useState, useContext, useCallback } from "react";
+import { useEffect, useState, useContext } from "react";
 import * as AuthService from "../../wailsjs/go/auth/AuthService";
 import {
   DownloadConfig,
@@ -9,6 +9,8 @@ import { ContextMenuContext } from "../store";
 import { ChangePassword } from "../../wailsjs/go/auth/AuthService";
 
 import { ShowErrorDialog, ShowInfoDialog } from "../../wailsjs/go/main/App";
+
+import { Login } from "../../wailsjs/go/workspace/WorkspaceService";
 
 import {
   connectSocket,
@@ -26,12 +28,12 @@ function ConnectComponent({ onConnected, dataFile, setDataFile, fileLoaded }) {
   const [oldPassword, setOldPassword] = useState("");
   const [passwordInput, setPasswordInput] = useState("");
   const [passwordConfirm, setPasswordConfirm] = useState("");
-  
+
   // Socket states
   const [socketAddress, setSocketAddress] = useState("localhost");
   const [socketPort, setSocketPort] = useState("8080");
   const [isSocketConnected, setIsSocketConnected] = useState(false);
-  
+
   const context = useContext(ContextMenuContext);
 
   const handleConnect = () => {
@@ -93,9 +95,15 @@ function ConnectComponent({ onConnected, dataFile, setDataFile, fileLoaded }) {
       ShowErrorDialog("Vui lòng nhập tên người dùng và mật khẩu");
       return;
     }
-    AuthService.Login(username, password).catch((err) => {
-      ShowErrorDialog("Lỗi khi đăng nhập: " + err);
-    });
+    if (context.selectedConnection === "serial") {
+      AuthService.Login(username, password).catch((err) => {
+        ShowErrorDialog("Lỗi khi đăng nhập: " + err);
+      });
+    } else if (context.selectedConnection === "ethernet") {
+      Login(socketAddress, socketPort, username, password).catch((err) => {
+        ShowErrorDialog("Lỗi khi đăng nhập: " + err);
+      });
+    }
   };
 
   const handleDisconnect = () => {
@@ -229,7 +237,10 @@ function ConnectComponent({ onConnected, dataFile, setDataFile, fileLoaded }) {
         break;
       case "set_digital_output":
         if (jsonData.status === "success") {
-          ShowInfoDialog("Đã cập nhật đầu Digital Output thành công", "Set Digital Output");
+          ShowInfoDialog(
+            "Đã cập nhật đầu Digital Output thành công",
+            "Set Digital Output"
+          );
         } else {
           ShowErrorDialog("Cập nhật đầu Digital Output thất bại");
         }
@@ -262,6 +273,31 @@ function ConnectComponent({ onConnected, dataFile, setDataFile, fileLoaded }) {
           context.setInfoDialog("Ping thất bại");
         }
         break;
+
+      case "write_serial_number":
+        if (jsonData.status === "success") {
+          context.setInfoDialog("Write serial number thành công");
+        } else {
+          context.setInfoDialog("Write serial number thất bại");
+        }
+        break;
+
+      case "write_mac":
+        if (jsonData.status === "success") {
+          context.setInfoDialog("Write mac thành công");
+        } else {
+          context.setInfoDialog("Write mac thất bại");
+        }
+        break;
+
+      case "reset_configuration":
+        if (jsonData.status === "success") {
+          context.setInfoDialog("Reset configuration thành công");
+        } else {
+          context.setInfoDialog("Reset configuration thất bại");
+        }
+        break;
+
       default:
         break;
     }
@@ -270,15 +306,16 @@ function ConnectComponent({ onConnected, dataFile, setDataFile, fileLoaded }) {
   // Socket data reader
   const readSocketData = async () => {
     if (!isSocketConnected) return;
-    
+
     try {
       const data = await getAllSocketData(socketAddress, socketPort);
       if (data && data.length > 0) {
         const latestData = data[data.length - 1];
         context.setDataTest(latestData);
-        
+
         try {
           const jsonData = JSON.parse(latestData);
+          console.log(jsonData);
           handleDataResponse(jsonData);
         } catch (parseErr) {
           console.log("Non-JSON data received:", latestData);
@@ -325,15 +362,19 @@ function ConnectComponent({ onConnected, dataFile, setDataFile, fileLoaded }) {
             if (response) {
               try {
                 const jsonData = JSON.parse(response);
+                console.log(jsonData);
                 context.setDataTest(response);
                 handleDataResponse(jsonData);
               } catch (e) {
                 context.setDataTest(response);
               }
             }
-          } else if (context.selectedConnection === "ethernet" && isSocketConnected) {
+          } else if (
+            context.selectedConnection === "ethernet" &&
+            isSocketConnected
+          ) {
             await readSocketData();
-            await new Promise(resolve => setTimeout(resolve, 1000));
+            await new Promise((resolve) => setTimeout(resolve, 1000));
           }
         } catch (err) {
           if (!err.toString().includes("timeout")) {
@@ -348,7 +389,12 @@ function ConnectComponent({ onConnected, dataFile, setDataFile, fileLoaded }) {
     return () => {
       isListening = false;
     };
-  }, [context.isConnected, context.selectedPort, context.selectedConnection, isSocketConnected]);
+  }, [
+    context.isConnected,
+    context.selectedPort,
+    context.selectedConnection,
+    isSocketConnected,
+  ]);
 
   // Cleanup effect to disconnect when component unmounts
   useEffect(() => {
@@ -360,46 +406,46 @@ function ConnectComponent({ onConnected, dataFile, setDataFile, fileLoaded }) {
   }, []);
 
   return (
-    <div className='w-full max-w-xs bg-white border border-gray-300 rounded-lg shadow p-4 flex flex-col gap-3'>
+    <div className="w-full max-w-xs bg-white border border-gray-300 rounded-lg shadow p-4 flex flex-col gap-3">
       {showModal && (
         <div
-          className='fixed inset-0 bg-black/40 flex items-center justify-center z-[1100]'
+          className="fixed inset-0 bg-black/40 flex items-center justify-center z-[1100]"
           onClick={() => setShowModal(false)} // Đóng modal khi click nền đen
         >
           <div
-            className='bg-white rounded-xl shadow-2xl w-full max-w-xs sm:max-w-sm p-7 relative animate-fadeIn'
+            className="bg-white rounded-xl shadow-2xl w-full max-w-xs sm:max-w-sm p-7 relative animate-fadeIn"
             onClick={(e) => e.stopPropagation()} // Ngăn sự kiện nổi bọt khi click vào modal
             style={{ boxShadow: "0 8px 32px rgba(0,0,0,0.18)" }}
           >
-            <div className='flex flex-col items-center mb-4'>
-              <span className='text-lg font-semibold text-gray-800'>
+            <div className="flex flex-col items-center mb-4">
+              <span className="text-lg font-semibold text-gray-800">
                 Change Password
               </span>
             </div>
             <input
-              type='password'
-              className='w-full px-3 py-2 border border-gray-200 rounded-lg mb-5 focus:outline-none focus:border-blue-500 transition'
+              type="password"
+              className="w-full px-3 py-2 border border-gray-200 rounded-lg mb-5 focus:outline-none focus:border-blue-500 transition"
               value={oldPassword}
               autoFocus
               onChange={(e) => setOldPassword(e.target.value)}
             />
             <input
-              type='password'
-              className='w-full px-3 py-2 border border-gray-200 rounded-lg mb-5 focus:outline-none focus:border-blue-500 transition'
+              type="password"
+              className="w-full px-3 py-2 border border-gray-200 rounded-lg mb-5 focus:outline-none focus:border-blue-500 transition"
               value={passwordInput}
               autoFocus
               onChange={(e) => setPasswordInput(e.target.value)}
             />
             <input
-              type='password'
-              className='w-full px-3 py-2 border border-gray-200 rounded-lg mb-5 focus:outline-none focus:border-blue-500 transition'
+              type="password"
+              className="w-full px-3 py-2 border border-gray-200 rounded-lg mb-5 focus:outline-none focus:border-blue-500 transition"
               value={passwordConfirm}
               autoFocus
               onChange={(e) => setPasswordConfirm(e.target.value)}
             />
-            <div className='flex gap-3 mt-2'>
+            <div className="flex gap-3 mt-2">
               <button
-                className='flex-1 px-4 py-2 bg-blue-500 text-white rounded-lg font-medium hover:bg-blue-600 transition'
+                className="flex-1 px-4 py-2 bg-blue-500 text-white rounded-lg font-medium hover:bg-blue-600 transition"
                 onClick={() => {
                   if (!oldPassword || !passwordInput || !passwordConfirm) {
                     ShowErrorDialog("Vui lòng điền đầy đủ thông tin");
@@ -408,7 +454,7 @@ function ConnectComponent({ onConnected, dataFile, setDataFile, fileLoaded }) {
 
                   if (passwordInput === oldPassword) {
                     ShowErrorDialog(
-                      "Mật khẩu mới không được trùng với mật khẩu cũ",
+                      "Mật khẩu mới không được trùng với mật khẩu cũ"
                     );
                     return;
                   }
@@ -423,7 +469,7 @@ function ConnectComponent({ onConnected, dataFile, setDataFile, fileLoaded }) {
                 Save
               </button>
               <button
-                className='flex-1 px-4 py-2 bg-gray-200 text-gray-700 rounded-lg font-medium hover:bg-gray-300 transition'
+                className="flex-1 px-4 py-2 bg-gray-200 text-gray-700 rounded-lg font-medium hover:bg-gray-300 transition"
                 onClick={() => setShowModal(false)} // Đóng modal khi click nút Close
               >
                 Close
@@ -432,8 +478,8 @@ function ConnectComponent({ onConnected, dataFile, setDataFile, fileLoaded }) {
           </div>
         </div>
       )}
-      <div className='flex items-center gap-2 mb-1'>
-        <span className='text-base font-semibold'>COM Port</span>
+      <div className="flex items-center gap-2 mb-1">
+        <span className="text-base font-semibold">COM Port</span>
         <span
           className={
             status.includes("Connected to")
@@ -445,9 +491,9 @@ function ConnectComponent({ onConnected, dataFile, setDataFile, fileLoaded }) {
         ></span>
       </div>
       <div>
-        <label className='block text-xs text-gray-700 mb-1'>Connection</label>
+        <label className="block text-xs text-gray-700 mb-1">Connection</label>
         <select
-          className='border border-gray-300 rounded px-2 py-1 w-full text-xs focus:outline-none focus:ring focus:border-blue-400'
+          className="border border-gray-300 rounded px-2 py-1 w-full text-xs focus:outline-none focus:ring focus:border-blue-400"
           value={context.selectedConnection}
           onChange={(e) => {
             // Disconnect current connection before switching
@@ -457,7 +503,7 @@ function ConnectComponent({ onConnected, dataFile, setDataFile, fileLoaded }) {
             context.setSelectedConnection(e.target.value);
           }}
         >
-          <option value=''>-- Select connection --</option>
+          <option value="">-- Select connection --</option>
           {["serial", "ethernet"]?.map((type) => (
             <option key={type} value={type}>
               {type.toUpperCase()}
@@ -467,15 +513,15 @@ function ConnectComponent({ onConnected, dataFile, setDataFile, fileLoaded }) {
       </div>
       {context.selectedConnection === "serial" && (
         <div>
-          <label className='block text-xs text-gray-700 mb-1'>
+          <label className="block text-xs text-gray-700 mb-1">
             Serial port
           </label>
           <select
-            className='border border-gray-300 rounded px-2 py-1 w-full text-xs focus:outline-none focus:ring focus:border-blue-400'
+            className="border border-gray-300 rounded px-2 py-1 w-full text-xs focus:outline-none focus:ring focus:border-blue-400"
             value={context.selectedPort}
             onChange={(e) => context.setSelectedPort(e.target.value)}
           >
-            <option value=''>-- Select COM port --</option>
+            <option value="">-- Select COM port --</option>
             {ports?.map((port) => (
               <option key={port} value={port}>
                 {port}
@@ -486,16 +532,16 @@ function ConnectComponent({ onConnected, dataFile, setDataFile, fileLoaded }) {
       )}
       {context.selectedConnection === "ethernet" && (
         <div>
-          <label className='block text-xs text-gray-700 mb-1'>IP Address</label>
-          <input 
-            className="mb-1 border border-gray-300 rounded px-2 py-1 w-full text-xs focus:outline-none focus:ring focus:border-blue-400" 
+          <label className="block text-xs text-gray-700 mb-1">IP Address</label>
+          <input
+            className="mb-1 border border-gray-300 rounded px-2 py-1 w-full text-xs focus:outline-none focus:ring focus:border-blue-400"
             value={socketAddress}
             onChange={(e) => setSocketAddress(e.target.value)}
             placeholder="localhost"
           />
-          <label className='block text-xs text-gray-700 mb-1'>Port</label>
-          <input 
-            className="mb-1 border border-gray-300 rounded px-2 py-1 w-full text-xs focus:outline-none focus:ring focus:border-blue-400" 
+          <label className="block text-xs text-gray-700 mb-1">Port</label>
+          <input
+            className="mb-1 border border-gray-300 rounded px-2 py-1 w-full text-xs focus:outline-none focus:ring focus:border-blue-400"
             value={socketPort}
             onChange={(e) => setSocketPort(e.target.value)}
             placeholder="8080"
@@ -504,44 +550,44 @@ function ConnectComponent({ onConnected, dataFile, setDataFile, fileLoaded }) {
         </div>
       )}
 
-      <div className='text-xs text-gray-500 mb-2 flex flex-col gap-1'>
-        <label className='block text-xs text-gray-700'>Login</label>
+      <div className="text-xs text-gray-500 mb-2 flex flex-col gap-1">
+        <label className="block text-xs text-gray-700">Login</label>
         <input
-          type='text'
+          type="text"
           value={username}
-          placeholder='Username'
+          placeholder="Username"
           onChange={(e) => setUsername(e.target.value)}
-          className='w-full border border-gray-300 rounded px-2 py-1 mb-1 focus:outline-none focus:ring focus:border-blue-400'
+          className="w-full border border-gray-300 rounded px-2 py-1 mb-1 focus:outline-none focus:ring focus:border-blue-400"
         />
         <input
-          type='password'
+          type="password"
           value={password}
-          placeholder='Password'
+          placeholder="Password"
           onChange={(e) => setPassword(e.target.value)}
-          className='w-full border border-gray-300 rounded px-2 py-1 mb-1 focus:outline-none focus:ring focus:border-blue-400'
+          className="w-full border border-gray-300 rounded px-2 py-1 mb-1 focus:outline-none focus:ring focus:border-blue-400"
         />
       </div>
-      <div className='flex flex-col md:flex-row items-center justify-center gap-2 w-full'>
+      <div className="flex flex-col md:flex-row items-center justify-center gap-2 w-full">
         {!context.isConnected ? (
           <button
             onClick={handleConnect}
-            className='flex-1 px-2 w-full bg-blue-600 text-white py-1 rounded border border-blue-700 hover:bg-blue-700 text-xs transition'
+            className="flex-1 px-2 w-full bg-blue-600 text-white py-1 rounded border border-blue-700 hover:bg-blue-700 text-xs transition"
           >
             Connect
           </button>
         ) : (
           <button
             onClick={handleDisconnect}
-            className='flex-1 px-2 w-full bg-gray-200 text-gray-700 py-1 rounded border border-gray-400 hover:bg-gray-300 text-xs transition'
+            className="flex-1 px-2 w-full bg-gray-200 text-gray-700 py-1 rounded border border-gray-400 hover:bg-gray-300 text-xs transition"
           >
             Disconnect
           </button>
         )}
       </div>
-      <div className='flex flex-col md:flex-row items-center justify-center gap-2 w-full'>
+      <div className="flex flex-col md:flex-row items-center justify-center gap-2 w-full">
         <button
           onClick={handleLogin}
-          className='flex-1 px-2 w-full bg-blue-600 text-white py-1 rounded border border-blue-700 hover:bg-blue-700 text-xs transition'
+          className="flex-1 px-2 w-full bg-blue-600 text-white py-1 rounded border border-blue-700 hover:bg-blue-700 text-xs transition"
           disabled={!context.isConnected}
         >
           Login
@@ -549,7 +595,7 @@ function ConnectComponent({ onConnected, dataFile, setDataFile, fileLoaded }) {
       </div>
       <button
         onClick={() => setShowModal(true)}
-        className='flex-1 px-2 w-full bg-gray-200 text-gray-700 py-1 rounded border border-gray-400 hover:bg-gray-300 text-xs transition'
+        className="flex-1 px-2 w-full bg-gray-200 text-gray-700 py-1 rounded border border-gray-400 hover:bg-gray-300 text-xs transition"
         // disabled={!context.isConnected || !context.isLogin}
       >
         Change Password
@@ -592,7 +638,7 @@ function ConnectComponent({ onConnected, dataFile, setDataFile, fileLoaded }) {
         {status}
       </div>
       {!!fileLoaded && (
-        <div className='fixed bottom-0 left-0 z-20 p-2 bg-stone-100 shadow-md text-sm text-gray-600'>
+        <div className="fixed bottom-0 left-0 z-20 p-2 bg-stone-100 shadow-md text-sm text-gray-600">
           {fileLoaded}
         </div>
       )}

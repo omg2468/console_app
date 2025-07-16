@@ -66,6 +66,10 @@ export function ListFiles() {
   return window['go']['workspace']['WorkspaceService']['ListFiles']();
 }
 
+export function Login(arg1, arg2, arg3, arg4) {
+  return window['go']['workspace']['WorkspaceService']['Login'](arg1, arg2, arg3, arg4);
+}
+
 export function NewProject(arg1) {
   return window['go']['workspace']['WorkspaceService']['NewProject'](arg1);
 }

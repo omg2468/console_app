@@ -33,7 +33,6 @@ const Control = () => {
     false,
   ]);
   const [loadingPos, setLoadingPos] = useState(0);
-
   const [dataCommand, setDataCommand] = useState("");
   const [selectedCommand, setSelectedCommand] = useState("read_system_info");
 
@@ -72,7 +71,7 @@ const Control = () => {
 
   const handleCalib16 = async () => {
     const result = await ShowQuestionDialog(
-      "Calibration at 4mA",
+      "Calibration at 16mA",
       "Calibration"
     );
 
@@ -398,6 +397,7 @@ const Control = () => {
   `}
                 style={{ minWidth: 60 }}
                 onClick={() => {
+                  console.log("click");
                   SetDigitalOutput(digitalOutput);
                 }}
               >

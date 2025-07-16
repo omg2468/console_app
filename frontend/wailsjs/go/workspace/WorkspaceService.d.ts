@@ -35,6 +35,8 @@ export function ListActiveConnections():Promise<Array<string>>;
 
 export function ListFiles():Promise<Array<workspace.FileNode>>;
 
+export function Login(arg1:string,arg2:string,arg3:string,arg4:string):Promise<void>;
+
 export function NewProject(arg1:string):Promise<void>;
 
 export function Paste(arg1:string,arg2:string):Promise<void>;
