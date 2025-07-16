@@ -6,6 +6,8 @@ import {
   StopReadTagView,
 } from "../../wailsjs/go/control/ControlService";
 
+import { ReadTagView as ReadTagViewWS } from "../../wailsjs/go/workspace/WorkspaceService";
+
 const TagView = () => {
   const [display, setDisplay] = useState(false);
   const [loadingPos, setLoadingPos] = useState(0);
@@ -33,14 +35,34 @@ const TagView = () => {
           className="custom"
           checked={display}
           onChange={(e) => {
-            if (e.target.checked) {
-              ReadTagView();
+            const checked = e.target.checked;
+
+            if (checked) {
+              if (context.selectedConnection === "serial") {
+                ReadTagView();
+              } else if (context.selectedConnection === "ethernet") {
+                ReadTagViewWS(
+                  context.socketAddress,
+                  context.socketPort,
+                  "enable"
+                );
+              }
             } else {
-              StopReadTagView();
+              if (context.selectedConnection === "serial") {
+                StopReadTagView();
+              } else if (context.selectedConnection === "ethernet") {
+                ReadTagViewWS(
+                  context.socketAddress,
+                  context.socketPort,
+                  "disable"
+                );
+              }
             }
-            setDisplay(e.target.checked);
+
+            setDisplay(checked);
           }}
         />
+
         <span>Display value</span>
         <div className="w-[100px] h-2 bg-gray-200 rounded overflow-hidden relative">
           <div

@@ -34,6 +34,10 @@ export function Login(arg1, arg2) {
   return window['go']['auth']['AuthService']['Login'](arg1, arg2);
 }
 
+export function Logout() {
+  return window['go']['auth']['AuthService']['Logout']();
+}
+
 export function RemoveUser(arg1) {
   return window['go']['auth']['AuthService']['RemoveUser'](arg1);
 }

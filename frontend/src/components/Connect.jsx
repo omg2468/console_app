@@ -3,6 +3,8 @@ import * as AuthService from "../../wailsjs/go/auth/AuthService";
 import {
   DownloadConfig,
   UploadConfig,
+  DownloadConfigEthernet,
+  UploadConfigEthernet,
 } from "../../wailsjs/go/workspace/WorkspaceService";
 import { ContextMenuContext } from "../store";
 
@@ -10,7 +12,10 @@ import { ChangePassword } from "../../wailsjs/go/auth/AuthService";
 
 import { ShowErrorDialog, ShowInfoDialog } from "../../wailsjs/go/main/App";
 
-import { Login } from "../../wailsjs/go/workspace/WorkspaceService";
+import {
+  Login,
+  ChangePassword as ChangePasswordWS,
+} from "../../wailsjs/go/workspace/WorkspaceService";
 
 import {
   connectSocket,
@@ -28,11 +33,6 @@ function ConnectComponent({ onConnected, dataFile, setDataFile, fileLoaded }) {
   const [oldPassword, setOldPassword] = useState("");
   const [passwordInput, setPasswordInput] = useState("");
   const [passwordConfirm, setPasswordConfirm] = useState("");
-
-  // Socket states
-  const [socketAddress, setSocketAddress] = useState("");
-  const [socketPort, setSocketPort] = useState("");
-  const [isSocketConnected, setIsSocketConnected] = useState(false);
 
   const context = useContext(ContextMenuContext);
 
@@ -61,20 +61,20 @@ function ConnectComponent({ onConnected, dataFile, setDataFile, fileLoaded }) {
   };
 
   const handleSocketConnect = async () => {
-    if (!validateSocketParams(socketAddress, socketPort)) {
+    if (!validateSocketParams(context.socketAddress, context.socketPort)) {
       setStatus("Invalid address or port");
       return;
     }
 
     try {
-      await connectSocket(socketAddress, socketPort);
-      setIsSocketConnected(true);
+      await connectSocket(context.socketAddress, context.socketPort);
+      context.setIsSocketConnected(true);
       context.setIsConnected(true);
-      setStatus(`Connected to ${socketAddress}:${socketPort}`);
+      setStatus(`Connected to ${context.socketAddress}:${context.socketPort}`);
       if (onConnected) onConnected();
     } catch (err) {
       setStatus("Socket connection error: " + err.message);
-      setIsSocketConnected(false);
+      context.setIsSocketConnected(false);
     }
   };
 
@@ -100,7 +100,7 @@ function ConnectComponent({ onConnected, dataFile, setDataFile, fileLoaded }) {
         ShowErrorDialog("Lỗi khi đăng nhập: " + err);
       });
     } else if (context.selectedConnection === "ethernet") {
-      Login(socketAddress, socketPort, username, password).catch((err) => {
+      Login(context.socketAddress, context.socketPort, username, password).catch((err) => {
         ShowErrorDialog("Lỗi khi đăng nhập: " + err);
       });
     }
@@ -120,28 +120,35 @@ function ConnectComponent({ onConnected, dataFile, setDataFile, fileLoaded }) {
   };
 
   const handleSerialDisconnect = () => {
-    AuthService.Disconnect()
+    if (!context.isConnected) {
+      return;
+    }
+
+    AuthService.Logout()
       .then(() => {
-        setStatus("Disconnected from serial");
-        context.setSelectedPort("");
-        context.setIsConnected(false);
-        context.setIsLogin(false);
-        context.setRole("");
+        // Logout successful, now proceed to disconnect
+        AuthService.Disconnect()
+          .then(() => {
+            // Disconnect successful
+            setStatus("Disconnected from serial");
+            context.setSelectedPort("");
+            context.setIsConnected(false);
+            context.setIsLogin(false);
+            context.setRole("");
+          })
+          .catch((err) => {
+            setStatus("Disconnect error: " + err);
+          });
       })
-      .catch((err) => {
-        setStatus("Disconnect error: " + err);
-        // Even if there's an error, reset the state
-        context.setSelectedPort("");
-        context.setIsConnected(false);
-        context.setIsLogin(false);
-        context.setRole("");
+      .catch((logoutErr) => {
+        setStatus("Logout error: " + logoutErr);
       });
   };
 
   const handleSocketDisconnect = async () => {
     try {
-      await disconnectSocket(socketAddress, socketPort);
-      setIsSocketConnected(false);
+      await disconnectSocket(context.socketAddress, context.socketPort);
+      context.setIsSocketConnected(false);
       context.setIsConnected(false);
       context.setIsLogin(false);
       context.setRole("");
@@ -149,7 +156,7 @@ function ConnectComponent({ onConnected, dataFile, setDataFile, fileLoaded }) {
     } catch (err) {
       setStatus("Disconnect error: " + err.message);
       // Even if there's an error, reset the state
-      setIsSocketConnected(false);
+      context.setIsSocketConnected(false);
       context.setIsConnected(false);
       context.setIsLogin(false);
       context.setRole("");
@@ -161,9 +168,19 @@ function ConnectComponent({ onConnected, dataFile, setDataFile, fileLoaded }) {
       ShowErrorDialog("Không có data để upload");
       return;
     }
-    UploadConfig(JSON.stringify(dataFile)).catch((err) => {
-      ShowErrorDialog("Lỗi upload cấu hình: " + err);
-    });
+    if (context.selectedConnection === "serial") {
+      UploadConfig(JSON.stringify(dataFile)).catch((err) => {
+        ShowErrorDialog("Lỗi upload cấu hình: " + err);
+      });
+    } else if (context.selectedConnection === "ethernet") {
+      UploadConfigEthernet(
+        context.socketAddress,
+        context.socketPort,
+        JSON.stringify(dataFile)
+      ).catch((err) => {
+        ShowErrorDialog("Lỗi upload cấu hình: " + err);
+      });
+    }
   };
 
   // Function xử lý data response
@@ -305,10 +322,10 @@ function ConnectComponent({ onConnected, dataFile, setDataFile, fileLoaded }) {
 
   // Socket data reader
   const readSocketData = async () => {
-    if (!isSocketConnected) return;
+    if (!context.isSocketConnected) return;
 
     try {
-      const data = await getAllSocketData(socketAddress, socketPort);
+      const data = await getAllSocketData(context.socketAddress, context.socketPort);
       if (data && data.length > 0) {
         const latestData = data[data.length - 1];
         context.setDataTest(latestData);
@@ -371,7 +388,7 @@ function ConnectComponent({ onConnected, dataFile, setDataFile, fileLoaded }) {
             }
           } else if (
             context.selectedConnection === "ethernet" &&
-            isSocketConnected
+            context.isSocketConnected
           ) {
             await readSocketData();
             await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -393,7 +410,7 @@ function ConnectComponent({ onConnected, dataFile, setDataFile, fileLoaded }) {
     context.isConnected,
     context.selectedPort,
     context.selectedConnection,
-    isSocketConnected,
+    context.isSocketConnected,
   ]);
 
   // Cleanup effect to disconnect when component unmounts
@@ -463,7 +480,16 @@ function ConnectComponent({ onConnected, dataFile, setDataFile, fileLoaded }) {
                     ShowErrorDialog("Mật khẩu không khớp");
                     return;
                   }
-                  ChangePassword(oldPassword, passwordInput);
+                  if (context.selectedConnection === "serial") {
+                    ChangePassword(oldPassword, passwordInput);
+                  } else if (context.selectedConnection === "ethernet") {
+                    ChangePasswordWS(
+                      context.socketAddress,
+                      context.socketPort,
+                      oldPassword,
+                      passwordInput
+                    );
+                  }
                 }}
               >
                 Save
@@ -535,14 +561,14 @@ function ConnectComponent({ onConnected, dataFile, setDataFile, fileLoaded }) {
           <label className="block text-xs text-gray-700 mb-1">IP Address</label>
           <input
             className="mb-1 border border-gray-300 rounded px-2 py-1 w-full text-xs focus:outline-none focus:ring focus:border-blue-400"
-            value={socketAddress}
-            onChange={(e) => setSocketAddress(e.target.value)}
+            value={context.socketAddress}
+            onChange={(e) => context.setSocketAddress(e.target.value)}
           />
           <label className="block text-xs text-gray-700 mb-1">Port</label>
           <input
             className="mb-1 border border-gray-300 rounded px-2 py-1 w-full text-xs focus:outline-none focus:ring focus:border-blue-400"
-            value={socketPort}
-            onChange={(e) => setSocketPort(e.target.value)}
+            value={context.socketPort}
+            onChange={(e) => context.setSocketPort(e.target.value)}
             type="number"
           />
         </div>
@@ -554,7 +580,7 @@ function ConnectComponent({ onConnected, dataFile, setDataFile, fileLoaded }) {
           type="text"
           value={username}
           disabled={!context.isConnected}
-          placeholder='Username'
+          placeholder="Username"
           onChange={(e) => setUsername(e.target.value)}
           className="w-full border border-gray-300 rounded px-2 py-1 mb-1 focus:outline-none focus:ring focus:border-blue-400"
         />
@@ -562,7 +588,7 @@ function ConnectComponent({ onConnected, dataFile, setDataFile, fileLoaded }) {
           type="password"
           value={password}
           disabled={!context.isConnected}
-          placeholder='Password'
+          placeholder="Password"
           onChange={(e) => setPassword(e.target.value)}
           className="w-full border border-gray-300 rounded px-2 py-1 mb-1 focus:outline-none focus:ring focus:border-blue-400"
         />
@@ -615,7 +641,13 @@ function ConnectComponent({ onConnected, dataFile, setDataFile, fileLoaded }) {
       </button>
       <button
         disabled={!context.isConnected}
-        onClick={DownloadConfig}
+        onClick={() => {
+          if (context.selectedConnection === "serial") {
+            DownloadConfig();
+          } else if (context.selectedConnection === "ethernet") {
+            DownloadConfigEthernet(context.socketAddress, context.socketPort);
+          }
+        }}
         className={`flex-1 px-2 w-full py-1 rounded border text-xs transition
     ${
       context.isConnected

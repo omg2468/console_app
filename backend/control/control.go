@@ -96,8 +96,9 @@ func (c *ControlService) ReadSdcardInfo() error {
 	return c.authService.Send(`{"type":"read_sdcard_info"}`)
 }
 
-func (c *ControlService) Ping() error {
-	return c.authService.Send(`{"type":"ping"}`)
+func (c *ControlService) Ping(ip string) error {
+	message := fmt.Sprintf(`{"type":"ping","data":"%s"}`, ip)
+	return c.authService.Send(message)
 }
 
 func (c *ControlService) WriteSerialNumber(serialNumber string) error {
@@ -129,7 +130,7 @@ func (c *ControlService) SetTime(timeArray []int) error {
 }
 
 func (c *ControlService) SetDigitalOutput(outputStates []bool) error {
-	if len(outputStates) != 12 {
+	if len(outputStates) != 8 {
 		return fmt.Errorf("outputStates phải có đúng 12 phần tử")
 	}
 

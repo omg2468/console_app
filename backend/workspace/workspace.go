@@ -860,7 +860,14 @@ func (ws *WorkspaceService) SendSocketData(address string, port string, data str
 	// Set timeout cho việc ghi
 	socketConn.conn.SetWriteDeadline(time.Now().Add(10 * time.Second))
 
-	_, err := socketConn.conn.Write([]byte(data))
+	// 1. Chuyển đổi chuỗi dữ liệu gốc thành byte array (thường là UTF-8)
+	dataBytes := []byte(data)
+
+	// 2. Thêm byte 0x0A (Line Feed) vào cuối mảng byte
+	// Đây chính là "thêm 0a dưới dạng HEX" vào cuối chuỗi dữ liệu ban đầu.
+	finalData := append(dataBytes, 0x0A)
+
+	_, err := socketConn.conn.Write([]byte(finalData))
 	if err != nil {
 		return fmt.Errorf("không thể gửi dữ liệu tới socket %s: %w", connectionKey, err)
 	}
@@ -869,9 +876,47 @@ func (ws *WorkspaceService) SendSocketData(address string, port string, data str
 	return nil
 }
 
+// func (ws *WorkspaceService) SendSocketData(address string, port string, data string) error {
+// 	connectionKey := fmt.Sprintf("%s:%s", address, port)
+
+// 	ws.socketManager.mutex.RLock()
+// 	socketConn, exists := ws.socketManager.connections[connectionKey]
+// 	ws.socketManager.mutex.RUnlock()
+
+// 	if !exists {
+// 		return fmt.Errorf("không có kết nối tới %s", connectionKey)
+// 	}
+
+// 	socketConn.mutex.Lock()
+// 	defer socketConn.mutex.Unlock()
+
+// 	if !socketConn.isActive {
+// 		return fmt.Errorf("kết nối tới %s không còn hoạt động", connectionKey)
+// 	}
+
+// 	// Set timeout cho việc ghi
+// 	socketConn.conn.SetWriteDeadline(time.Now().Add(10 * time.Second))
+
+// 	// 1. Gửi chuỗi dữ liệu gốc
+// 	dataBytes := []byte(data)
+// 	_, err := socketConn.conn.Write(dataBytes)
+// 	if err != nil {
+// 		return fmt.Errorf("không thể gửi dữ liệu chính tới socket %s: %w", connectionKey, err)
+// 	}
+
+// 	// 2. Gửi byte 0x0A riêng lẻ
+// 	_, err = socketConn.conn.Write([]byte{0x0A})
+// 	if err != nil {
+// 		return fmt.Errorf("không thể gửi ký tự kết thúc tới socket %s: %w", connectionKey, err)
+// 	}
+
+// 	fmt.Printf("📤 Đã gửi tới socket %s: %s\\n (chia 2 lần)\n", connectionKey, data)
+// 	return nil
+// }
+
 func (ws *WorkspaceService) Login(address, port, username, password string) error {
 	// Tạo message JSON đúng format thiết bị yêu cầu
-	loginMessage := fmt.Sprintf(`{"type":"login","username":"%s","password":"%s"}\n`, username, password)
+	loginMessage := fmt.Sprintf(`{"type":"login","username":"%s","password":"%s"}`, username, password)
 
 	// Gửi xuống thiết bị qua socket
 	err := ws.SendSocketData(address, port, loginMessage)
@@ -881,6 +926,264 @@ func (ws *WorkspaceService) Login(address, port, username, password string) erro
 
 	fmt.Println("✅ Đã gửi login request tới thiết bị.")
 	return nil
+}
+
+func (ws *WorkspaceService) Logout(address, port string) error {
+	// Tạo message JSON cho logout
+	logoutMessage := `{"type":"logout"}`
+
+	// Gửi xuống thiết bị qua socket
+	err := ws.SendSocketData(address, port, logoutMessage)
+	if err != nil {
+		return fmt.Errorf("không thể gửi logout request: %w", err)
+	}
+
+	fmt.Println("✅ Đã gửi logout request tới thiết bị.")
+	return nil
+}
+
+func (ws *WorkspaceService) ChangePassword(address, port, oldPassword, newPassword string) error {
+	// Tạo message JSON cho đổi mật khẩu
+	changePasswordMessage := fmt.Sprintf(
+		`{"type":"change_password","old_password":"%s","new_password":"%s"}`,
+		oldPassword, newPassword,
+	)
+
+	// Gửi xuống thiết bị qua socket
+	err := ws.SendSocketData(address, port, changePasswordMessage)
+	if err != nil {
+		return fmt.Errorf("không thể gửi yêu cầu đổi mật khẩu: %w", err)
+	}
+
+	fmt.Println("✅ Đã gửi yêu cầu đổi mật khẩu tới thiết bị.")
+	return nil
+}
+
+func (ws *WorkspaceService) DownloadConfigEthernet(address, port string) error {
+	// Tạo message JSON cho yêu cầu tải cấu hình
+	message := `{"type":"download_config"}`
+
+	// Gửi xuống thiết bị qua socket
+	err := ws.SendSocketData(address, port, message)
+	if err != nil {
+		return fmt.Errorf("không thể gửi yêu cầu download config: %w", err)
+	}
+
+	fmt.Println("✅ Đã gửi yêu cầu download config tới thiết bị.")
+	return nil
+}
+
+func (ws *WorkspaceService) ReadAnalog(address, port, mode string) error {
+	// Đảm bảo mode chỉ nhận "enable" hoặc "disable"
+	if mode != "enable" && mode != "disable" {
+		return fmt.Errorf("giá trị không hợp lệ cho mode: %s (chỉ 'enable' hoặc 'disable')", mode)
+	}
+
+	// Tạo message JSON
+	message := fmt.Sprintf(`{"type":"read_analog","data":"%s"}`, mode)
+
+	// Gửi xuống thiết bị qua socket
+	err := ws.SendSocketData(address, port, message)
+	if err != nil {
+		return fmt.Errorf("không thể gửi yêu cầu read_analog: %w", err)
+	}
+
+	fmt.Printf("✅ Đã gửi read_analog [%s] tới thiết bị.\n", mode)
+	return nil
+}
+
+func (ws *WorkspaceService) ReadMemoryView(address, port, mode string) error {
+	// Chỉ chấp nhận "enable" hoặc "disable"
+	if mode != "enable" && mode != "disable" {
+		return fmt.Errorf("giá trị không hợp lệ cho mode: %s (chỉ 'enable' hoặc 'disable')", mode)
+	}
+
+	// Tạo message JSON
+	message := fmt.Sprintf(`{"type":"read_memory_view","data":"%s"}`, mode)
+
+	// Gửi xuống thiết bị qua socket
+	err := ws.SendSocketData(address, port, message)
+	if err != nil {
+		return fmt.Errorf("không thể gửi yêu cầu read_memory_view: %w", err)
+	}
+
+	fmt.Printf("✅ Đã gửi read_memory_view [%s] tới thiết bị.\n", mode)
+	return nil
+}
+
+func (ws *WorkspaceService) ReadTagView(address, port, mode string) error {
+	// Kiểm tra mode hợp lệ
+	if mode != "enable" && mode != "disable" {
+		return fmt.Errorf("giá trị không hợp lệ cho mode: %s (chỉ 'enable' hoặc 'disable')", mode)
+	}
+
+	// Tạo JSON message
+	message := fmt.Sprintf(`{"type":"read_tag_view","data":"%s"}`, mode)
+
+	// Gửi dữ liệu
+	err := ws.SendSocketData(address, port, message)
+	if err != nil {
+		return fmt.Errorf("không thể gửi yêu cầu read_tag_view: %w", err)
+	}
+
+	fmt.Printf("✅ Đã gửi read_tag_view [%s] tới thiết bị.\n", mode)
+	return nil
+}
+
+func (ws *WorkspaceService) SettingNetworkEthernet(address, port string, data map[string]interface{}) error {
+	// Gắn type vào payload
+	data["type"] = "network_setting"
+
+	// Convert sang JSON
+	finalData, err := json.Marshal(data)
+	if err != nil {
+		return fmt.Errorf("lỗi khi chuyển JSON: %w", err)
+	}
+
+	// Gửi xuống thiết bị qua socket
+	err = ws.SendSocketData(address, port, string(finalData))
+	if err != nil {
+		return fmt.Errorf("không thể gửi network_setting qua ethernet: %w", err)
+	}
+
+	fmt.Println("✅ Đã gửi network_setting qua Ethernet.")
+	return nil
+}
+
+func (ws *WorkspaceService) QueryNetwork(address, port string) error {
+	// Tạo JSON yêu cầu thông tin mạng
+	message := `{"type":"network"}`
+
+	// Gửi xuống thiết bị qua socket
+	err := ws.SendSocketData(address, port, message)
+	if err != nil {
+		return fmt.Errorf("không thể gửi yêu cầu network: %w", err)
+	}
+
+	fmt.Println("✅ Đã gửi yêu cầu lấy thông tin mạng tới thiết bị.")
+	return nil
+}
+
+func (ws *WorkspaceService) Calibrate4mA(address, port string) error {
+	message := `{"type":"calib_4ma"}`
+
+	err := ws.SendSocketData(address, port, message)
+	if err != nil {
+		return fmt.Errorf("không thể gửi lệnh calib_4ma: %w", err)
+	}
+
+	return nil
+}
+
+func (ws *WorkspaceService) Calibrate16mA(address, port string) error {
+	message := `{"type":"calib_16ma"}`
+
+	err := ws.SendSocketData(address, port, message)
+	if err != nil {
+		return fmt.Errorf("không thể gửi lệnh calib_16ma: %w", err)
+	}
+
+	return nil
+}
+
+func (ws *WorkspaceService) SetDigitalOutputEthernet(address, port string, outputStates []bool) error {
+	if len(outputStates) != 8 {
+		return fmt.Errorf("outputStates phải có đúng 8 phần tử")
+	}
+
+	// Chuyển []bool thành []int
+	intStates := make([]int, len(outputStates))
+	for i, v := range outputStates {
+		if v {
+			intStates[i] = 1
+		} else {
+			intStates[i] = 0
+		}
+	}
+
+	// Tạo JSON message
+	message := map[string]interface{}{
+		"type": "set_digital_output",
+		"data": intStates,
+	}
+
+	finalData, err := json.Marshal(message)
+	if err != nil {
+		return fmt.Errorf("marshal lỗi: %w", err)
+	}
+
+	// Gửi qua socket
+	err = ws.SendSocketData(address, port, string(finalData))
+	if err != nil {
+		return fmt.Errorf("không thể gửi set_digital_output: %w", err)
+	}
+
+	fmt.Println("✅ Đã gửi set_digital_output tới thiết bị.")
+	return nil
+}
+
+func (ws *WorkspaceService) UploadConfigEthernet(address, port string, data string) error {
+	var configData map[string]interface{}
+	if err := json.Unmarshal([]byte(data), &configData); err != nil {
+		return fmt.Errorf("dữ liệu upload không phải JSON hợp lệ: %w", err)
+	}
+
+	// Thêm trường type
+	configData["type"] = "upload_config"
+
+	finalData, err := json.Marshal(configData)
+	if err != nil {
+		return fmt.Errorf("lỗi khi chuyển thành JSON: %w", err)
+	}
+
+	// Gửi dữ liệu qua socket
+	err = ws.SendSocketData(address, port, string(finalData))
+	if err != nil {
+		return fmt.Errorf("không thể gửi upload_config tới thiết bị: %w", err)
+	}
+
+	fmt.Println("✅ Đã gửi upload_config tới thiết bị.")
+	return nil
+}
+
+func (ws *WorkspaceService) WriteSerialNumber(address, port, serial string) error {
+	message := fmt.Sprintf(`{"type":"write_serial_number","data":"%s"}`, serial)
+	return ws.SendSocketData(address, port, message)
+}
+
+func (ws *WorkspaceService) WriteMacAddress(address, port, mac string) error {
+	message := fmt.Sprintf(`{"type":"write_mac","data":"%s"}`, mac)
+	return ws.SendSocketData(address, port, message)
+}
+
+func (ws *WorkspaceService) ResetConfiguration(address, port string) error {
+	message := `{"type":"reset_configuration"}`
+	return ws.SendSocketData(address, port, message)
+}
+
+func (ws *WorkspaceService) RebootDevice(address, port string) error {
+	message := `{"type":"reboot"}`
+	return ws.SendSocketData(address, port, message)
+}
+
+func (ws *WorkspaceService) ReadSystemInfo(address, port string) error {
+	message := `{"type":"read_system_info"}`
+	return ws.SendSocketData(address, port, message)
+}
+
+func (ws *WorkspaceService) ReadSimInfo(address, port string) error {
+	message := `{"type":"read_sim_info"}`
+	return ws.SendSocketData(address, port, message)
+}
+
+func (ws *WorkspaceService) ReadSdCardInfo(address, port string) error {
+	message := `{"type":"read_sdcard_info"}`
+	return ws.SendSocketData(address, port, message)
+}
+
+func (ws *WorkspaceService) PingDevice(address, port, targetIP string) error {
+	message := fmt.Sprintf(`{"type":"ping","data":"%s"}`, targetIP)
+	return ws.SendSocketData(address, port, message)
 }
 
 // DisconnectSocket ngắt kết nối socket

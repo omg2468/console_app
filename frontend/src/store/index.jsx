@@ -27,6 +27,9 @@ export const ContextMenuProvider = ({ children }) => {
     modem: false,
   });
   const [infoDialog, setInfoDialog] = useState(null);
+  const [socketAddress, setSocketAddress] = useState("");
+  const [socketPort, setSocketPort] = useState("");
+  const [isSocketConnected, setIsSocketConnected] = useState(false);
 
   //Will remove this later
   const [dataTest, setDataTest] = useState("");
@@ -82,6 +85,12 @@ export const ContextMenuProvider = ({ children }) => {
         setFormData,
         infoDialog,
         setInfoDialog,
+        socketAddress,
+        setSocketAddress,
+        socketPort,
+        setSocketPort,
+        isSocketConnected,
+        setIsSocketConnected,
       }}
     >
       {children}

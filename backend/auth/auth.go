@@ -178,7 +178,6 @@ func (a *AuthService) Send(data string) error {
 }
 
 func (a *AuthService) Disconnect() error {
-	a.Send(`{"type":"logout"}`)
 	a.mu.Lock()
 	defer a.mu.Unlock()
 
@@ -193,6 +192,19 @@ func (a *AuthService) Disconnect() error {
 		fmt.Println("Đã ngắt kết nối")
 	}
 	return nil
+}
+
+func (a *AuthService) Logout() error {
+	// Tạo JSON logout request
+	logoutData := map[string]string{
+		"type": "logout",
+	}
+	jsonBytes, err := json.Marshal(logoutData)
+	if err != nil {
+		return fmt.Errorf("lỗi khi tạo JSON đăng xuất: %w", err)
+	}
+
+	return a.Send(string(jsonBytes))
 }
 
 func (a *AuthService) Login(username, password string) error {

@@ -14,8 +14,8 @@ export function GetNetworkInfo() {
   return window['go']['control']['ControlService']['GetNetworkInfo']();
 }
 
-export function Ping() {
-  return window['go']['control']['ControlService']['Ping']();
+export function Ping(arg1) {
+  return window['go']['control']['ControlService']['Ping'](arg1);
 }
 
 export function ReadAnalog() {

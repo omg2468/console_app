@@ -7,7 +7,7 @@ export function Calib4ma():Promise<void>;
 
 export function GetNetworkInfo():Promise<void>;
 
-export function Ping():Promise<void>;
+export function Ping(arg1:string):Promise<void>;
 
 export function ReadAnalog():Promise<void>;
 

@@ -3,6 +3,12 @@
 import {workspace} from '../models';
 import {context} from '../models';
 
+export function Calibrate16mA(arg1:string,arg2:string):Promise<void>;
+
+export function Calibrate4mA(arg1:string,arg2:string):Promise<void>;
+
+export function ChangePassword(arg1:string,arg2:string,arg3:string,arg4:string):Promise<void>;
+
 export function CheckSocketConnection(arg1:string,arg2:string):Promise<boolean>;
 
 export function ConnectSocket(arg1:string,arg2:string):Promise<string>;
@@ -16,6 +22,8 @@ export function DeleteItem(arg1:string):Promise<void>;
 export function DisconnectSocket(arg1:string,arg2:string):Promise<void>;
 
 export function DownloadConfig():Promise<void>;
+
+export function DownloadConfigEthernet(arg1:string,arg2:string):Promise<void>;
 
 export function ExportJSONFile(arg1:string,arg2:string):Promise<void>;
 
@@ -37,13 +45,35 @@ export function ListFiles():Promise<Array<workspace.FileNode>>;
 
 export function Login(arg1:string,arg2:string,arg3:string,arg4:string):Promise<void>;
 
+export function Logout(arg1:string,arg2:string):Promise<void>;
+
 export function NewProject(arg1:string):Promise<void>;
 
 export function Paste(arg1:string,arg2:string):Promise<void>;
 
+export function PingDevice(arg1:string,arg2:string,arg3:string):Promise<void>;
+
+export function QueryNetwork(arg1:string,arg2:string):Promise<void>;
+
+export function ReadAnalog(arg1:string,arg2:string,arg3:string):Promise<void>;
+
 export function ReadFile(arg1:string):Promise<string>;
 
+export function ReadMemoryView(arg1:string,arg2:string,arg3:string):Promise<void>;
+
+export function ReadSdCardInfo(arg1:string,arg2:string):Promise<void>;
+
+export function ReadSimInfo(arg1:string,arg2:string):Promise<void>;
+
+export function ReadSystemInfo(arg1:string,arg2:string):Promise<void>;
+
+export function ReadTagView(arg1:string,arg2:string,arg3:string):Promise<void>;
+
+export function RebootDevice(arg1:string,arg2:string):Promise<void>;
+
 export function RenameItem(arg1:string,arg2:string):Promise<void>;
+
+export function ResetConfiguration(arg1:string,arg2:string):Promise<void>;
 
 export function SaveJsonFile(arg1:string,arg2:string):Promise<void>;
 
@@ -53,6 +83,16 @@ export function SendSocketData(arg1:string,arg2:string,arg3:string):Promise<void
 
 export function SetContext(arg1:context.Context):Promise<void>;
 
+export function SetDigitalOutputEthernet(arg1:string,arg2:string,arg3:Array<boolean>):Promise<void>;
+
+export function SettingNetworkEthernet(arg1:string,arg2:string,arg3:Record<string, any>):Promise<void>;
+
 export function ShowInExplorer(arg1:string):Promise<void>;
 
 export function UploadConfig(arg1:string):Promise<void>;
+
+export function UploadConfigEthernet(arg1:string,arg2:string,arg3:string):Promise<void>;
+
+export function WriteMacAddress(arg1:string,arg2:string,arg3:string):Promise<void>;
+
+export function WriteSerialNumber(arg1:string,arg2:string,arg3:string):Promise<void>;

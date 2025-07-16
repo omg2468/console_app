@@ -18,6 +18,8 @@ export function ListPorts():Promise<Array<string>>;
 
 export function Login(arg1:string,arg2:string):Promise<void>;
 
+export function Logout():Promise<void>;
+
 export function RemoveUser(arg1:string):Promise<void>;
 
 export function Send(arg1:string):Promise<void>;

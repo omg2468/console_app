@@ -6,6 +6,8 @@ import {
   StopReadMemoryView,
 } from "../../wailsjs/go/control/ControlService";
 
+import { ReadMemoryView as ReadMemoryViewWS } from "../../wailsjs/go/workspace/WorkspaceService";
+
 const MemoryView = () => {
   const [display, setDisplay] = useState(false);
   const [loadingPos, setLoadingPos] = useState(0);
@@ -108,9 +110,28 @@ const MemoryView = () => {
           checked={display}
           onChange={(e) => {
             if (e.target.checked) {
-              ReadMemoryView();
+              if (context.selectedConnection === "serial") {
+                ReadMemoryView();
+              } else if (
+                context.selectedConnection === "ethernet" &&
+                context.isSocketConnected
+              ) {
+                ReadMemoryViewWS(
+                  context.socketAddress,
+                  context.socketPort,
+                  "enable"
+                );
+              }
             } else {
-              StopReadMemoryView();
+              if (context.selectedConnection === "serial") {
+                StopReadMemoryView();
+              } else if (context.selectedConnection === "ethernet") {
+                ReadMemoryViewWS(
+                  context.socketAddress,
+                  context.socketPort,
+                  "disable"
+                );
+              }
             }
             setDisplay(e.target.checked);
           }}

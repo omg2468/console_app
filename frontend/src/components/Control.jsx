@@ -18,6 +18,11 @@ import {
   ReadSdcardInfo,
   Ping,
 } from "../../wailsjs/go/control/ControlService";
+
+import {
+  ReadAnalog as ReadAnalogWS,
+  QueryNetwork,
+} from "../../wailsjs/go/workspace/WorkspaceService";
 import { ShowQuestionDialog } from "../../wailsjs/go/main/App";
 
 const Control = () => {
@@ -42,17 +47,25 @@ const Control = () => {
   };
 
   const handleSetNetwork = () => {
-    SettingNetwork(context.formData);
+    if (context.selectedConnection === "serial") {
+      SettingNetwork(context.formData);
+    } else if (context.selectedConnection === "ethernet") {
+      SettingNetworkEthernet(context.socketAddress, context.socketPort, context.formData);
+    }
   };
 
   const handleGetNetwork = () => {
-    GetNetworkInfo();
+    if (context.selectedConnection === "serial") {
+      GetNetworkInfo();
+    } else if (context.selectedConnection === "ethernet") {
+      QueryNetwork(context.socketAddress, context.socketPort);
+    }
   };
 
   const handleCalib4 = async () => {
     const result = await ShowQuestionDialog(
       "Calibration at 4mA",
-      "Calibration",
+      "Calibration"
     );
 
     if (result === "Yes") {
@@ -80,22 +93,22 @@ const Control = () => {
   }, [analogData]);
 
   return (
-    <div className='w-full overflow-x-scroll flex flex-row px-2 py-1 box-border'>
-      <div className='min-w-[350px] flex flex-col gap-2'>
-        <span className='text-xs font-semibold'>NETWORK SETTING</span>
-        <div className='border flex-1'>
-          <table className='w-full h-full max-h-[400px] border-collapse'>
+    <div className="w-full overflow-x-scroll flex flex-row px-2 py-1 box-border">
+      <div className="min-w-[350px] flex flex-col gap-2">
+        <span className="text-xs font-semibold">NETWORK SETTING</span>
+        <div className="border flex-1">
+          <table className="w-full h-full max-h-[400px] border-collapse">
             <tbody>
               <tr>
-                <td className='border-r border-b p-2 text-right'>
-                  <span className='font-extrabold text-base'>DHCP</span>
+                <td className="border-r border-b p-2 text-right">
+                  <span className="font-extrabold text-base">DHCP</span>
                 </td>
-                <td className='p-2 border-b text-left '>
-                  <div className='w-full h-full flex items-center justify-start'>
+                <td className="p-2 border-b text-left ">
+                  <div className="w-full h-full flex items-center justify-start">
                     <input
-                      type='checkbox'
-                      name='dhcp'
-                      className='w-4 h-4'
+                      type="checkbox"
+                      name="dhcp"
+                      className="w-4 h-4"
                       checked={context.formData.dhcp}
                       onChange={handleChange}
                     />
@@ -104,13 +117,13 @@ const Control = () => {
               </tr>
 
               <tr>
-                <td className='border-r border-b p-2 text-right'>IP</td>
-                <td className='p-2 border-b text-left'>
+                <td className="border-r border-b p-2 text-right">IP</td>
+                <td className="p-2 border-b text-left">
                   <input
-                    className='w-full'
-                    type='text'
-                    name='ip'
-                    placeholder='Enter IP address'
+                    className="w-full"
+                    type="text"
+                    name="ip"
+                    placeholder="Enter IP address"
                     value={context.formData.ip}
                     onChange={handleChange}
                   />
@@ -118,13 +131,13 @@ const Control = () => {
               </tr>
 
               <tr>
-                <td className='border-r border-b p-2 text-right'>Netmask</td>
-                <td className='p-2 border-b text-left'>
+                <td className="border-r border-b p-2 text-right">Netmask</td>
+                <td className="p-2 border-b text-left">
                   <input
-                    className='w-full'
-                    type='text'
-                    name='netmask'
-                    placeholder='Enter subnet mask'
+                    className="w-full"
+                    type="text"
+                    name="netmask"
+                    placeholder="Enter subnet mask"
                     value={context.formData.netmask}
                     onChange={handleChange}
                   />
@@ -132,13 +145,13 @@ const Control = () => {
               </tr>
 
               <tr>
-                <td className='border-r border-b p-2 text-right'>Gateway</td>
-                <td className='p-2 border-b text-left'>
+                <td className="border-r border-b p-2 text-right">Gateway</td>
+                <td className="p-2 border-b text-left">
                   <input
-                    className='w-full'
-                    type='text'
-                    name='gateway'
-                    placeholder='Enter gateway IP'
+                    className="w-full"
+                    type="text"
+                    name="gateway"
+                    placeholder="Enter gateway IP"
                     value={context.formData.gateway}
                     onChange={handleChange}
                   />
@@ -146,13 +159,13 @@ const Control = () => {
               </tr>
 
               <tr>
-                <td className='border-r border-b p-2 text-right'>DNS</td>
-                <td className='p-2 border-b text-left'>
+                <td className="border-r border-b p-2 text-right">DNS</td>
+                <td className="p-2 border-b text-left">
                   <input
-                    className='w-full'
-                    type='text'
-                    name='dns'
-                    placeholder='Enter DNS server'
+                    className="w-full"
+                    type="text"
+                    name="dns"
+                    placeholder="Enter DNS server"
                     value={context.formData.dns}
                     onChange={handleChange}
                   />
@@ -160,13 +173,13 @@ const Control = () => {
               </tr>
 
               <tr>
-                <td className='border-r border-b p-2 text-right'>Proxy</td>
-                <td className='p-2 border-b text-left'>
+                <td className="border-r border-b p-2 text-right">Proxy</td>
+                <td className="p-2 border-b text-left">
                   <input
-                    className='w-full'
-                    type='text'
-                    name='proxy'
-                    placeholder='Enter proxy address'
+                    className="w-full"
+                    type="text"
+                    name="proxy"
+                    placeholder="Enter proxy address"
                     value={context.formData.proxy}
                     onChange={handleChange}
                   />
@@ -174,13 +187,13 @@ const Control = () => {
               </tr>
 
               <tr>
-                <td className='border-r border-b p-2 text-right'>Secondary</td>
-                <td className='p-2 border-b text-left'>
+                <td className="border-r border-b p-2 text-right">Secondary</td>
+                <td className="p-2 border-b text-left">
                   <input
-                    className='w-full'
-                    type='text'
-                    name='secondary_ip'
-                    placeholder='Enter secondary IP'
+                    className="w-full"
+                    type="text"
+                    name="secondary_ip"
+                    placeholder="Enter secondary IP"
                     value={context.formData.secondary_ip}
                     onChange={handleChange}
                   />
@@ -188,13 +201,13 @@ const Control = () => {
               </tr>
 
               <tr>
-                <td className='border-r border-b p-2 text-right'>Global</td>
-                <td className='p-2 border-b text-left'>
+                <td className="border-r border-b p-2 text-right">Global</td>
+                <td className="p-2 border-b text-left">
                   <input
-                    className='w-full'
-                    type='text'
-                    name='global'
-                    placeholder='Enter global IP'
+                    className="w-full"
+                    type="text"
+                    name="global"
+                    placeholder="Enter global IP"
                     value={context.formData.global}
                     onChange={handleChange}
                   />
@@ -202,13 +215,13 @@ const Control = () => {
               </tr>
 
               <tr>
-                <td className='border-r border-b p-2 text-right'>Modem</td>
-                <td className='p-2 border-b text-left'>
-                  <div className='w-full h-full flex items-center justify-start'>
+                <td className="border-r border-b p-2 text-right">Modem</td>
+                <td className="p-2 border-b text-left">
+                  <div className="w-full h-full flex items-center justify-start">
                     <input
-                      type='checkbox'
-                      name='modem'
-                      className='w-4 h-4'
+                      type="checkbox"
+                      name="modem"
+                      className="w-4 h-4"
                       checked={context.formData.modem}
                       onChange={handleChange}
                     />
@@ -218,8 +231,8 @@ const Control = () => {
             </tbody>
           </table>
         </div>
-        <div className='flex flex-col gap-1'>
-          <div className='flex flex-row w-full items-center justify-center gap-2'>
+        <div className="flex flex-col gap-1">
+          <div className="flex flex-row w-full items-center justify-center gap-2">
             <button
               disabled={!context.isConnected}
               onClick={handleGetNetwork}
@@ -243,26 +256,44 @@ const Control = () => {
               SET NETWORK
             </div>
           </div>
-          <span className='font-black text-xs pt-2'>ANALOG INPUT</span>
-          <div className='gap-2 flex items-center justify-start '>
+          <span className="font-black text-xs pt-2">ANALOG INPUT</span>
+          <div className="gap-2 flex items-center justify-start ">
             <input
               disabled={!context.isConnected}
-              type='checkbox'
-              className='w-4 h-4'
+              type="checkbox"
+              className="w-4 h-4"
               checked={display}
               onChange={(e) => {
                 if (e.target.checked) {
-                  ReadAnalog();
+                  if (context.selectedConnection === "serial") {
+                    ReadAnalog();
+                  } else if (context.selectedConnection === "ethernet") {
+                    console.log("run ReadAnalogWS");
+                    ReadAnalogWS(
+                      context.socketAddress,
+                      context.socketPort,
+                      "enable"
+                    );
+                  }
                 } else {
-                  StopReadAnalog();
+                  if (context.selectedConnection === "serial") {
+                    StopReadAnalog();
+                  } else if (context.selectedConnection === "ethernet") {
+                    console.log("run ReadAnalogWS");
+                    ReadAnalogWS(
+                      context.socketAddress,
+                      context.socketPort,
+                      "disable"
+                    );
+                  }
                 }
                 setDisplay(e.target.checked);
               }}
             />
-            <span className='text-sm'>Display analog value</span>
-            <div className='w-[100px] h-2 bg-gray-200 rounded overflow-hidden relative'>
+            <span className="text-sm">Display analog value</span>
+            <div className="w-[100px] h-2 bg-gray-200 rounded overflow-hidden relative">
               <div
-                className='absolute h-full bg-blue-500 rounded transition-all'
+                className="absolute h-full bg-blue-500 rounded transition-all"
                 style={{
                   width: `${analogData?.length ? barWidth : 0}%`,
                   left: `${loadingPos}%`,
@@ -272,19 +303,19 @@ const Control = () => {
               />
             </div>
           </div>
-          <div className='w-full'>
-            <div className='analog-table-wrapper min-h-[200px]'>
-              <table className='w-full'>
+          <div className="w-full">
+            <div className="analog-table-wrapper min-h-[200px]">
+              <table className="w-full">
                 <colgroup>
                   <col style={{ minWidth: "150px" }} />
                   <col />
                 </colgroup>
                 <thead>
                   <tr>
-                    <th className='border-r w-[150px] border-b p-2 text-right'>
+                    <th className="border-r w-[150px] border-b p-2 text-right">
                       Parameter
                     </th>
-                    <th className='p-2 border-b text-left win-[150px] min-w-[150px]'>
+                    <th className="p-2 border-b text-left win-[150px] min-w-[150px]">
                       Value
                     </th>
                   </tr>
@@ -293,18 +324,18 @@ const Control = () => {
                   {analogData.length === 0 || !display
                     ? Array.from({ length: 12 }, (_, index) => (
                         <tr key={index}>
-                          <td className='border-r border-b p-2 text-right min-w-[150px] whitespace-nowrap'>
+                          <td className="border-r border-b p-2 text-right min-w-[150px] whitespace-nowrap">
                             Analog input {index + 1}
                           </td>
-                          <td className='p-2 border-box border-b text-left min-w-[150px]'></td>
+                          <td className="p-2 border-box border-b text-left min-w-[150px]"></td>
                         </tr>
                       ))
                     : analogData.map(({ id, value }) => (
                         <tr key={id}>
-                          <td className='border-r border-b p-2 text-right min-w-[150px] whitespace-nowrap'>
+                          <td className="border-r border-b p-2 text-right min-w-[150px] whitespace-nowrap">
                             Analog input {id}
                           </td>
-                          <td className='p-2 border-box border-b text-left min-w-[150px]'>
+                          <td className="p-2 border-box border-b text-left min-w-[150px]">
                             {value.toFixed(2)}
                           </td>
                         </tr>
@@ -315,11 +346,11 @@ const Control = () => {
           </div>
         </div>
       </div>
-      <div className='flex flex-col h-full w-full'>
-        <div className='w-full flex flex-col gap-2 p-1'>
-          <div className='flex flex-col gap-2'>
-            <div className='flex-1 min-w-[200px] flex flex-col gap-2 border rounded-md p-2 bg-gray-50'>
-              <div className='flex flex-col sm:flex-row gap-2 mt-2 flex-wrap'>
+      <div className="flex flex-col h-full w-full">
+        <div className="w-full flex flex-col gap-2 p-1">
+          <div className="flex flex-col gap-2">
+            <div className="flex-1 min-w-[200px] flex flex-col gap-2 border rounded-md p-2 bg-gray-50">
+              <div className="flex flex-col sm:flex-row gap-2 mt-2 flex-wrap">
                 <button
                   disabled={!context.isConnected}
                   className={`flex-1 text-xs px-2 py-1 rounded min-w-[90px] transition ${
@@ -345,17 +376,17 @@ const Control = () => {
               </div>
             </div>
             {/* Digital output control */}
-            <div className='flex-1 min-w-[200px] flex flex-col gap-2 border rounded-md p-2 bg-gray-50'>
-              <span className='text-xs font-semibold'>
+            <div className="flex-1 min-w-[200px] flex flex-col gap-2 border rounded-md p-2 bg-gray-50">
+              <span className="text-xs font-semibold">
                 Digital output control
               </span>
-              <div className='flex flex-wrap gap-2'>
+              <div className="flex flex-wrap gap-2">
                 {digitalOutput.map((_, index) => (
                   <label
                     key={index}
-                    className='flex items-center gap-2 text-xs min-w-[38px] justify-end'
+                    className="flex items-center gap-2 text-xs min-w-[38px] justify-end"
                   >
-                    <span >{index}</span>
+                    <span>{index}</span>
                     <input
                       checked={digitalOutput[index]}
                       onChange={(e) => {
@@ -363,8 +394,8 @@ const Control = () => {
                         newDigitalOutput[index] = e.target.checked;
                         setDigitalOutput(newDigitalOutput);
                       }}
-                      type='checkbox'
-                      className='custom'
+                      type="checkbox"
+                      className="custom"
                     />
                   </label>
                 ))}
@@ -388,26 +419,26 @@ const Control = () => {
               </button>
             </div>
             {/* System control */}
-            <div className='flex-1 min-w-[200px] flex flex-col gap-2 border rounded-md p-2 bg-gray-50'>
-              <span className='text-xs font-semibold'>System control</span>
-              <div className='flex flex-col sm:flex-row gap-2 items-center flex-wrap'>
+            <div className="flex-1 min-w-[200px] flex flex-col gap-2 border rounded-md p-2 bg-gray-50">
+              <span className="text-xs font-semibold">System control</span>
+              <div className="flex flex-col sm:flex-row gap-2 items-center flex-wrap">
                 <select
                   value={selectedCommand}
                   onChange={(e) => setSelectedCommand(e.target.value)}
-                  className='bg-white border border-gray-300 text-gray-900 text-xs py-[2px] w-full'
+                  className="bg-white border border-gray-300 text-gray-900 text-xs py-[2px] w-full"
                 >
-                  <option value='read_system_info'>Read system info</option>
-                  <option value='write_serial_number'>
+                  <option value="read_system_info">Read system info</option>
+                  <option value="write_serial_number">
                     Write serial number
                   </option>
-                  <option value='write_mac'>Write mac address</option>
-                  <option value='reset_configuration'>
+                  <option value="write_mac">Write mac address</option>
+                  <option value="reset_configuration">
                     Reset Configuration
                   </option>
-                  <option value='reboot'>Reboot</option>
-                  <option value='read_sim_info'>Read sim info</option>
-                  <option value='read_sdcard_info'>Read sdcard info</option>
-                  <option value='ping'>Ping</option>
+                  <option value="reboot">Reboot</option>
+                  <option value="read_sim_info">Read sim info</option>
+                  <option value="read_sdcard_info">Read sdcard info</option>
+                  <option value="ping">Ping</option>
                 </select>
                 <button
                   disabled={!context.isConnected}
@@ -453,14 +484,14 @@ const Control = () => {
                           break;
                         case "ping":
                           context.setInfoDialog("Pinging...");
-                          Ping();
+                          Ping(dataCommand);
                           break;
                         default:
                           break;
                       }
                     } catch (error) {
                       context.setInfoDialog(
-                        "An error occurred while executing the command.",
+                        "An error occurred while executing the command."
                       );
                     }
                   }}
@@ -471,15 +502,15 @@ const Control = () => {
             </div>
           </div>
         </div>
-        <div className='gap-2 flex flex-1 flex-col mx-1'>
+        <div className="gap-2 flex flex-1 flex-col mx-1">
           <input
-            type='text'
+            type="text"
             value={dataCommand}
             onChange={(e) => setDataCommand(e.target.value)}
-            className='w-full min-h-[20px] border p-2 text-xs'
+            className="w-full min-h-[20px] border p-2 text-xs"
           />
           <textarea
-            className='w-full h-full border p-2 text-xs'
+            className="w-full h-full border p-2 text-xs"
             value={context.infoDialog}
           ></textarea>
         </div>
