@@ -30,8 +30,8 @@ function ConnectComponent({ onConnected, dataFile, setDataFile, fileLoaded }) {
   const [passwordConfirm, setPasswordConfirm] = useState("");
 
   // Socket states
-  const [socketAddress, setSocketAddress] = useState("localhost");
-  const [socketPort, setSocketPort] = useState("8080");
+  const [socketAddress, setSocketAddress] = useState("");
+  const [socketPort, setSocketPort] = useState("");
   const [isSocketConnected, setIsSocketConnected] = useState(false);
 
   const context = useContext(ContextMenuContext);
@@ -537,14 +537,12 @@ function ConnectComponent({ onConnected, dataFile, setDataFile, fileLoaded }) {
             className="mb-1 border border-gray-300 rounded px-2 py-1 w-full text-xs focus:outline-none focus:ring focus:border-blue-400"
             value={socketAddress}
             onChange={(e) => setSocketAddress(e.target.value)}
-            placeholder="localhost"
           />
           <label className="block text-xs text-gray-700 mb-1">Port</label>
           <input
             className="mb-1 border border-gray-300 rounded px-2 py-1 w-full text-xs focus:outline-none focus:ring focus:border-blue-400"
             value={socketPort}
             onChange={(e) => setSocketPort(e.target.value)}
-            placeholder="8080"
             type="number"
           />
         </div>
@@ -555,14 +553,16 @@ function ConnectComponent({ onConnected, dataFile, setDataFile, fileLoaded }) {
         <input
           type="text"
           value={username}
-          placeholder="Username"
+          disabled={!context.isConnected}
+          placeholder='Username'
           onChange={(e) => setUsername(e.target.value)}
           className="w-full border border-gray-300 rounded px-2 py-1 mb-1 focus:outline-none focus:ring focus:border-blue-400"
         />
         <input
           type="password"
           value={password}
-          placeholder="Password"
+          disabled={!context.isConnected}
+          placeholder='Password'
           onChange={(e) => setPassword(e.target.value)}
           className="w-full border border-gray-300 rounded px-2 py-1 mb-1 focus:outline-none focus:ring focus:border-blue-400"
         />

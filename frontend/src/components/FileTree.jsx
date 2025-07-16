@@ -32,6 +32,7 @@ const TreeNode = ({
   setDataFile,
   fileLoaded,
   setFileLoaded,
+  handleDoubleClick,
 }) => {
   const [expanded, setExpanded] = useState(false);
   const [showModal, setShowModal] = useState({ show: false, action: null });
@@ -279,6 +280,14 @@ const TreeNode = ({
         }}
         onClick={toggle}
         onContextMenu={(e) => handleContextMenu(e)}
+        onDoubleClick={(e) => {
+          e.stopPropagation();
+          if (node.type === "file") {
+            !!handleDoubleClick ? handleDoubleClick() : handleAction("load");
+          } else if (node.type === "folder" && hasChildren(node)) {
+            toggle(e);
+          }
+        }}
       >
         <div
           style={{ width: "18px !important", height: "18px" }}
@@ -391,6 +400,7 @@ const TreeNode = ({
             setDataFile={setDataFile}
             fileLoaded={fileLoaded}
             setFileLoaded={setFileLoaded}
+            handleDoubleClick={handleDoubleClick}
           />
         ))}
     </>
