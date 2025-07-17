@@ -29,10 +29,11 @@ import {
   WriteSerialNumber as WriteSerialNumberWS,
   WriteMacAddress as WriteMacAddressWS,
   ResetConfiguration as ResetConfigurationWS,
-  Reboot as RebootWS,
+  RebootDevice as RebootWS,
   ReadSimInfo as ReadSimInfoWS,
-  ReadSdcardInfo as ReadSdcardInfoWS,
-  Ping as PingWS,
+  ReadSdCardInfo as ReadSdcardInfoWS,
+  PingDevice as PingWS,
+  SettingNetworkEthernet,
 } from "../../wailsjs/go/workspace/WorkspaceService";
 import { ShowQuestionDialog } from "../../wailsjs/go/main/App";
 
@@ -61,6 +62,7 @@ const Control = () => {
     if (context.selectedConnection === "serial") {
       SettingNetwork(context.formData);
     } else if (context.selectedConnection === "ethernet") {
+      console.log(context.formData);
       SettingNetworkEthernet(
         context.socketAddress,
         context.socketPort,
