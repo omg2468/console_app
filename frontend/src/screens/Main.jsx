@@ -278,6 +278,7 @@ export default function Main({ onLoginOut }) {
                   dataFile={dataFile}
                   setDataFile={setDataFile}
                   fileLoaded={fileLoaded}
+                  setFileLoaded={setFileLoaded}
                 />
               </div>
               <textarea

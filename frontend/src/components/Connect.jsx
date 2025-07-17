@@ -24,7 +24,7 @@ import {
   validateSocketParams,
 } from "./functions/socket";
 
-function ConnectComponent({ onConnected, dataFile, setDataFile, fileLoaded }) {
+function ConnectComponent({ onConnected, dataFile, setDataFile, fileLoaded, setFileLoaded }) {
   const [ports, setPorts] = useState([]);
   const [status, setStatus] = useState("Not connected");
   const [username, setUsername] = useState("");
@@ -203,8 +203,11 @@ function ConnectComponent({ onConnected, dataFile, setDataFile, fileLoaded }) {
         break;
       case "download_config":
         if (jsonData.data) {
+          setFileLoaded("");
           setDataFile(jsonData.data);
           ShowInfoDialog("Đã tải xuống cấu hình thành công", "Download Config");
+        } else {
+          ShowErrorDialog("Tải xuống cấu hình thất bại");
         }
         break;
       case "login":
@@ -217,9 +220,13 @@ function ConnectComponent({ onConnected, dataFile, setDataFile, fileLoaded }) {
         }
         break;
       case "logout":
-        context.setIsLogin(false);
-        context.setRole("");
-        ShowInfoDialog("Đăng xuất thành công", "Logout");
+        if (jsonData.status === "success") {
+          context.setIsLogin(false);
+          context.setRole("");
+          ShowInfoDialog("Đăng xuất thành công", "Logout");
+        } else {
+          ShowErrorDialog("Đăng xuất thất bại");
+        }
         break;
       case "change_password":
         if (jsonData.status === "success") {
