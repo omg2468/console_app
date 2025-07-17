@@ -22,6 +22,17 @@ import {
 import {
   ReadAnalog as ReadAnalogWS,
   QueryNetwork,
+  Calibrate4mA,
+  Calibrate16mA,
+  SetDigitalOutputEthernet,
+  ReadSystemInfo as ReadSystemInfoWS,
+  WriteSerialNumber as WriteSerialNumberWS,
+  WriteMacAddress as WriteMacAddressWS,
+  ResetConfiguration as ResetConfigurationWS,
+  Reboot as RebootWS,
+  ReadSimInfo as ReadSimInfoWS,
+  ReadSdcardInfo as ReadSdcardInfoWS,
+  Ping as PingWS,
 } from "../../wailsjs/go/workspace/WorkspaceService";
 import { ShowQuestionDialog } from "../../wailsjs/go/main/App";
 
@@ -50,7 +61,11 @@ const Control = () => {
     if (context.selectedConnection === "serial") {
       SettingNetwork(context.formData);
     } else if (context.selectedConnection === "ethernet") {
-      SettingNetworkEthernet(context.socketAddress, context.socketPort, context.formData);
+      SettingNetworkEthernet(
+        context.socketAddress,
+        context.socketPort,
+        context.formData
+      );
     }
   };
 
@@ -69,7 +84,11 @@ const Control = () => {
     );
 
     if (result === "Yes") {
-      Calib4ma(); // Chỉ chạy khi người dùng chọn Yes
+      if (context.selectedConnection === "serial") {
+        Calib4ma();
+      } else if (context.selectedConnection === "ethernet") {
+        Calibrate4mA(context.socketAddress, context.socketPort);
+      }
     }
   };
 
@@ -80,7 +99,9 @@ const Control = () => {
     );
 
     if (result === "Yes") {
-      Calib16ma(); // Chỉ chạy khi người dùng chọn Yes
+      if (context.selectedConnection === "serial") Calib16ma();
+      else if (context.selectedConnection === "ethernet")
+        Calibrate16mA(context.socketAddress, context.socketPort);
     }
   };
 
@@ -411,8 +432,15 @@ const Control = () => {
   `}
                 style={{ minWidth: 60 }}
                 onClick={() => {
-                  console.log("click");
-                  SetDigitalOutput(digitalOutput);
+                  if (context.selectedConnection === "serial") {
+                    SetDigitalOutput(digitalOutput);
+                  } else if (context.selectedConnection === "ethernet") {
+                    SetDigitalOutputEthernet(
+                      context.socketAddress,
+                      context.socketPort,
+                      digitalOutput
+                    );
+                  }
                 }}
               >
                 SET
@@ -455,36 +483,107 @@ const Control = () => {
                       switch (selectedCommand) {
                         case "read_system_info":
                           context.setInfoDialog("Reading system info...");
-                          ReadSystemInfo();
+                          if (context.selectedConnection === "serial") {
+                            ReadSystemInfo();
+                          } else if (
+                            context.selectedConnection === "ethernet"
+                          ) {
+                            ReadSystemInfoWS(
+                              context.socketAddress,
+                              context.socketPort
+                            );
+                          }
                           break;
                         case "write_serial_number":
                           context.setInfoDialog("Writing serial number...");
-                          WriteSerialNumber(dataCommand);
+                          if (context.selectedConnection === "serial") {
+                            WriteSerialNumber(dataCommand);
+                          } else if (
+                            context.selectedConnection === "ethernet"
+                          ) {
+                            WriteSerialNumberWS(
+                              context.socketAddress,
+                              context.socketPort,
+                              dataCommand
+                            );
+                          }
                           break;
                         case "write_mac":
                           context.setInfoDialog("Writing MAC address...");
-                          WriteMacAddress(dataCommand);
+                          if (context.selectedConnection === "serial") {
+                            WriteMacAddress(dataCommand);
+                          } else if (
+                            context.selectedConnection === "ethernet"
+                          ) {
+                            WriteMacAddressWS(
+                              context.socketAddress,
+                              context.socketPort,
+                              dataCommand
+                            );
+                          }
                           break;
                         case "reset_configuration":
                           context.setInfoDialog("Resetting configuration...");
-                          ResetConfiguration();
-
+                          if (context.selectedConnection === "serial") {
+                            ResetConfiguration();
+                          } else if (
+                            context.selectedConnection === "ethernet"
+                          ) {
+                            ResetConfigurationWS(
+                              context.socketAddress,
+                              context.socketPort
+                            );
+                          }
                           break;
                         case "reboot":
                           context.setInfoDialog("Rebooting system...");
-                          Reboot();
+                          if (context.selectedConnection === "serial") {
+                            Reboot();
+                          } else if (
+                            context.selectedConnection === "ethernet"
+                          ) {
+                            RebootWS(context.socketAddress, context.socketPort);
+                          }
                           break;
                         case "read_sim_info":
                           context.setInfoDialog("Reading SIM info...");
-                          ReadSimInfo();
+                          if (context.selectedConnection === "serial") {
+                            ReadSimInfo();
+                          } else if (
+                            context.selectedConnection === "ethernet"
+                          ) {
+                            ReadSimInfoWS(
+                              context.socketAddress,
+                              context.socketPort
+                            );
+                          }
                           break;
                         case "read_sdcard_info":
                           context.setInfoDialog("Reading SD card info...");
-                          ReadSdcardInfo();
+                          if (context.selectedConnection === "serial") {
+                            ReadSdcardInfo();
+                          } else if (
+                            context.selectedConnection === "ethernet"
+                          ) {
+                            ReadSdcardInfoWS(
+                              context.socketAddress,
+                              context.socketPort
+                            );
+                          }
                           break;
                         case "ping":
                           context.setInfoDialog("Pinging...");
-                          Ping(dataCommand);
+                          if (context.selectedConnection === "serial") {
+                            Ping(dataCommand);
+                          } else if (
+                            context.selectedConnection === "ethernet"
+                          ) {
+                            PingWS(
+                              context.socketAddress,
+                              context.socketPort,
+                              dataCommand
+                            );
+                          }
                           break;
                         default:
                           break;

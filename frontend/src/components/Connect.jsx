@@ -332,7 +332,6 @@ function ConnectComponent({ onConnected, dataFile, setDataFile, fileLoaded }) {
 
         try {
           const jsonData = JSON.parse(latestData);
-          console.log(jsonData);
           handleDataResponse(jsonData);
         } catch (parseErr) {
           console.log("Non-JSON data received:", latestData);
