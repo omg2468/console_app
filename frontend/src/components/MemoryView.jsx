@@ -43,7 +43,11 @@ const MemoryView = () => {
         );
         cells.push(
           <td key={`val-${col}-${row}`} className="border px-2 py-1 ">
-            {memory && display ? memory[idx]?.toFixed(precision) : "-"}
+            {memory && display
+              ? Number.isInteger(memory[idx])
+                ? memory[idx]
+                : memory[idx]?.toFixed(precision)
+              : "-"}
           </td>
         );
       } else {

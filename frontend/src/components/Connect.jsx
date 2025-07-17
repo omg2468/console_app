@@ -264,7 +264,7 @@ function ConnectComponent({ onConnected, dataFile, setDataFile, fileLoaded }) {
         break;
       case "read_system_info":
         if (jsonData.data) {
-          context.setInfoDialog(jsonData.data);
+          context.setInfoDialog(jsonData.data.replaceAll(", ", "\n"));
         } else {
           context.setInfoDialog("Không có dữ liệu hệ thống");
         }
@@ -426,7 +426,7 @@ function ConnectComponent({ onConnected, dataFile, setDataFile, fileLoaded }) {
       {showModal && (
         <div
           className="fixed inset-0 bg-black/40 flex items-center justify-center z-[1100]"
-          onClick={() => setShowModal(false)} // Đóng modal khi click nền đen
+          // onClick={() => setShowModal(false)} // Đóng modal khi click nền đen
         >
           <div
             className="bg-white rounded-xl shadow-2xl w-full max-w-xs sm:max-w-sm p-7 relative animate-fadeIn"
@@ -443,6 +443,7 @@ function ConnectComponent({ onConnected, dataFile, setDataFile, fileLoaded }) {
               className="w-full px-3 py-2 border border-gray-200 rounded-lg mb-5 focus:outline-none focus:border-blue-500 transition"
               value={oldPassword}
               autoFocus
+              placeholder="Old Password"
               onChange={(e) => setOldPassword(e.target.value)}
             />
             <input
@@ -450,6 +451,7 @@ function ConnectComponent({ onConnected, dataFile, setDataFile, fileLoaded }) {
               className="w-full px-3 py-2 border border-gray-200 rounded-lg mb-5 focus:outline-none focus:border-blue-500 transition"
               value={passwordInput}
               autoFocus
+              placeholder="New Password"
               onChange={(e) => setPasswordInput(e.target.value)}
             />
             <input
@@ -457,6 +459,7 @@ function ConnectComponent({ onConnected, dataFile, setDataFile, fileLoaded }) {
               className="w-full px-3 py-2 border border-gray-200 rounded-lg mb-5 focus:outline-none focus:border-blue-500 transition"
               value={passwordConfirm}
               autoFocus
+              placeholder="Confirm New Password"
               onChange={(e) => setPasswordConfirm(e.target.value)}
             />
             <div className="flex gap-3 mt-2">

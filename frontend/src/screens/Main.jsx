@@ -281,7 +281,7 @@ export default function Main({ onLoginOut }) {
                 />
               </div>
               <textarea
-                className='mt-2 px-2 py-1 border border-gray-300 rounded text-xs focus:outline-none focus:border-blue-500 w-full resize-none'
+                className='mt-2 px-2 py-1 border border-gray-300 rounded text-xs focus:outline-none focus:border-blue-500 w-full resize-none h-[50px]'
                 placeholder='Data từ thiết bị'
                 value={context.dataTest}
                 rows={30}
@@ -366,7 +366,7 @@ export default function Main({ onLoginOut }) {
       {showModal && (
         <div
           className='fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50'
-          onClick={() => setShowModal(false)}
+          // onClick={() => setShowModal(false)}
         >
           <div
             className='bg-white p-6 rounded-xl shadow-2xl w-full max-w-xs flex flex-col gap-4'

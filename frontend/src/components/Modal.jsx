@@ -6,7 +6,7 @@ const Modal = ({ isOpen }) => {
   return (
     <div
       className='fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 overflow-auto'
-      onClick={() => setShowModal({ show: false, action: null })}
+      // onClick={() => setShowModal({ show: false, action: null })}
       style={{ zIndex: 1000 }}
     >
       <div

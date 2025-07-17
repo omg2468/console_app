@@ -351,7 +351,7 @@ const TreeNode = ({
       {showModal.show && (
         <div
           className='fixed inset-0 bg-black/40 flex items-center justify-center z-[1100]'
-          onClick={() => setShowModal({ show: false, action: null })} // Đóng modal khi click nền đen
+          // onClick={() => setShowModal({ show: false, action: null })} // Đóng modal khi click nền đen
         >
           <div
             className='bg-white rounded-xl shadow-2xl w-full max-w-xs sm:max-w-sm p-7 relative animate-fadeIn'

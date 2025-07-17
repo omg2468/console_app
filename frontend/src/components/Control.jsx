@@ -611,7 +611,7 @@ const Control = () => {
             className="w-full min-h-[20px] border p-2 text-xs"
           />
           <textarea
-            className="w-full h-full border p-2 text-xs"
+            className="w-full h-full border p-2 text-xs resize-none"
             value={context.infoDialog}
           ></textarea>
         </div>
