@@ -27,6 +27,7 @@ type SocketConnection struct {
 	isActive  bool
 	mutex     sync.Mutex
 	dataChain chan string
+	buffer    string
 }
 
 // SocketManager quản lý các kết nối socket
@@ -823,16 +824,32 @@ func (ws *WorkspaceService) GetAllSocketData(address string, port string) ([]str
 	}
 	socketConn.mutex.Unlock()
 
-	var allData []string
+	var results []string
 
-	// Lấy tất cả dữ liệu có sẵn
+	socketConn.mutex.Lock()
+	buffer := socketConn.buffer
+	socketConn.mutex.Unlock()
+
 	for {
 		select {
-		case data := <-socketConn.dataChain:
-			allData = append(allData, data)
+		case chunk := <-socketConn.dataChain:
+			buffer += chunk
+
+			for {
+				if idx := strings.Index(buffer, "\n"); idx >= 0 {
+					line := buffer[:idx]
+					results = append(results, line)
+					buffer = buffer[idx+1:]
+				} else {
+					break
+				}
+			}
 		default:
-			// Không còn dữ liệu
-			return allData, nil
+			// Không còn dữ liệu -> lưu lại phần chưa hoàn tất
+			socketConn.mutex.Lock()
+			socketConn.buffer = buffer
+			socketConn.mutex.Unlock()
+			return results, nil
 		}
 	}
 }
@@ -1188,7 +1205,7 @@ func (ws *WorkspaceService) PingDevice(address, port, targetIP string) error {
 
 // DisconnectSocket ngắt kết nối socket
 func (ws *WorkspaceService) DisconnectSocket(address string, port string) error {
-	logoutSignal := `{"type":"logout"}\n` // <-- dấu \n là cần thiết nếu thiết bị đọc từng dòng
+	logoutSignal := `{"type":"logout"}`
 	_ = ws.SendSocketData(address, port, logoutSignal)
 	connectionKey := fmt.Sprintf("%s:%s", address, port)
 

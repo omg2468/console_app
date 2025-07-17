@@ -24,7 +24,13 @@ import {
   validateSocketParams,
 } from "./functions/socket";
 
-function ConnectComponent({ onConnected, dataFile, setDataFile, fileLoaded, setFileLoaded }) {
+function ConnectComponent({
+  onConnected,
+  dataFile,
+  setDataFile,
+  fileLoaded,
+  setFileLoaded,
+}) {
   const [ports, setPorts] = useState([]);
   const [status, setStatus] = useState("Not connected");
   const [username, setUsername] = useState("");
@@ -100,7 +106,12 @@ function ConnectComponent({ onConnected, dataFile, setDataFile, fileLoaded, setF
         ShowErrorDialog("Lỗi khi đăng nhập: " + err);
       });
     } else if (context.selectedConnection === "ethernet") {
-      Login(context.socketAddress, context.socketPort, username, password).catch((err) => {
+      Login(
+        context.socketAddress,
+        context.socketPort,
+        username,
+        password
+      ).catch((err) => {
         ShowErrorDialog("Lỗi khi đăng nhập: " + err);
       });
     }
@@ -202,12 +213,19 @@ function ConnectComponent({ onConnected, dataFile, setDataFile, fileLoaded, setF
         }
         break;
       case "download_config":
-        if (jsonData.data) {
-          setFileLoaded("");
-          setDataFile(jsonData.data);
-          ShowInfoDialog("Đã tải xuống cấu hình thành công", "Download Config");
+        // if (jsonData.data) {
+        setFileLoaded("");
+        setDataFile(jsonData);
+        ShowInfoDialog("Đã tải xuống cấu hình thành công", "Download Config");
+        // } else {
+        //   ShowErrorDialog("Tải xuống cấu hình thất bại");
+        // }
+        break;
+      case "upload_config":
+        if (jsonData.status === "success") {
+          ShowInfoDialog("Upload thành công", "Login");
         } else {
-          ShowErrorDialog("Tải xuống cấu hình thất bại");
+          ShowErrorDialog("Upload thất bại");
         }
         break;
       case "login":
@@ -271,7 +289,7 @@ function ConnectComponent({ onConnected, dataFile, setDataFile, fileLoaded, setF
         break;
       case "read_system_info":
         if (jsonData.data) {
-          context.setInfoDialog(jsonData.data.replaceAll(", ", "\n"));
+          context.setInfoDialog(jsonData.data.replaceAll(",", "\n"));
         } else {
           context.setInfoDialog("Không có dữ liệu hệ thống");
         }
@@ -332,7 +350,11 @@ function ConnectComponent({ onConnected, dataFile, setDataFile, fileLoaded, setF
     if (!context.isSocketConnected) return;
 
     try {
-      const data = await getAllSocketData(context.socketAddress, context.socketPort);
+      const data = await getAllSocketData(
+        context.socketAddress,
+        context.socketPort
+      );
+      console.log(data)
       if (data && data.length > 0) {
         const latestData = data[data.length - 1];
         context.setDataTest(latestData);
@@ -381,11 +403,10 @@ function ConnectComponent({ onConnected, dataFile, setDataFile, fileLoaded, setF
       while (isListening) {
         try {
           if (context.selectedConnection === "serial" && context.selectedPort) {
-            const response = await AuthService.GetResponse(10000);
+            const response = await AuthService.GetResponse(100000);
             if (response) {
               try {
                 const jsonData = JSON.parse(response);
-                console.log(jsonData);
                 context.setDataTest(response);
                 handleDataResponse(jsonData);
               } catch (e) {
@@ -397,7 +418,7 @@ function ConnectComponent({ onConnected, dataFile, setDataFile, fileLoaded, setF
             context.isSocketConnected
           ) {
             await readSocketData();
-            await new Promise((resolve) => setTimeout(resolve, 1000));
+            await new Promise((resolve) => setTimeout(resolve, 10000));
           }
         } catch (err) {
           if (!err.toString().includes("timeout")) {
