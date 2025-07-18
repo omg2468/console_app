@@ -31,7 +31,6 @@ export default function Main({ onLoginOut }) {
   const [rightTab, setRightTab] = useState("Parameter");
   const tabsLeft = ["Workspace", "Device"];
   const [dataFile, setDataFile] = useState(null);
-  const [error, setError] = useState([{ title: "", idx: null, message: "" }]);
   const [parameter, setParameter] = useState({
     key: "",
     idx: "",
@@ -352,8 +351,6 @@ export default function Main({ onLoginOut }) {
                 setParameter={setParameter}
                 dataFile={dataFile}
                 setDataFile={setDataFile}
-                error={error}
-                setError={setError}
               />
             )}
 
