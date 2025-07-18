@@ -387,8 +387,14 @@ func (ws *WorkspaceService) SaveJsonFile(destinationPath string, jsonContent str
 		return fmt.Errorf("nội dung JSON không hợp lệ: %w", err)
 	}
 
-	// Ghi đè nội dung
-	_, err := OverwriteFile(destinationPath, strings.NewReader(jsonContent))
+	// Format JSON cho dễ đọc (pretty-print)
+	formattedJSON, err := json.MarshalIndent(js, "", "  ")
+	if err != nil {
+		return fmt.Errorf("lỗi khi format JSON: %w", err)
+	}
+
+	// Ghi đè nội dung đã format
+	_, err = OverwriteFile(destinationPath, strings.NewReader(string(formattedJSON)))
 	if err != nil {
 		return fmt.Errorf("không thể lưu file JSON: %w", err)
 	}

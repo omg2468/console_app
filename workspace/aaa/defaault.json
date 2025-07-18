@@ -1,0 +1,718 @@
+{
+    "common": {
+        "ai_loc": 0,
+        "conf_port": 19981,
+        "di_loc": 12,
+        "do_loc": 24,
+        "null_ctx": false,
+        "page_dur": 10,
+        "persist": true,
+        "precision": 2,
+        "time_sync": 1,
+        "data_fields_order": 0,
+        "lcd_tag_change":5
+    },
+    "control": {
+        "duty": 1,
+        "en": false,
+        "index": 0,
+        "ip": "server.com",
+        "passwd": "passwd",
+        "passwd2": "",
+        "port": 11883,
+        "port2": 1,
+        "type": 0,
+        "user": "user",
+        "user2": "",
+        "uuid": "identify2",
+        "uuid2": ""
+    },
+    "dis": [
+        {
+            "act_lev": 0,
+            "act_type": 0,
+            "increment": 100,
+            "memory": 22,
+            "period": 100
+        },
+        {
+            "act_lev": 0,
+            "act_type": 0,
+            "increment": 100,
+            "memory": 23,
+            "period": 100
+        },
+        {
+            "act_lev": 0,
+            "act_type": 0,
+            "increment": 100,
+            "memory": 24,
+            "period": 100
+        },
+        {
+            "act_lev": 0,
+            "act_type": 0,
+            "increment": 100,
+            "memory": 25,
+            "period": 100
+        },
+        {
+            "act_lev": 0,
+            "act_type": 0,
+            "increment": 100,
+            "memory": 26,
+            "period": 100
+        },
+        {
+            "act_lev": 0,
+            "act_type": 0,
+            "increment": 100,
+            "memory": 27,
+            "period": 100
+        },
+        {
+            "act_lev": 0,
+            "act_type": 0,
+            "increment": 100,
+            "memory": 28,
+            "period": 100
+        },
+        {
+            "act_lev": 0,
+            "act_type": 0,
+            "increment": 100,
+            "memory": 29,
+            "period": 100
+        },
+        {
+            "act_lev": 0,
+            "act_type": 0,
+            "increment": 100,
+            "memory": 29,
+            "period": 100
+        },
+        {
+            "act_lev": 0,
+            "act_type": 0,
+            "increment": 100,
+            "memory": 29,
+            "period": 100
+        },
+        {
+            "act_lev": 0,
+            "act_type": 0,
+            "increment": 100,
+            "memory": 29,
+            "period": 100
+        },
+        {
+            "act_lev": 0,
+            "act_type": 0,
+            "increment": 100,
+            "memory": 29,
+            "period": 100
+        }	
+    ],
+    "dos": [
+        {
+            "act_lev": 0,
+            "act_type": 0,
+            "duty": 1,
+            "memory": 30,
+            "period": 2
+        },
+        {
+            "act_lev": 0,
+            "act_type": 0,
+            "duty": 1,
+            "memory": 31,
+            "period": 2
+        },
+        {
+            "act_lev": 0,
+            "act_type": 0,
+            "duty": 1,
+            "memory": 32,
+            "period": 2
+        },
+        {
+            "act_lev": 0,
+            "act_type": 0,
+            "duty": 1,
+            "memory": 33,
+            "period": 2
+        },
+        {
+            "act_lev": 0,
+            "act_type": 0,
+            "duty": 1,
+            "memory": 34,
+            "period": 2
+        },
+        {
+            "act_lev": 0,
+            "act_type": 0,
+            "duty": 1,
+            "memory": 35,
+            "period": 2
+        },
+        {
+            "act_lev": 0,
+            "act_type": 0,
+            "duty": 1,
+            "memory": 35,
+            "period": 2
+        },
+        {
+            "act_lev": 0,
+            "act_type": 0,
+            "duty": 1,
+            "memory": 35,
+            "period": 2
+        }
+    ],
+    "ftp": [
+        {
+            "client": {
+                "assert": true,
+                "clone": false,
+                "dep": false,
+                "global": false,
+                "ip": "192.168.2.4",
+                "make_dir_type": 0,
+                "passwd": "12341234",
+                "port": 21,
+                "remote_prefix": "/vinhtan4khi/KHI1",
+                "user": "test1"
+            },
+            "creator": {
+                "district": "NDVT",
+                "file_type": 0,
+                "keep_month": 3,
+                "local_prefix": "",
+                "provin": "BTh",
+                "station": "KHIUN1"
+            },
+            "duration": 0,
+            "en": true,
+            "second": 15
+        },
+        {
+            "client": {
+                "assert": true,
+                "clone": false,
+                "dep": false,
+                "global": false,
+                "ip": "192.168.2.4",
+                "make_dir_type": 0,
+                "passwd": "12341234",
+                "port": 21,
+                "remote_prefix": "/test1",
+                "user": "test1"
+            },
+            "creator": {
+                "district": "NDVT",
+                "file_type": 0,
+                "keep_month": 3,
+                "local_prefix": "",
+                "provin": "BTh",
+                "station": "KHIUN1"
+            },
+            "duration": 5,
+            "en": false,
+            "second": 0
+        },
+        {
+            "client": {
+                "assert": false,
+                "clone": false,
+                "dep": false,
+                "global": false,
+                "ip": "ftp.server.com",
+                "make_dir_type": 0,
+                "passwd": "passwd",
+                "port": 21,
+                "remote_prefix": "",
+                "user": "user"
+            },
+            "creator": {
+                "district": "dist",
+                "file_type": 0,
+                "keep_month": 3,
+                "local_prefix": "",
+                "provin": "prov",
+                "station": "stat"
+            },
+            "duration": 5,
+            "en": false,
+            "second": 59
+        },
+        {
+            "client": {
+                "assert": false,
+                "clone": false,
+                "dep": false,
+                "global": false,
+                "ip": "ftp.server.com",
+                "make_dir_type": 0,
+                "passwd": "passwd",
+                "port": 21,
+                "remote_prefix": "",
+                "user": "user"
+            },
+            "creator": {
+                "district": "dist",
+                "file_type": 0,
+                "keep_month": 3,
+                "local_prefix": "",
+                "provin": "prov",
+                "station": "stat"
+            },
+            "duration": 5,
+            "en": false,
+            "second": 59
+        },
+        {
+            "client": {
+                "assert": false,
+                "clone": false,
+                "dep": false,
+                "global": false,
+                "ip": "ftp.server.com",
+                "make_dir_type": 0,
+                "passwd": "passwd",
+                "port": 21,
+                "remote_prefix": "",
+                "user": "user"
+            },
+            "creator": {
+                "district": "dist",
+                "file_type": 0,
+                "keep_month": 3,
+                "local_prefix": "",
+                "provin": "prov",
+                "station": "stat"
+            },
+            "duration": 5,
+            "en": false,
+            "second": 59
+        }
+    ],
+    "modbus_reader": [
+        {
+            "d_f": 2,
+            "d_o": 3,
+            "d_t": 3,
+            "desc": "SO2",
+            "dev_a": "192.168.2.4:502",
+            "en": true,
+            "id": 1,
+            "kf": false,
+            "loc_stat": 76,
+            "loc_val": 40,
+            "n_obj": 3,
+            "reg_a": 611,
+            "type": 2
+        },
+        {
+            "d_f": 2,
+            "d_o": 3,
+            "d_t": 3,
+            "desc": "CO2",
+            "dev_a": "192.168.2.4:502",
+            "en": false,
+            "id": 1,
+            "kf": false,
+            "loc_stat": 77,
+            "loc_val": 36,
+            "n_obj": 1,
+            "reg_a": 603,
+            "type": 2
+        },
+        {
+            "d_f": 3,
+            "d_o": 0,
+            "d_t": 4,
+            "desc": "NO",
+            "dev_a": "192.168.1.11:502",
+            "en": false,
+            "id": 1,
+            "kf": false,
+            "loc_stat": 78,
+            "loc_val": 37,
+            "n_obj": 1,
+            "reg_a": 605,
+            "type": 2
+        },
+        {
+            "d_f": 3,
+            "d_o": 0,
+            "d_t": 4,
+            "desc": "O2",
+            "dev_a": "192.168.1.11:502",
+            "en": false,
+            "id": 1,
+            "kf": false,
+            "loc_stat": 79,
+            "loc_val": 38,
+            "n_obj": 1,
+            "reg_a": 607,
+            "type": 2
+        },
+        {
+            "d_f": 3,
+            "d_o": 0,
+            "d_t": 4,
+            "desc": "CO",
+            "dev_a": "192.168.1.11:502",
+            "en": false,
+            "id": 1,
+            "kf": false,
+            "loc_stat": 80,
+            "loc_val": 39,
+            "n_obj": 1,
+            "reg_a": 613,
+            "type": 2
+        },
+        {
+            "d_f": 1,
+            "d_o": 0,
+            "d_t": 3,
+            "desc": "Status",
+            "dev_a": "172.30.10.105:502",
+            "en": false,
+            "id": 1,
+            "kf": false,
+            "loc_stat": 81,
+            "loc_val": 41,
+            "n_obj": 3,
+            "reg_a": 0,
+            "type": 2
+        },
+        {
+            "d_f": 2,
+            "d_o": 3,
+            "d_t": 3,
+            "desc": "",
+            "dev_a": "192.168.1.10:502",
+            "en": false,
+            "id": 1,
+            "kf": true,
+            "loc_stat": 83,
+            "loc_val": 50,
+            "n_obj": 10,
+            "reg_a": 0,
+            "type": 1
+        }
+    ],
+    "prog": [
+        {
+            "code": "//set(103,get(40)/100);\n//set(54,get(40)/10);\n//set(100,get(36)/100);\n//set(50,get(36)/10);\n//set(101,get(37)/100);\n//set(51,get(37)/10);\n//set(102,get(38)/100);\n//set(52,get(38)/10);\n//set(104,get(39)/100);\n//set(53,get(39)/10);\n\nset(55,get(5)*100);\nset(56,get(6)*100);\nset(57,get(7)*100);\nset(58,get(8)*100);\nset(50,get(106)*10);\nset(51,get(107)*10);\nset(52,get(109)*10);\nset(53,get(105)*10);\nset(54,get(108)*10);",
+            "desc": "Set gia tri thanh ghi cho PLC",
+            "en": false
+        },
+        {
+            "code": "//CO\ngetint(41) == 2 ? \nsetint(216,1) : getint(41)==1?\nsetint(216,2) : getint(41)==3?\nsetint(216,2) : setint(216,0);\n//SO2\ngetint(41) == 2 ? \nsetint(207,1) : getint(41)==1?\nsetint(207,2) : getint(41)==3?\nsetint(207,2) : setint(207,0);\n//NOx\ngetint(41) == 2 ? \nsetint(206,1) : getint(41)==1?\nsetint(206,2) : getint(41)==3?\nsetint(206,2) : setint(206,0);\n//CO2\ngetint(41) == 2 ? \nsetint(205,1) : getint(41)==1?\nsetint(205,2) : getint(41)==3?\nsetint(205,2) : setint(205,0);\n//O2\ngetint(41) == 2 ? \nsetint(208,1) : getint(41)==1?\nsetint(208,2) : getint(41)==3?\nsetint(208,2) : setint(208,0);\n\n",
+            "desc": "Status",
+            "en": false
+        },
+        {
+            "code": "// CO\nget(0) < 4 ? set(105,0) : get(0) >20 ? set(105,0) : set(105,(get(0)-4)*4000/16);\nget(0)<3.5?\nsetint(216,2) : getint(41) == 2 ? \nsetint(216,1) : getint(41)==1?\nsetint(216,2) : getint(41)==3?\nsetint(216,2) : setint(216,0);\n// CO2\nget(1) < 4 ? set(106,0) : get(1) >20 ? set(106,0) : set(106,(get(1)-4)*40/16);\nget(1)<3.5?\nsetint(205,2) : getint(41) == 2 ? \nsetint(205,1) : getint(41)==1?\nsetint(205,2) : getint(41)==3?\nsetint(205,2) : setint(205,0);\n// NOx\nget(2) < 4 ? set(107,0) : get(2) >20 ? set(107,0) : set(107,(get(2)-4)*3500/16);\nget(2)<3.5?\nsetint(206,2) : getint(41) == 2 ? \nsetint(206,1) : getint(41)==1?\nsetint(206,2) : getint(41)==3?\nsetint(206,2) : setint(206,0);\n// SO2\nget(3) < 4 ? set(108,0) : get(3) >20 ? set(108,0) : set(108,(get(3)-4)*3500/16);\nget(3)<3.5?\nsetint(207,2) : getint(41) == 2 ? \nsetint(207,1) : getint(41)==1?\nsetint(207,2) : getint(41)==3?\nsetint(207,2) : setint(207,0);\n// O2\nget(4) < 4 ? set(109,0) : get(4) >20 ? set(109,0) : set(109,(get(4)-4)*100/16);\nget(4)<3.5?\nsetint(208,2) : getint(41) == 2 ? \nsetint(208,1) : getint(41)==1?\nsetint(208,2) : getint(41)==3?\nsetint(208,2) : setint(208,0);\n// Dust\nget(5) < 4 ? set(110,0) : get(5) >20 ? set(110,0) : set(110,(get(5)-4)*200/16);\nget(5)<3.5?\nsetint(209,2) : setint(209,0);\n// Flow\nset(111,(get(6)-4)*2848000/16);\nget(6)<3.5?\nsetint(210,2) : setint(210,0);\n// Press\nset(112,((get(7)-4)*20/16)-10);\nget(7)<3.5?\nsetint(211,2) : setint(211,0);\n// Temp\nset(113,(get(8)-4)*150/16);\nget(8)<3.5?\nsetint(212,2) : setint(212,0);",
+            "desc": "doc gia tri 4-20mA",
+            "en": false
+        },
+        {
+            "code": "//oxi tham chieu\nset(114,(tofloat32(14.9))/(tofloat32(20.9)-get(109)));\n//Dust\nset(115,get(114)*get(110));\n//CO\nset(116,get(114)*get(105));\n//SO2\nset(117,get(114)*get(108));",
+            "desc": "bui oxi  tham chieu",
+            "en": false
+        },
+        {
+            "code": "set(60,tofloat32(10.12));",
+            "desc": "",
+            "en": false
+        },
+        {
+            "code": "",
+            "desc": "",
+            "en": false
+        },
+        {
+            "code": "",
+            "desc": "",
+            "en": false
+        },
+        {
+            "code": "",
+            "desc": "",
+            "en": false
+        },
+        {
+            "code": "",
+            "desc": "",
+            "en": false
+        },
+        {
+            "code": "",
+            "desc": "",
+            "en": false
+        },
+        {
+            "code": "",
+            "desc": "",
+            "en": false
+        },
+        {
+            "code": "",
+            "desc": "",
+            "en": false
+        },
+        {
+            "code": "",
+            "desc": "",
+            "en": false
+        },
+        {
+            "code": "",
+            "desc": "",
+            "en": false
+        },
+        {
+            "code": "",
+            "desc": "",
+            "en": false
+        },
+        {
+            "code": "",
+            "desc": "",
+            "en": false
+        }
+    ],
+    "rtu_master": {
+        "baudrate": 115200,
+        "delay": 100,
+        "device": "",
+        "en": false,
+        "parity": "N",
+        "rddelay": 100,
+        "retry": 3,
+        "stopbits": 1,
+        "wait": 100
+    },
+    "rtu_slave": {
+        "baudrate": 115200,
+        "en": true,
+        "id": 1,
+        "offset": 0,
+        "order": 1,
+        "parity": "N",
+        "stopbits": 1
+    },
+    "tags": [
+        {
+            "avg": 0,
+            "desc": "Value CO",
+            "en": true,
+            "flag": 3,
+            "name": "Minhasd",
+            "stat_flag": 3,
+            "stat_idx": 216,
+            "unit": "mg/Nm3",
+            "val_idx": 60
+        },
+        {
+            "avg": 0,
+            "desc": "Value SO2",
+            "en": true,
+            "flag": 0,
+            "name": "SO2",
+            "stat_flag": 3,
+            "stat_idx": 207,
+            "unit": "mg/Nm3",
+            "val_idx": 117
+        },
+        {
+            "avg": 0,
+            "desc": "Value CO2",
+            "en": true,
+            "flag": 0,
+            "name": "CO2",
+            "stat_flag": 2,
+            "stat_idx": 205,
+            "unit": "%V",
+            "val_idx": 106
+        },
+        {
+            "avg": 0,
+            "desc": "Value NO",
+            "en": false,
+            "flag": 0,
+            "name": "NO",
+            "stat_flag": 0,
+            "stat_idx": 200,
+            "unit": "mg/Nm3",
+            "val_idx": 101
+        },
+        {
+            "avg": 0,
+            "desc": "Value O2",
+            "en": true,
+            "flag": 0,
+            "name": "O2",
+            "stat_flag": 3,
+            "stat_idx": 208,
+            "unit": "%V",
+            "val_idx": 109
+        },
+        {
+            "avg": 0,
+            "desc": "Value NOx",
+            "en": true,
+            "flag": 0,
+            "name": "NOx",
+            "stat_flag": 3,
+            "stat_idx": 206,
+            "unit": "mg/Nm3",
+            "val_idx": 107
+        },
+        {
+            "avg": 0,
+            "desc": "Value Dust",
+            "en": true,
+            "flag": 0,
+            "name": "PM",
+            "stat_flag": 3,
+            "stat_idx": 209,
+            "unit": "mg/Nm3",
+            "val_idx": 115
+        },
+        {
+            "avg": 0,
+            "desc": "Luu luong",
+            "en": true,
+            "flag": 0,
+            "name": "Flow",
+            "stat_flag": 3,
+            "stat_idx": 210,
+            "unit": "m3/h",
+            "val_idx": 111
+        },
+        {
+            "avg": 0,
+            "desc": "Ap suat",
+            "en": true,
+            "flag": 0,
+            "name": "P",
+            "stat_flag": 3,
+            "stat_idx": 211,
+            "unit": "kPa",
+            "val_idx": 112
+        },
+        {
+            "avg": 0,
+            "desc": "Nhiet do",
+            "en": true,
+            "flag": 0,
+            "name": "Temp",
+            "stat_flag": 3,
+            "stat_idx": 212,
+            "unit": "oC",
+            "val_idx": 113
+        },
+        {
+            "avg": 0,
+            "desc": "",
+            "en": false,
+            "flag": 0,
+            "name": "default",
+            "stat_flag": 0,
+            "stat_idx": 0,
+            "unit": "default",
+            "val_idx": 0
+        }
+    ],
+    "tcp_master": {
+        "conntype": 0,
+        "delay": 100,
+        "en": true,
+        "retry": 3
+    },
+    "tcp_slave": {
+        "en": true,
+        "id": 5,
+        "offset": 0,
+        "order": 0,
+        "port": 502
+    },
+    "timers": [
+        {
+            "code": "setdo(0, 0);\ntimerstop(0);",
+            "desc": "D-sample",
+            "en": false,
+            "int": 1,
+            "one": false
+        },
+        {
+            "code": "setdo(1, 0);\ntimerstop(1);",
+            "desc": "Code timer1 cho trạng thái TSS SC1000",
+            "en": false,
+            "int": 1,
+            "one": false
+        },
+        {
+            "code": "setdo(2, 0);\ntimerstop(2);",
+            "desc": "Code timer2 cho trạng thái COD SC1000",
+            "en": false,
+            "int": 1,
+            "one": false
+        },
+        {
+            "code": "setdo(3, 0);\ntimerstop(3);",
+            "desc": "Code timer3 cho trạng thái NH4 SC1000",
+            "en": false,
+            "int": 1,
+            "one": false
+        },
+        {
+            "code": "setdo(4, 0);\ntimerstop(4);",
+            "desc": "CODE COD",
+            "en": false,
+            "int": 1,
+            "one": false
+        },
+        {
+            "code": "",
+            "desc": "",
+            "en": false,
+            "int": 1,
+            "one": false
+        },
+        {
+            "code": "",
+            "desc": "",
+            "en": false,
+            "int": 1,
+            "one": false
+        },
+        {
+            "code": "",
+            "desc": "",
+            "en": false,
+            "int": 1,
+            "one": false
+        },
+        {
+            "code": "",
+            "desc": "",
+            "en": false,
+            "int": 1,
+            "one": false
+        },
+        {
+            "code": "",
+            "desc": "",
+            "en": false,
+            "int": 1,
+            "one": false
+        }
+    ]
+}

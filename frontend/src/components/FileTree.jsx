@@ -518,7 +518,7 @@ const FileTree = ({
   return (
     <>
       <div
-        className="p-4 h-[100%] bg-white rounded shadow-sm max-w-[400px]"
+        className="p-4 max-h-[90vh] overflow-auto bg-white rounded shadow-sm max-w-[400px]"
         onContextMenu={handleContextMenu}
       >
         {(!treeData || treeData.length === 0) && (

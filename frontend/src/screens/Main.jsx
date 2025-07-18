@@ -281,12 +281,12 @@ export default function Main({ onLoginOut }) {
                   setFileLoaded={setFileLoaded}
                 />
               </div>
-              <textarea
+              {/* <textarea
                 className='mt-2 px-2 py-1 border border-gray-300 rounded text-xs focus:outline-none focus:border-blue-500 w-full resize-none h-[50px]'
                 placeholder='Data từ thiết bị'
                 value={context.dataTest}
                 rows={30}
-              />
+              /> */}
             </div>
           </div>
         </div>
