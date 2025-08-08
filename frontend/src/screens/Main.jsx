@@ -119,7 +119,8 @@ export default function Main({ onLoginOut }) {
 
   const handleSaveAsProject = async () => {
     if (!dataFile) return;
-    const jsonData = JSON.stringify({ ...dataFile });
+    const jsonData = JSON.stringify({ ...dataFile }, null, 2);
+
 
     SelectFileToExport("api-json.json").then(async (filePath) => {
       if (!filePath) {

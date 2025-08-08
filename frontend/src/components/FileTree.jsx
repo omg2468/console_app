@@ -171,7 +171,6 @@ const TreeNode = ({
           ShowInfoDialog("Đã nhập file thành công", "Import File");
           break;
         default:
-          console.warn("Unknown action:", action);
           break;
       }
     } catch (error) {
@@ -374,7 +373,6 @@ const TreeNode = ({
               <button
                 className="flex-1 px-4 py-2 bg-blue-500 text-white rounded-lg font-medium hover:bg-blue-600 transition"
                 onClick={() => {
-                  console.log("handleAction", showModal.action, input);
                   handleAction(showModal.action, input);
                 }}
               >
@@ -423,7 +421,6 @@ const FileTree = ({
   const [titleModal, setTitleModal] = useState("");
 
   const handleAction = async (action, name) => {
-    if (!showModal.show) return;
     try {
       switch (action) {
         case "newProject":
@@ -440,7 +437,6 @@ const FileTree = ({
           break;
 
         case "newGroup":
-          console.log(name);
           await CreateFolder(name);
           setInput("");
           setShowModal({ show: false, action: null });
@@ -469,7 +465,6 @@ const FileTree = ({
           break;
 
         default:
-          console.warn("Unknown action:", action);
           break;
       }
 
@@ -495,7 +490,7 @@ const FileTree = ({
         },
       },
       {
-        label: "New Group ",
+        label: "New Group",
         action: () => {
           setInput("");
           setShowModal({ show: true, action: "newGroup" });
@@ -510,7 +505,7 @@ const FileTree = ({
       { label: "Import", action: () => handleAction("import") },
       {
         label: "Show in Explore",
-        action: () => handleAction("showInExplore", e),
+        action: () => handleAction("showInExplore"),
       },
     ]);
   };
@@ -567,7 +562,6 @@ const FileTree = ({
               <button
                 className="flex-1 px-4 py-2 bg-blue-500 text-white rounded-lg font-medium hover:bg-blue-600 transition"
                 onClick={() => {
-                  console.log("handleAction", showModal.action, input);
                   handleAction(showModal.action, input);
                 }}
               >
