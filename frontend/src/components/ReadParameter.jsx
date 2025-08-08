@@ -142,7 +142,7 @@ const ReadParameter = ({
                                 setDataFile,
                                 key: item.key,
                                 paramKey: "stopbits",
-                                value: e.target.value,
+                                value: Number(e.target.value),
                               })
                             }
                             className="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg max-w-[150px]"
@@ -365,7 +365,7 @@ const ReadParameter = ({
                                 setDataFile,
                                 key: item.key,
                                 paramKey: "stopbits",
-                                value: e.target.value,
+                                value: Number(e.target.value),
                               })
                             }
                             className="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg max-w-[150px]"
@@ -388,7 +388,7 @@ const ReadParameter = ({
                                 setDataFile,
                                 key: item.key,
                                 paramKey: "order",
-                                value: e.target.value,
+                                value: Number(e.target.value),
                               })
                             }
                             className="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg max-w-[150px]"
@@ -597,7 +597,7 @@ const ReadParameter = ({
                                 setDataFile,
                                 key: item.key,
                                 paramKey: "order",
-                                value: e.target.value,
+                                value: Number(e.target.value),
                               })
                             }
                             className="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg max-w-[150px]"
@@ -693,7 +693,7 @@ const ReadParameter = ({
                                 setDataFile,
                                 key: item.key,
                                 paramKey: "time_sync",
-                                value: e.target.value,
+                                value: Number(e.target.value),
                               })
                             }
                             className="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg max-w-[150px]"
@@ -984,7 +984,7 @@ const ReadParameter = ({
                                 index: item.idx,
                                 paramKey: "client",
                                 subParamKey: "make_dir_type",
-                                value: e.target.value,
+                                value: Number(e.target.value),
                               })
                             }
                             className="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg max-w-[150px]"
@@ -1240,7 +1240,7 @@ const ReadParameter = ({
                                 index: item.idx,
                                 paramKey: "creator",
                                 subParamKey: "file_type",
-                                value: e.target.value,
+                                value: Number(e.target.value),
                               })
                             }
                             className="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg max-w-[150px]"
@@ -1266,7 +1266,7 @@ const ReadParameter = ({
                                 index: item.idx,
                                 paramKey: "creator",
                                 subParamKey: "keep_month",
-                                value: e.target.value,
+                                value: Number(e.target.value),
                               })
                             }
                             className="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg max-w-[150px]"
@@ -1408,7 +1408,7 @@ const ReadParameter = ({
                                 setDataFile,
                                 key: item.key,
                                 paramKey: "type",
-                                value: e.target.value,
+                                value: Number(e.target.value),
                               })
                             }
                             className="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg max-w-[150px]"
@@ -1696,7 +1696,7 @@ const ReadParameter = ({
                                 key: "dis",
                                 paramKey: "act_lev",
                                 index: item.idx,
-                                value: event.target.value,
+                                value: Number(event.target.value),
                               });
                             }}
                             className="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg max-w-[150px]"
@@ -2053,7 +2053,7 @@ const ReadParameter = ({
                                 key: item.key,
                                 paramKey: "flag",
                                 index: item.idx,
-                                value: event.target.checked,
+                                value: event.target.checked ? 1 : 0,
                               });
                             }}
                             className="w-4 h-4 accent-blue-500 cursor-pointer"
@@ -2473,7 +2473,7 @@ const ReadParameter = ({
                                 key: "modbus_reader",
                                 paramKey: "type",
                                 index: item.idx,
-                                value: event.target.value,
+                                value: Number(event.target.value),
                               });
                             }}
                             className="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg max-w-[150px]"
@@ -2563,7 +2563,7 @@ const ReadParameter = ({
                                 key: "modbus_reader",
                                 paramKey: "d_t",
                                 index: item.idx,
-                                value: event.target.value,
+                                value: Number(event.target.value),
                               });
                             }}
                             className="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg max-w-[150px]"
@@ -2589,7 +2589,7 @@ const ReadParameter = ({
                                 key: "modbus_reader",
                                 paramKey: "d_o",
                                 index: item.idx,
-                                value: event.target.value,
+                                value: Number(event.target.value),
                               });
                             }}
                             className="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg max-w-[150px]"
@@ -2615,7 +2615,7 @@ const ReadParameter = ({
                                 key: "modbus_reader",
                                 paramKey: "d_f",
                                 index: item.idx,
-                                value: event.target.value,
+                                value: Number(event.target.value),
                               });
                             }}
                             className="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg max-w-[150px]"

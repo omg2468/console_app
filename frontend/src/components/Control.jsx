@@ -62,7 +62,6 @@ const Control = () => {
     if (context.selectedConnection === "serial") {
       SettingNetwork(context.formData);
     } else if (context.selectedConnection === "ethernet") {
-      console.log(context.formData);
       SettingNetworkEthernet(
         context.socketAddress,
         context.socketPort,
@@ -291,7 +290,6 @@ const Control = () => {
                   if (context.selectedConnection === "serial") {
                     ReadAnalog();
                   } else if (context.selectedConnection === "ethernet") {
-                    console.log("run ReadAnalogWS");
                     ReadAnalogWS(
                       context.socketAddress,
                       context.socketPort,
@@ -302,7 +300,6 @@ const Control = () => {
                   if (context.selectedConnection === "serial") {
                     StopReadAnalog();
                   } else if (context.selectedConnection === "ethernet") {
-                    console.log("run ReadAnalogWS");
                     ReadAnalogWS(
                       context.socketAddress,
                       context.socketPort,
