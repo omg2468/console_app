@@ -41,7 +41,6 @@
 import {
   ConnectSocket,
   DisconnectSocket,
-  GetSocketData,
   GetAllSocketData,
   SendSocketData,
   CheckSocketConnection,
@@ -112,10 +111,10 @@ class PerformanceMonitor {
   }
 
   getAdaptiveInterval(): number {
-    if (this.metrics.fps >= 55) return 50;   // High performance
-    if (this.metrics.fps >= 40) return 100;  // Medium performance
-    if (this.metrics.fps >= 25) return 200;  // Low performance
-    return 500; // Very low performance - aggressive throttling
+    if (this.metrics.fps >= 55) return 5;    // High performance - cực nhanh 5ms
+    if (this.metrics.fps >= 40) return 10;   // Medium performance - 10ms
+    if (this.metrics.fps >= 25) return 20;   // Low performance - 20ms  
+    return 50; // Very low performance - 50ms
   }
 
   getMetrics(): PerformanceMetrics {
@@ -222,33 +221,15 @@ export const sendSocketData = async (address: string, port: string, data: string
   }
 };
 
-// Lấy dữ liệu từ socket (single message) với timeout
-export const getSocketData = async (
-  address: string, 
-  port: string,
-  timeout: number = 5000
-): Promise<string> => {
-  try {
-    const timeoutPromise = new Promise<never>((_, reject) => {
-      setTimeout(() => reject(new Error('Socket timeout')), timeout);
-    });
-    
-    const dataPromise = GetSocketData(address, port);
-    
-    return await Promise.race([dataPromise, timeoutPromise]);
-  } catch (error) {
-    console.error("Lỗi nhận dữ liệu:", error);
-    throw error;
-  }
-};
-
-// Lấy tất cả dữ liệu từ socket với debounce
+// Lấy tất cả dữ liệu từ socket - trả về ngay lập tức
 export const getAllSocketData = async (address: string, port: string): Promise<string[]> => {
   try {
-    return await GetAllSocketData(address, port);
+    const data = await GetAllSocketData(address, port);
+    // Trả về data ngay lập tức, không có bất kỳ processing nào
+    return data || [];
   } catch (error) {
-    console.error("Lỗi nhận tất cả dữ liệu:", error);
-    throw error;
+    // Không log error để tránh spam console
+    return [];
   }
 };
 
@@ -257,7 +238,7 @@ export const startSocketListener = (
   address: string,
   port: string,
   onDataReceived: (messages: SocketMessage[]) => void,
-  interval: number = 50 // Giảm interval để update nhanh hơn
+  interval: number = 10 // Interval cực nhanh
 ): void => {
   const key = `${address}:${port}`;
   
@@ -266,8 +247,6 @@ export const startSocketListener = (
   
   let retryCount = 0;
   const maxRetries = 3;
-  let lastProcessTime = 0;
-  const throttleMs = 20; // Giảm throttle để data update nhanh hơn
   
   const listener = setInterval(async () => {
     try {
@@ -279,16 +258,15 @@ export const startSocketListener = (
         return;
       }
       
-      // Lấy tất cả dữ liệu có sẵn và update ngay lập tức
+      // Lấy tất cả dữ liệu có sẵn
       const rawData = await getAllSocketData(address, port);
       
       if (rawData && rawData.length > 0) {
-        // Process tất cả data để đảm bảo real-time
+        // Process TẤT CẢ data ngay lập tức - không giới hạn
         const messages = rawData.map(data => formatSocketMessage(data, 'received'));
         
-        // Update ngay lập tức không delay
+        // Append ngay lập tức - không check gì cả
         onDataReceived(messages);
-        lastProcessTime = Date.now();
       }
       
       retryCount = 0; // Reset retry count on success
@@ -389,13 +367,12 @@ export const createHighPerformanceSocketListener = (
       const rawData = await getAllSocketData(address, port);
       
       if (rawData && rawData.length > 0) {
-        // Process all data immediately without throttling for real-time performance
+        // Process TẤT CẢ data ngay lập tức - không giới hạn batch size
         const messages = rawData.map(data => formatSocketMessage(data, 'received'));
 
         if (messages.length > 0) {
-          // Direct immediate update without queuing delays
+          // Append ngay lập tức TẤT CẢ messages
           scheduleUpdate(messages);
-          lastProcessTime = Date.now();
         }
       }
 
@@ -416,8 +393,8 @@ export const createHighPerformanceSocketListener = (
     if (!isRunning) return;
 
     const interval = adaptiveThrottling 
-      ? performanceMonitor.getAdaptiveInterval()
-      : 25; // Faster update interval for real-time performance
+      ? Math.min(performanceMonitor.getAdaptiveInterval(), 10) // Giới hạn tối đa 10ms
+      : 5; // Interval cực nhanh - 5ms
 
     // Direct timeout without requestAnimationFrame for immediate processing
     setTimeout(() => {
@@ -496,11 +473,11 @@ export const createThrottledSocketListener = (
   } = {}
 ) => {
   const {
-    interval = 50, // Giảm interval cho hiệu suất tốt hơn
+    interval = 10, // Interval cực nhanh - 10ms
     maxRetries = 3,
     batchSize = 50,
     maxQueueSize = 1000,
-    throttleMs = 20, // Giảm throttle cho real-time
+    throttleMs = 5, // Throttle cực nhanh
     onError,
     onOverflow
   } = options;
@@ -536,46 +513,11 @@ export const createThrottledSocketListener = (
       const rawData = await getAllSocketData(address, port);
       
       if (rawData && rawData.length > 0) {
-        let droppedCount = 0;
+        // Process TẤT CẢ data ngay lập tức - không giới hạn
+        const messages = rawData.map(data => formatSocketMessage(data, 'received'));
         
-        // Add to queue with rate limiting
-        rawData.forEach(data => {
-          if (messageQueue.length >= maxQueueSize) {
-            // Remove oldest messages to prevent memory overflow
-            const removed = messageQueue.splice(0, Math.floor(maxQueueSize * 0.1));
-            droppedCount += removed.length;
-          }
-          messageQueue.push(formatSocketMessage(data, 'received'));
-        });
-
-        // Process queue if it's time
-        const now = Date.now();
-        if (now - lastProcessTime >= throttleMs && messageQueue.length > 0) {
-          const messagesToProcess = [...messageQueue];
-          messageQueue = []; // Clear queue
-          
-          // Process in batches
-          const chunks: SocketMessage[][] = [];
-          for (let i = 0; i < messagesToProcess.length; i += batchSize) {
-            chunks.push(messagesToProcess.slice(i, i + batchSize));
-          }
-
-          // Process first chunk immediately
-          if (chunks.length > 0) {
-            throttledUpdate(chunks[0], droppedCount);
-            
-            // Schedule remaining chunks with small delays
-            chunks.slice(1).forEach((chunk, index) => {
-              setTimeout(() => {
-                if (isRunning) {
-                  onDataReceived(chunk);
-                }
-              }, (index + 1) * 5); // 5ms delay between chunks
-            });
-          }
-          
-          lastProcessTime = now;
-        }
+        // Append TẤT CẢ messages ngay lập tức
+        onDataReceived(messages);
       }
 
       retryCount = 0; // Reset on success
@@ -661,11 +603,11 @@ export const createSocketDataQueue = (
   } = {}
 ) => {
   const { 
-    interval = 50, // Giảm interval cho update nhanh hơn
+    interval = 10, // Interval cực nhanh - 10ms  
     maxRetries = 3, 
     batchSize = 20, 
     maxQueueSize = 1000,
-    throttleMs = 20 // Giảm throttle cho real-time
+    throttleMs = 5 // Throttle cực nhanh
   } = options;
   
   const key = `${address}:${port}`;
@@ -711,50 +653,11 @@ export const createSocketDataQueue = (
       const data = await getAllSocketData(address, port);
       
       if (data && data.length > 0) {
-        const now = Date.now();
-        
-        // Add to queue with size limit
+        // Process TẤT CẢ data ngay lập tức - không queue, không throttle
         data.forEach(item => {
-          if (messageQueue.length < maxQueueSize) {
-            messageQueue.push(formatSocketMessage(item, 'received'));
-          } else {
-            // Remove oldest message to prevent memory overflow
-            messageQueue.shift();
-            messageQueue.push(formatSocketMessage(item, 'received'));
-          }
+          const message = formatSocketMessage(item, 'received');
+          onData(message); // Append ngay lập tức từng message
         });
-        
-        // Process queue if enough time has passed (throttling)
-        if (now - lastProcessTime >= throttleMs && messageQueue.length > 0) {
-          // Process in smaller batches with proper cleanup
-          const totalMessages = [...messageQueue];
-          messageQueue = []; // Clear queue
-          
-          for (let i = 0; i < totalMessages.length; i += batchSize) {
-            const batch = totalMessages.slice(i, i + batchSize);
-            
-            if (i === 0) {
-              // Process first batch immediately
-              batch.forEach(msg => throttledOnData(msg));
-            } else {
-              // Schedule remaining batches with cleanup tracking
-              const timeout = setTimeout(() => {
-                if (isRunning) {
-                  batch.forEach(msg => onData(msg));
-                }
-                // Remove this timeout from tracking
-                const index = batchTimeouts.indexOf(timeout);
-                if (index > -1) {
-                  batchTimeouts.splice(index, 1);
-                }
-              }, Math.min(i * 10, 100)); // Max 100ms delay
-              
-              batchTimeouts.push(timeout);
-            }
-          }
-          
-          lastProcessTime = now;
-        }
       }
       
       retryCount = 0; // Reset on success
