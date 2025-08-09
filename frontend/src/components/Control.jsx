@@ -361,7 +361,7 @@ const Control = () => {
                           <td className='border-r border-b p-2 text-right min-w-[150px] whitespace-nowrap'>
                             Analog input {id}
                           </td>
-                          <td className="p-2 border-box border-b text-left min-w-[150px]">
+                          <td className='p-2 border-box border-b text-left min-w-[150px]'>
                             {value.toFixed(2) + context.analogUnit}
                           </td>
                         </tr>
@@ -376,13 +376,27 @@ const Control = () => {
         <div className='w-full flex flex-col gap-2 p-1'>
           <div className='flex flex-col gap-2'>
             <div className='flex-1 min-w-[200px] flex flex-col gap-2 border rounded-md p-2 bg-gray-50'>
-              <div className="flex items-center justify-between gap-4">
+              <div className='flex items-center justify-between gap-4'>
                 <button
                   className={`flex-1 text-xs px-2 py-1 rounded min-w-[90px] transition bg-gray-200 hover:bg-gray-300 cursor-pointer`}
                 >
                   Get measure mode
                 </button>
-                <div className='flex-1'>{changeMode} mode</div>
+                <div className='flex-1 flex items-center justify-center'>
+                  <div
+                    className={`
+      px-3 py-1 rounded-lg text-xs font-semibold text-center min-w-[100px]
+      ${
+        changeMode === "current"
+          ? "bg-gradient-to-r from-blue-50 to-blue-100 text-blue-700 border border-blue-200 shadow-sm"
+          : "bg-gradient-to-r from-green-50 to-green-100 text-green-700 border border-green-200 shadow-sm"
+      }
+    `}
+                  >
+                    {changeMode.charAt(0).toUpperCase() + changeMode.slice(1)}{" "}
+                    Mode
+                  </div>
+                </div>
               </div>
               <button
                 className={`flex-1 text-xs px-2 py-1 rounded min-w-[90px] transition bg-gray-200 hover:bg-gray-300 cursor-pointer`}
@@ -484,23 +498,23 @@ const Control = () => {
                     }
                     setSelectedCommand(e.target.value);
                   }}
-                  className="bg-white border border-gray-300 text-gray-900 text-xs py-[2px] w-full"
+                  className='bg-white border border-gray-300 text-gray-900 text-xs py-[2px] w-full'
                 >
-                  <option value="read_system_info"></option>
-                  <option value="write_serial_number">
+                  <option value='read_system_info'></option>
+                  <option value='write_serial_number'>
                     Write serial number
                   </option>
                   <option value='write_mac'>Write mac address</option>
                   <option value='reset_configuration'>
                     Reset Configuration
                   </option>
-                  <option value="reboot">Reboot</option>
-                  <option value="read_sim_info">Read sim info</option>
-                  <option value="read_sdcard_info">Read sdcard info</option>
-                  <option value="set_rtc_manual">Set RTC manual</option>
-                  <option value="set_rtc_internet">Set RTC internet</option>
-                  <option value="get_rtc">Get RTC</option>
-                  <option value="ping">Ping</option>
+                  <option value='reboot'>Reboot</option>
+                  <option value='read_sim_info'>Read sim info</option>
+                  <option value='read_sdcard_info'>Read sdcard info</option>
+                  <option value='set_rtc_manual'>Set RTC manual</option>
+                  <option value='set_rtc_internet'>Set RTC internet</option>
+                  <option value='get_rtc'>Get RTC</option>
+                  <option value='ping'>Ping</option>
                 </select>
                 <button
                   disabled={!context.isConnected}
@@ -613,7 +627,7 @@ const Control = () => {
                               context.socketAddress,
                               context.socketPort,
                               "manual",
-                              ts
+                              ts,
                             );
                           }
                           break;
@@ -629,7 +643,7 @@ const Control = () => {
                               context.socketAddress,
                               context.socketPort,
                               "internet",
-                              formattedDate
+                              formattedDate,
                             );
                           }
                           break;
