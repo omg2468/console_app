@@ -465,7 +465,7 @@ function ConnectComponent({
             context.isSocketConnected
           ) {
             await readSocketData();
-            await new Promise((resolve) => setTimeout(resolve, 10000));
+            await new Promise((resolve) => setTimeout(resolve, 500));
           }
         } catch (err) {
           if (!err.toString().includes("timeout")) {
