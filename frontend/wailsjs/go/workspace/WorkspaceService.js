@@ -58,6 +58,14 @@ export function GetDefaultData() {
   return window['go']['workspace']['WorkspaceService']['GetDefaultData']();
 }
 
+export function GetMeasureMode(arg1, arg2) {
+  return window['go']['workspace']['WorkspaceService']['GetMeasureMode'](arg1, arg2);
+}
+
+export function GetRTC(arg1, arg2) {
+  return window['go']['workspace']['WorkspaceService']['GetRTC'](arg1, arg2);
+}
+
 export function GetSocketData(arg1, arg2) {
   return window['go']['workspace']['WorkspaceService']['GetSocketData'](arg1, arg2);
 }
@@ -164,6 +172,14 @@ export function SetContext(arg1) {
 
 export function SetDigitalOutputEthernet(arg1, arg2, arg3) {
   return window['go']['workspace']['WorkspaceService']['SetDigitalOutputEthernet'](arg1, arg2, arg3);
+}
+
+export function SetMeasureMode(arg1, arg2, arg3) {
+  return window['go']['workspace']['WorkspaceService']['SetMeasureMode'](arg1, arg2, arg3);
+}
+
+export function SetRTC(arg1, arg2, arg3, arg4) {
+  return window['go']['workspace']['WorkspaceService']['SetRTC'](arg1, arg2, arg3, arg4);
 }
 
 export function SettingNetworkEthernet(arg1, arg2, arg3) {

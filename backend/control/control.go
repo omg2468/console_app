@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"myproject/backend/auth"
+	"time"
 )
 
 // ControlService quản lý và xử lý các lệnh điều khiển
@@ -47,6 +48,45 @@ func (c *ControlService) ReadMemoryView() error {
 func (c *ControlService) StopReadMemoryView() error {
 	return c.authService.Send(`{"type":"read_memory_view", "data":"disable"}`)
 }
+
+func (c *ControlService) SetRTC(mode string, ts int64) error {
+	data := map[string]interface{}{
+		"type": "set_rtc",
+		"mode": mode,
+		"ts":   ts,
+	}
+	payload, err := json.Marshal(data)
+	if err != nil {
+		return err
+	}
+	return c.authService.Send(string(payload))
+}
+
+func (c *ControlService) GetRTC() error {
+	return c.authService.Send(`{"type":"get_rtc"}`)
+}
+
+func (c *ControlService) GetMeasureMode() error {
+	return c.authService.Send(`{"type":"get_measure_mode"}`)
+}
+
+func (c *ControlService) SetMeasureMode(mode string) error {
+	data := map[string]string{
+		"type": "set_measure_mode",
+		"mode": mode,
+	}
+	payload, err := json.Marshal(data)
+	if err != nil {
+		return err
+	}
+	return c.authService.Send(string(payload))
+}
+
+func (c *ControlService) GetLocalTimezoneOffset() int {
+	_, offset := time.Now().Zone()
+	return offset
+}
+
 
 func (c *ControlService) ReadTagView() error {
 	return c.authService.Send(`{"type":"read_tag_view", "data":"enable"}`)

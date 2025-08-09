@@ -25,7 +25,7 @@ func main() {
 
 	// Create application with options
 	err := wails.Run(&options.App{
-		Title:         "Console App",
+		Title:         "DataLogger",
 		Width:         1224,
 		Height:        800,
 		DisableResize: true,

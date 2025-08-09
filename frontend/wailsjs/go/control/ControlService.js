@@ -10,8 +10,20 @@ export function Calib4ma() {
   return window['go']['control']['ControlService']['Calib4ma']();
 }
 
+export function GetLocalTimezoneOffset() {
+  return window['go']['control']['ControlService']['GetLocalTimezoneOffset']();
+}
+
+export function GetMeasureMode() {
+  return window['go']['control']['ControlService']['GetMeasureMode']();
+}
+
 export function GetNetworkInfo() {
   return window['go']['control']['ControlService']['GetNetworkInfo']();
+}
+
+export function GetRTC() {
+  return window['go']['control']['ControlService']['GetRTC']();
 }
 
 export function Ping(arg1) {
@@ -52,6 +64,14 @@ export function ResetConfiguration() {
 
 export function SetDigitalOutput(arg1) {
   return window['go']['control']['ControlService']['SetDigitalOutput'](arg1);
+}
+
+export function SetMeasureMode(arg1) {
+  return window['go']['control']['ControlService']['SetMeasureMode'](arg1);
+}
+
+export function SetRTC(arg1, arg2) {
+  return window['go']['control']['ControlService']['SetRTC'](arg1, arg2);
 }
 
 export function SetTime(arg1) {

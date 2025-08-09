@@ -31,6 +31,10 @@ export function GetAllSocketData(arg1:string,arg2:string):Promise<Array<string>>
 
 export function GetDefaultData():Promise<string>;
 
+export function GetMeasureMode(arg1:string,arg2:string):Promise<void>;
+
+export function GetRTC(arg1:string,arg2:string):Promise<void>;
+
 export function GetSocketData(arg1:string,arg2:string):Promise<string>;
 
 export function GetWorkspacePath():Promise<string>;
@@ -84,6 +88,10 @@ export function SendSocketData(arg1:string,arg2:string,arg3:string):Promise<void
 export function SetContext(arg1:context.Context):Promise<void>;
 
 export function SetDigitalOutputEthernet(arg1:string,arg2:string,arg3:Array<boolean>):Promise<void>;
+
+export function SetMeasureMode(arg1:string,arg2:string,arg3:string):Promise<void>;
+
+export function SetRTC(arg1:string,arg2:string,arg3:string,arg4:number):Promise<void>;
 
 export function SettingNetworkEthernet(arg1:string,arg2:string,arg3:Record<string, any>):Promise<void>;
 

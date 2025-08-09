@@ -5,7 +5,13 @@ export function Calib16ma():Promise<void>;
 
 export function Calib4ma():Promise<void>;
 
+export function GetLocalTimezoneOffset():Promise<number>;
+
+export function GetMeasureMode():Promise<void>;
+
 export function GetNetworkInfo():Promise<void>;
+
+export function GetRTC():Promise<void>;
 
 export function Ping(arg1:string):Promise<void>;
 
@@ -26,6 +32,10 @@ export function Reboot():Promise<void>;
 export function ResetConfiguration():Promise<void>;
 
 export function SetDigitalOutput(arg1:Array<boolean>):Promise<void>;
+
+export function SetMeasureMode(arg1:string):Promise<void>;
+
+export function SetRTC(arg1:string,arg2:number):Promise<void>;
 
 export function SetTime(arg1:Array<number>):Promise<void>;
 

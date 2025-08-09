@@ -1053,6 +1053,67 @@ func (ws *WorkspaceService) ReadTagView(address, port, mode string) error {
 	return nil
 }
 
+func (ws *WorkspaceService) SetMeasureMode(address, port, mode string) error {
+	// Chỉ chấp nhận "current" hoặc "voltage"
+	if mode != "current" && mode != "voltage" {
+		return fmt.Errorf("giá trị không hợp lệ cho mode: %s (chỉ 'current' hoặc 'voltage')", mode)
+	}
+
+	// Tạo message JSON
+	message := fmt.Sprintf(`{"type":"set_measure_mode","mode":"%s"}`, mode)
+
+	// Gửi xuống thiết bị qua socket
+	err := ws.SendSocketData(address, port, message)
+	if err != nil {
+		return fmt.Errorf("không thể gửi yêu cầu set_measure_mode: %w", err)
+	}
+
+	fmt.Printf("✅ Đã gửi set_measure_mode [%s] tới thiết bị.\n", mode)
+	return nil
+}
+
+func (ws *WorkspaceService) GetMeasureMode(address, port string) error {
+	message := `{"type":"get_measure_mode"}`
+
+	err := ws.SendSocketData(address, port, message)
+	if err != nil {
+		return fmt.Errorf("không thể gửi yêu cầu get_measure_mode: %w", err)
+	}
+
+	fmt.Println("✅ Đã gửi get_measure_mode tới thiết bị.")
+	return nil
+}
+
+func (ws *WorkspaceService) GetRTC(address, port string) error {
+	message := `{"type":"get_rtc"}`
+
+	err := ws.SendSocketData(address, port, message)
+	if err != nil {
+		return fmt.Errorf("không thể gửi yêu cầu get_rtc: %w", err)
+	}
+
+	fmt.Println("✅ Đã gửi get_rtc tới thiết bị.")
+	return nil
+}
+
+func (ws *WorkspaceService) SetRTC(address, port, mode string, ts int64) error {
+	// Chỉ chấp nhận "manual" hoặc "internet"
+	if mode != "manual" && mode != "internet" {
+		return fmt.Errorf("giá trị không hợp lệ cho mode: %s (chỉ 'manual' hoặc 'internet')", mode)
+	}
+
+	// Tạo message JSON
+	message := fmt.Sprintf(`{"type":"set_rtc", "mode":"%s", "ts":%d}`, mode, ts)
+
+	err := ws.SendSocketData(address, port, message)
+	if err != nil {
+		return fmt.Errorf("không thể gửi yêu cầu set_rtc: %w", err)
+	}
+
+	fmt.Printf("✅ Đã gửi set_rtc [%s, %d] tới thiết bị.\n", mode, ts)
+	return nil
+}
+
 func (ws *WorkspaceService) SettingNetworkEthernet(address, port string, data map[string]interface{}) error {
 	// Gắn type vào payload
 	data["type"] = "network_setting"

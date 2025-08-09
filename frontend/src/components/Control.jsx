@@ -17,6 +17,8 @@ import {
   ReadSimInfo,
   ReadSdcardInfo,
   Ping,
+  GetRTC,
+  SetRTC,
 } from "../../wailsjs/go/control/ControlService";
 
 import {
@@ -34,6 +36,8 @@ import {
   ReadSdCardInfo as ReadSdcardInfoWS,
   PingDevice as PingWS,
   SettingNetworkEthernet,
+  GetRTC as GetRTCWS,
+  SetRTC as SetRTCWS,
 } from "../../wailsjs/go/workspace/WorkspaceService";
 import { ShowQuestionDialog } from "../../wailsjs/go/main/App";
 
@@ -43,6 +47,7 @@ const Control = () => {
   const [loadingPos, setLoadingPos] = useState(0);
   const [dataCommand, setDataCommand] = useState("");
   const [selectedCommand, setSelectedCommand] = useState("read_system_info");
+  const [inputType, setInputType] = useState("text");
 
   const barWidth = 40;
 
@@ -356,7 +361,7 @@ const Control = () => {
                             Analog input {id}
                           </td>
                           <td className="p-2 border-box border-b text-left min-w-[150px]">
-                            {value.toFixed(2)}
+                            {value.toFixed(2) + context.analogUnit}
                           </td>
                         </tr>
                       ))}
@@ -451,10 +456,17 @@ const Control = () => {
               <div className="flex flex-col sm:flex-row gap-2 items-center flex-wrap">
                 <select
                   value={selectedCommand}
-                  onChange={(e) => setSelectedCommand(e.target.value)}
+                  onChange={(e) => {
+                    if (e.target.value === "set_rtc_manual") {
+                      setInputType("datetime-local");
+                    } else {
+                      setInputType("text");
+                    }
+                    setSelectedCommand(e.target.value);
+                  }}
                   className="bg-white border border-gray-300 text-gray-900 text-xs py-[2px] w-full"
                 >
-                  <option value="read_system_info">Read system info</option>
+                  <option value="read_system_info"></option>
                   <option value="write_serial_number">
                     Write serial number
                   </option>
@@ -465,6 +477,9 @@ const Control = () => {
                   <option value="reboot">Reboot</option>
                   <option value="read_sim_info">Read sim info</option>
                   <option value="read_sdcard_info">Read sdcard info</option>
+                  <option value="set_rtc_manual">Set RTC manual</option>
+                  <option value="set_rtc_internet">Set RTC internet</option>
+                  <option value="get_rtc">Get RTC</option>
                   <option value="ping">Ping</option>
                 </select>
                 <button
@@ -557,6 +572,57 @@ const Control = () => {
                             );
                           }
                           break;
+
+                        case "set_rtc_manual":
+                          context.setInfoDialog("Setting RTC manually...");
+
+                          const date = new Date(dataCommand);
+                          if (isNaN(date.getTime())) {
+                            context.setInfoDialog("Invalid date format.");
+                            break;
+                          }
+
+                          const ts = Math.floor(date.getTime() / 1000); // giây
+
+                          if (context.selectedConnection === "serial") {
+                            SetRTC("manual", ts);
+                          } else if (
+                            context.selectedConnection === "ethernet"
+                          ) {
+                            SetRTCWS(
+                              context.socketAddress,
+                              context.socketPort,
+                              "manual",
+                              ts
+                            );
+                          }
+                          break;
+                        case "set_rtc_internet":
+                          context.setInfoDialog("Setting RTC via internet...");
+                          if (context.selectedConnection === "serial") {
+                            // Assuming setDataCommand is in the format "YYYY-MM-DD HH:MM:SS"
+                            SetRTC("internet", formattedDate);
+                          } else if (
+                            context.selectedConnection === "ethernet"
+                          ) {
+                            SetDigitalOutputEthernet(
+                              context.socketAddress,
+                              context.socketPort,
+                              "internet",
+                              formattedDate
+                            );
+                          }
+                          break;
+                        case "get_rtc":
+                          context.setInfoDialog("Getting RTC...");
+                          if (context.selectedConnection === "serial") {
+                            GetRTC();
+                          } else if (
+                            context.selectedConnection === "ethernet"
+                          ) {
+                            GetRTCWS(context.socketAddress, context.socketPort);
+                          }
+                          break;
                         case "read_sdcard_info":
                           context.setInfoDialog("Reading SD card info...");
                           if (context.selectedConnection === "serial") {
@@ -602,7 +668,7 @@ const Control = () => {
         </div>
         <div className="gap-2 flex flex-1 flex-col mx-1">
           <input
-            type="text"
+            type={inputType}
             value={dataCommand}
             onChange={(e) => setDataCommand(e.target.value)}
             className="w-full min-h-[20px] border p-2 text-xs"

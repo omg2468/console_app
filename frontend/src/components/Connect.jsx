@@ -13,6 +13,10 @@ import { ChangePassword } from "../../wailsjs/go/auth/AuthService";
 import { ShowErrorDialog, ShowInfoDialog } from "../../wailsjs/go/main/App";
 
 import {
+  GetLocalTimezoneOffset,
+} from "../../wailsjs/go/control/ControlService";
+
+import {
   Login,
   ChangePassword as ChangePasswordWS,
 } from "../../wailsjs/go/workspace/WorkspaceService";
@@ -200,6 +204,7 @@ function ConnectComponent({
       case "read_analog":
         if (jsonData.data) {
           context.setAnalogData(jsonData.data);
+          context.setAnalogUnit(jsonData.unit || "V");
         }
         break;
       case "read_tag_view":
@@ -210,6 +215,27 @@ function ConnectComponent({
       case "read_memory_view":
         if (jsonData.data) {
           context.setMemoryViewData(jsonData.data);
+        }
+        break;
+
+      case "set_rtc":
+        if (jsonData.status === "success") {
+          context.setInfoDialog("Đặt thời gian thành công");
+        } else {
+          context.setInfoDialog("Đặt thời gian thất bại");
+        }
+        break;
+
+      case "get_rtc":
+        if (jsonData.data) {
+          const tsSeconds = Number(jsonData.data);
+          const offsetSeconds = GetLocalTimezoneOffset();
+          // Nếu ts ở dạng UTC, cộng offset để ra giờ local
+          const localTsMs = (tsSeconds + offsetSeconds) * 1000;
+
+          context.setInfoDialog(
+            `Thời gian hiện tại: ${new Date(localTsMs).toLocaleString()}`
+          );
         }
         break;
       case "download_config":
@@ -255,7 +281,10 @@ function ConnectComponent({
         break;
       case "network_setting":
         if (jsonData.status === "success") {
-          ShowInfoDialog("Cài đặt mạng thành công", "Network Setting");
+          ShowInfoDialog(
+            "Cài đặt mạng thành công. Reboot thiết bị để áp dụng thay đổi",
+            "Network Setting"
+          );
         } else {
           ShowErrorDialog("Cài đặt mạng thất bại");
         }
@@ -354,7 +383,7 @@ function ConnectComponent({
         context.socketAddress,
         context.socketPort
       );
-      console.log(data)
+      console.log(data);
       if (data && data.length > 0) {
         const latestData = data[data.length - 1];
         context.setDataTest(latestData);
