@@ -257,7 +257,7 @@ export const startSocketListener = (
   address: string,
   port: string,
   onDataReceived: (messages: SocketMessage[]) => void,
-  interval: number = 200 // Tăng interval để giảm load
+  interval: number = 50 // Giảm interval để update nhanh hơn
 ): void => {
   const key = `${address}:${port}`;
   
@@ -267,7 +267,7 @@ export const startSocketListener = (
   let retryCount = 0;
   const maxRetries = 3;
   let lastProcessTime = 0;
-  const throttleMs = 100; // Throttle để tránh spam UI
+  const throttleMs = 20; // Giảm throttle để data update nhanh hơn
   
   const listener = setInterval(async () => {
     try {
@@ -279,23 +279,16 @@ export const startSocketListener = (
         return;
       }
       
-      // Throttle để tránh quá nhiều request
-      const now = Date.now();
-      if (now - lastProcessTime < throttleMs) {
-        return;
-      }
-      
-      // Lấy tất cả dữ liệu có sẵn
+      // Lấy tất cả dữ liệu có sẵn và update ngay lập tức
       const rawData = await getAllSocketData(address, port);
       
       if (rawData && rawData.length > 0) {
-        // Giới hạn số lượng message để tránh overwhelm UI
-        const limitedData = rawData.slice(0, 100); // Max 100 messages per batch
-        const messages = limitedData.map(data => formatSocketMessage(data, 'received'));
+        // Process tất cả data để đảm bảo real-time
+        const messages = rawData.map(data => formatSocketMessage(data, 'received'));
         
-        // Batch update để tránh nhiều re-render
+        // Update ngay lập tức không delay
         onDataReceived(messages);
-        lastProcessTime = now;
+        lastProcessTime = Date.now();
       }
       
       retryCount = 0; // Reset retry count on success
@@ -370,10 +363,8 @@ export const createHighPerformanceSocketListener = (
   const weight = priorityWeights[priority];
 
   const scheduleUpdate = (messages: SocketMessage[]) => {
-    const updateKey = `${key}-${Date.now()}`;
-    frameScheduler.schedule(updateKey, () => {
-      onDataReceived(messages);
-    });
+    // Direct immediate update for real-time performance
+    onDataReceived(messages);
   };
 
   const processWithCircuitBreaker = async (): Promise<void> => {
@@ -398,26 +389,13 @@ export const createHighPerformanceSocketListener = (
       const rawData = await getAllSocketData(address, port);
       
       if (rawData && rawData.length > 0) {
-        // Limit batch size based on performance
-        const currentBatchSize = adaptiveThrottling 
-          ? Math.min(maxBatchSize, performanceMonitor.shouldThrottle() ? 20 : maxBatchSize)
-          : maxBatchSize;
-
-        // Process in intelligent batches
-        const messages = rawData
-          .slice(0, currentBatchSize * weight) // Priority-based processing
-          .map(data => formatSocketMessage(data, 'received'));
+        // Process all data immediately without throttling for real-time performance
+        const messages = rawData.map(data => formatSocketMessage(data, 'received'));
 
         if (messages.length > 0) {
-          // Add to queue for frame-based processing
-          messageQueue.push(...messages);
-          
-          // Process queue when ready
-          if (messageQueue.length >= currentBatchSize || Date.now() - lastProcessTime > 100) {
-            const batch = messageQueue.splice(0, currentBatchSize);
-            scheduleUpdate(batch);
-            lastProcessTime = Date.now();
-          }
+          // Direct immediate update without queuing delays
+          scheduleUpdate(messages);
+          lastProcessTime = Date.now();
         }
       }
 
@@ -439,13 +417,14 @@ export const createHighPerformanceSocketListener = (
 
     const interval = adaptiveThrottling 
       ? performanceMonitor.getAdaptiveInterval()
-      : 100;
+      : 25; // Faster update interval for real-time performance
 
-    frameId = requestAnimationFrame(() => {
+    // Direct timeout without requestAnimationFrame for immediate processing
+    setTimeout(() => {
       processWithCircuitBreaker().then(() => {
-        setTimeout(scheduleNextProcess, interval);
+        scheduleNextProcess();
       });
-    });
+    }, interval);
   };
 
   const start = (): void => {
@@ -517,11 +496,11 @@ export const createThrottledSocketListener = (
   } = {}
 ) => {
   const {
-    interval = 200,
+    interval = 50, // Giảm interval cho hiệu suất tốt hơn
     maxRetries = 3,
     batchSize = 50,
     maxQueueSize = 1000,
-    throttleMs = 50,
+    throttleMs = 20, // Giảm throttle cho real-time
     onError,
     onOverflow
   } = options;
@@ -682,11 +661,11 @@ export const createSocketDataQueue = (
   } = {}
 ) => {
   const { 
-    interval = 200, // Tăng interval để giảm load
+    interval = 50, // Giảm interval cho update nhanh hơn
     maxRetries = 3, 
     batchSize = 20, 
     maxQueueSize = 1000,
-    throttleMs = 50 
+    throttleMs = 20 // Giảm throttle cho real-time
   } = options;
   
   const key = `${address}:${port}`;
@@ -1170,12 +1149,12 @@ export const globalPerformanceMonitor = createPerformanceMonitor();
 export const optimizeSocketSettings = (connectionCount: number) => {
   const perf = performanceMonitor.getMetrics();
   
-  // Base settings
+  // Base settings optimized for real-time performance
   let settings = {
-    interval: 200,
-    batchSize: 20,
-    maxQueueSize: 500,
-    throttleMs: 50
+    interval: 50, // Giảm interval cho update nhanh hơn
+    batchSize: 50, // Tăng batch size để xử lý nhiều data hơn
+    maxQueueSize: 1000,
+    throttleMs: 20 // Giảm throttle cho real-time
   };
   
   // Adjust based on connection count
