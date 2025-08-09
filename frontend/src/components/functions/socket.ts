@@ -111,10 +111,10 @@ class PerformanceMonitor {
   }
 
   getAdaptiveInterval(): number {
-    if (this.metrics.fps >= 55) return 2;    // High performance - siêu nhanh 2ms
-    if (this.metrics.fps >= 40) return 5;    // Medium performance - 5ms
-    if (this.metrics.fps >= 25) return 10;   // Low performance - 10ms  
-    return 25; // Very low performance - 25ms
+    if (this.metrics.fps >= 55) return 5;    // High performance - cực nhanh 5ms
+    if (this.metrics.fps >= 40) return 10;   // Medium performance - 10ms
+    if (this.metrics.fps >= 25) return 20;   // Low performance - 20ms  
+    return 50; // Very low performance - 50ms
   }
 
   getMetrics(): PerformanceMetrics {
@@ -171,595 +171,140 @@ class FrameScheduler {
 // Global frame scheduler
 const frameScheduler = new FrameScheduler();
 
-// Cache để lưu trữ listener intervals và stats intervals
+// Cache để lưu trữ listener intervals
 const socketListeners = new Map<string, NodeJS.Timeout>();
-const socketStatsIntervals = new Map<string, NodeJS.Timeout>();
 
-// Kết nối socket - ENHANCED VERSION với real socket
+// Kết nối socket
 export const connectSocket = async (address: string, port: string): Promise<boolean> => {
-  console.log(`🚀 CONNECT SOCKET REQUEST: ${address}:${port}`);
-  
   try {
     if (!address || !port) {
-      const error = new Error("Vui lòng nhập địa chỉ và port");
-      console.error(`❌ CONNECT VALIDATION FAILED:`, error.message);
-      throw error;
+      throw new Error("Vui lòng nhập địa chỉ và port");
     }
 
-    if (!validateSocketParams(address, port)) {
-      const error = new Error("Invalid address or port format");
-      console.error(`❌ CONNECT PARAMS INVALID:`, error.message);
-      throw error;
-    }
-
-    console.log(`🔍 VALIDATING CONNECTION: ${address}:${port}`);
-    
-    // First, try to create a real socket connection to test connectivity
-    const testConnection = createRealSocketConnection(
-      address,
-      port,
-      (data) => {
-        console.log(`🧪 TEST CONNECTION RECEIVED DATA: ${data.substring(0, 50)}${data.length > 50 ? '...' : ''}`);
-      },
-      (error) => {
-        console.error(`💥 TEST CONNECTION ERROR:`, error);
-      },
-      () => {
-        console.log(`✅ TEST CONNECTION ESTABLISHED: ${address}:${port}`);
-      },
-      () => {
-        console.log(`🔴 TEST CONNECTION CLOSED: ${address}:${port}`);
-      }
-    );
-
-    if (!testConnection) {
-      const error = new Error("Failed to create test connection");
-      console.error(`❌ TEST CONNECTION FAILED:`, error.message);
-      throw error;
-    }
-
-    // Wait a bit to ensure connection is established
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    const status = testConnection.getStatus();
-    console.log(`📊 TEST CONNECTION STATUS:`, status);
-    
-    if (!status.isConnected) {
-      testConnection.disconnect();
-      const error = new Error(`Cannot establish connection to ${address}:${port}`);
-      console.error(`❌ CONNECTION TEST FAILED:`, error.message);
-      throw error;
-    }
-
-    // Disconnect test connection
-    testConnection.disconnect();
-    
-    console.log(`✅ SOCKET CONNECTION SUCCESSFUL: ${address}:${port}`);
+    await ConnectSocket(address, port);
     return true;
-    
   } catch (error) {
-    console.error(`💥 CONNECT SOCKET ERROR: ${address}:${port}`, error);
+    console.error("Lỗi kết nối socket:", error);
     throw error;
   }
 };
 
-// Ngắt kết nối socket - ENHANCED VERSION với real socket cleanup
+// Ngắt kết nối socket
 export const disconnectSocket = async (address: string, port: string): Promise<void> => {
-  console.log(`🛑 DISCONNECT SOCKET REQUEST: ${address}:${port}`);
-  
   try {
-    const key = `${address}:${port}`;
-    
-    // Stop socket listener first - CRITICAL để tránh data tiếp tục được fetch
-    console.log(`🔄 STOPPING SOCKET LISTENER: ${key}`);
+    // Dừng listener trước khi disconnect
     stopSocketListener(address, port);
-    
-    // Stop ALL high-performance listeners and queues
-    console.log(`🛑 STOPPING ALL SOCKET MANAGERS: ${key}`);
-    socketManager.removeConnection(address, port);
-    
-    // Get real socket connection if exists
-    const connection = realSocketConnections.get(key);
-    if (connection) {
-      console.log(`🔌 FOUND REAL SOCKET CONNECTION: ${key}`);
-      const status = connection.getStatus();
-      console.log(`📊 CONNECTION STATUS BEFORE DISCONNECT:`, status);
-      
-      // Disconnect real socket - IMMEDIATE cleanup
-      connection.disconnect();
-      console.log(`✅ REAL SOCKET DISCONNECTED: ${key}`);
-      
-      // Clean up from cache IMMEDIATELY
-      realSocketConnections.delete(key);
-      socketDataBuffers.delete(key);
-      console.log(`🧹 CLEANED UP CACHE: ${key}`);
-    } else {
-      console.log(`⚠️ NO REAL SOCKET CONNECTION FOUND: ${key}`);
-    }
-    
-    // Also try original disconnect as fallback
-    try {
-      console.log(`🔄 ATTEMPTING ORIGINAL DISCONNECT: ${key}`);
-      await DisconnectSocket(address, port);
-      console.log(`✅ ORIGINAL DISCONNECT SUCCESSFUL: ${key}`);
-    } catch (originalError) {
-      console.warn(`⚠️ ORIGINAL DISCONNECT FAILED: ${key}`, originalError);
-      // Don't throw here, as real socket disconnect might be sufficient
-    }
-    
-    // Final verification - ensure NO MORE DATA is being processed
-    console.log(`🔍 FINAL VERIFICATION - ensuring no more data processing for: ${key}`);
-    const finalConnection = realSocketConnections.get(key);
-    const finalBuffer = socketDataBuffers.get(key);
-    const finalListener = socketListeners.get(key);
-    
-    if (finalConnection || finalBuffer || finalListener) {
-      console.error(`❌ CLEANUP INCOMPLETE:`, {
-        hasConnection: !!finalConnection,
-        hasBuffer: !!finalBuffer,
-        hasListener: !!finalListener
-      });
-    } else {
-      console.log(`✅ CLEANUP VERIFIED: No remaining connections/buffers/listeners for ${key}`);
-    }
-    
-    console.log(`✅ SOCKET DISCONNECTION COMPLETED: ${address}:${port}`);
-    
+    await DisconnectSocket(address, port);
   } catch (error) {
-    console.error(`💥 DISCONNECT SOCKET ERROR: ${address}:${port}`, error);
-    
-    // Force cleanup even on error
-    const key = `${address}:${port}`;
-    const connection = realSocketConnections.get(key);
-    if (connection) {
-      try {
-        connection.disconnect();
-      } catch (cleanupError) {
-        console.error(`💥 FORCE CLEANUP ERROR:`, cleanupError);
-      }
-    }
-    realSocketConnections.delete(key);
-    socketDataBuffers.delete(key);
-    stopSocketListener(address, port); // Force stop listener
-    socketManager.removeConnection(address, port); // Force stop manager
-    
+    console.error("Lỗi ngắt kết nối socket:", error);
     throw error;
   }
 };
 
-// Kiểm tra trạng thái kết nối - ENHANCED VERSION với real socket
+// Kiểm tra trạng thái kết nối
 export const checkSocketConnection = async (address: string, port: string): Promise<boolean> => {
-  const key = `${address}:${port}`;
-  
   try {
-    // First check if we have a real socket connection
-    const realConnection = realSocketConnections.get(key);
-    if (realConnection) {
-      const status = realConnection.getStatus();
-      console.log(`🔍 CHECKING REAL SOCKET: ${key}`, {
-        isConnected: status.isConnected,
-        readyState: status.readyState,
-        url: status.url
-      });
-      
-      if (status.isConnected && status.readyState === 1) { // WebSocket.OPEN = 1
-        return true;
-      } else {
-        console.warn(`⚠️ REAL SOCKET NOT READY: ${key} - state=${status.readyState}, connected=${status.isConnected}`);
-        // Try to reconnect if not connected
-        if (!status.isConnected) {
-          console.log(`🔄 ATTEMPTING REAL SOCKET RECONNECT: ${key}`);
-          realConnection.reconnect();
-        }
-        return false;
-      }
-    }
-    
-    // Fallback to original check
-    console.log(`🔍 CHECKING ORIGINAL SOCKET CONNECTION: ${key}`);
-    const isConnected = await CheckSocketConnection(address, port);
-    
-    if (isConnected) {
-      console.log(`✅ ORIGINAL SOCKET CONNECTED: ${key}`);
-    } else {
-      console.log(`❌ ORIGINAL SOCKET NOT CONNECTED: ${key}`);
-    }
-    
-    return isConnected;
-    
+    return await CheckSocketConnection(address, port);
   } catch (error) {
-    console.error(`💥 CHECK CONNECTION ERROR: ${key}`, error);
+    console.error("Lỗi kiểm tra kết nối:", error);
     return false;
   }
 };
 
-// Gửi dữ liệu qua socket - ENHANCED VERSION với real socket
+// Gửi dữ liệu qua socket
 export const sendSocketData = async (address: string, port: string, data: string): Promise<void> => {
-  const key = `${address}:${port}`;
-  console.log(`📤 SEND SOCKET DATA REQUEST: ${key}`, {
-    dataLength: data.length,
-    preview: data.substring(0, 100) + (data.length > 100 ? '...' : '')
-  });
-  
   try {
-    // First try to send via real socket connection
-    const realConnection = realSocketConnections.get(key);
-    if (realConnection) {
-      const status = realConnection.getStatus();
-      console.log(`🔍 CHECKING REAL SOCKET FOR SEND: ${key}`, status);
-      
-      if (status.isConnected && status.readyState === 1) { // WebSocket.OPEN = 1
-        const success = realConnection.send(data);
-        if (success) {
-          console.log(`✅ DATA SENT VIA REAL SOCKET: ${key}`);
-          return;
-        } else {
-          console.warn(`⚠️ REAL SOCKET SEND FAILED: ${key}`);
-        }
-      } else {
-        console.warn(`⚠️ REAL SOCKET NOT READY FOR SEND: ${key} - state=${status.readyState}`);
-      }
-    }
-    
-    // Fallback to original send
-    console.log(`🔄 ATTEMPTING ORIGINAL SOCKET SEND: ${key}`);
     await SendSocketData(address, port, data);
-    console.log(`✅ DATA SENT VIA ORIGINAL SOCKET: ${key}`);
-    
   } catch (error) {
-    console.error(`💥 SEND SOCKET DATA ERROR: ${key}`, error);
+    console.error("Lỗi gửi dữ liệu:", error);
     throw error;
   }
 };
 
-// Global real socket connections cache
-const realSocketConnections = new Map<string, ReturnType<typeof createRealSocketConnection>>();
-const socketDataBuffers = new Map<string, string[]>();
-
-// REAL SOCKET DATA FETCHER - Thay thế getAllSocketData với enhanced disconnect check
-export const getRealSocketData = async (address: string, port: string): Promise<string[]> => {
-  const key = `${address}:${port}`;
-  const startTime = performance.now();
-  
-  // CRITICAL: Check if listener was stopped (means disconnect was called)
-  if (!socketListeners.has(key)) {
-    // Only log occasionally to avoid spam
-    if (Math.random() < 0.01) { // 1% chance to log
-      console.log(`⚠️ LISTENER STOPPED, IGNORING DATA REQUEST: ${key}`);
-    }
-    return [];
-  }
-  
-  console.log(`🔍 GET REAL SOCKET DATA REQUEST: ${key}`);
-  
+// Lấy tất cả dữ liệu từ socket - trả về ngay lập tức
+export const getAllSocketData = async (address: string, port: string): Promise<string[]> => {
   try {
-    // Check if we already have a real socket connection
-    let connection = realSocketConnections.get(key);
-    
-    if (!connection) {
-      console.log(`🆕 CREATING NEW REAL SOCKET CONNECTION: ${key}`);
-      
-      // Initialize data buffer for this connection
-      socketDataBuffers.set(key, []);
-      
-      // Create new real socket connection
-      connection = createRealSocketConnection(
-        address,
-        port,
-        (data) => {
-          // CRITICAL: Only buffer data if listener is still active
-          if (!socketListeners.has(key)) {
-            console.log(`🛑 IGNORING DATA - LISTENER STOPPED: ${key}`);
-            return;
-          }
-          
-          // Buffer incoming data
-          const buffer = socketDataBuffers.get(key) || [];
-          buffer.push(data);
-          socketDataBuffers.set(key, buffer);
-          
-          console.log(`📦 BUFFERED DATA: ${key} now has ${buffer.length} messages`);
-          console.log(`📄 LATEST MESSAGE: ${data.substring(0, 100)}${data.length > 100 ? '...' : ''}`);
-        },
-        (error) => {
-          console.error(`💥 REAL SOCKET ERROR for ${key}:`, error);
-        },
-        () => {
-          console.log(`✅ REAL SOCKET CONNECTED: ${key}`);
-        },
-        () => {
-          console.log(`🔴 REAL SOCKET DISCONNECTED: ${key}`);
-          // Clean up on disconnect
-          realSocketConnections.delete(key);
-          socketDataBuffers.delete(key);
-        }
-      );
-      
-      if (connection) {
-        realSocketConnections.set(key, connection);
-        console.log(`💾 CACHED REAL SOCKET CONNECTION: ${key}`);
-      } else {
-        console.error(`❌ FAILED TO CREATE REAL SOCKET CONNECTION: ${key}`);
-        return [];
-      }
-    }
-    
-    // CRITICAL: Double-check listener is still active before returning data
-    if (!socketListeners.has(key)) {
-      console.log(`🛑 LISTENER STOPPED DURING FETCH, RETURNING EMPTY: ${key}`);
-      return [];
-    }
-    
-    // Get buffered data
-    const buffer = socketDataBuffers.get(key) || [];
-    const fetchTime = performance.now() - startTime;
-    
-    if (buffer.length > 0) {
-      console.log(`✅ RETURNING BUFFERED DATA: ${key} has ${buffer.length} messages (${fetchTime.toFixed(2)}ms)`);
-      
-      // Clear buffer after reading (or keep some for debugging)
-      const returnData = [...buffer];
-      socketDataBuffers.set(key, []); // Clear buffer
-      
-      // Log first few messages
-      returnData.slice(0, 3).forEach((msg, index) => {
-        console.log(`   📄 Message ${index + 1}: ${msg.substring(0, 50)}${msg.length > 50 ? '...' : ''}`);
-      });
-      
-      if (returnData.length > 3) {
-        console.log(`   📄 ...and ${returnData.length - 3} more messages`);
-      }
-      
-      return returnData;
-    } else {
-      // Only log occasionally to avoid spam
-      if (Math.random() < 0.01) { // 1% chance to log
-        console.log(`📭 NO BUFFERED DATA: ${key} (${fetchTime.toFixed(2)}ms)`);
-      }
-      return [];
-    }
-    
-  } catch (error) {
-    const fetchTime = performance.now() - startTime;
-    console.error(`💥 GET REAL SOCKET DATA ERROR: ${key} in ${fetchTime.toFixed(2)}ms:`, error);
-    return [];
-  }
-};
-
-// Helper function to get real socket connection status
-export const getRealSocketStatus = (address: string, port: string) => {
-  const key = `${address}:${port}`;
-  const connection = realSocketConnections.get(key);
-  const buffer = socketDataBuffers.get(key) || [];
-  
-  const status = {
-    hasConnection: !!connection,
-    bufferSize: buffer.length,
-    connectionStatus: connection ? connection.getStatus() : null
-  };
-  
-  console.log(`📊 REAL SOCKET STATUS for ${key}:`, status);
-  return status;
-};
-
-// Helper function to disconnect all real sockets - ENHANCED cleanup
-export const disconnectAllRealSockets = () => {
-  console.log(`🛑 DISCONNECTING ALL REAL SOCKETS: ${realSocketConnections.size} connections`);
-  
-  realSocketConnections.forEach((connection, key) => {
-    if (connection) {
-      console.log(`🔌 DISCONNECTING: ${key}`);
-      try {
-        connection.disconnect();
-      } catch (error) {
-        console.error(`💥 ERROR DISCONNECTING ${key}:`, error);
-      }
-    }
-  });
-  
-  realSocketConnections.clear();
-  socketDataBuffers.clear();
-  
-  // Also stop all listeners and their stats intervals
-  stopAllSocketListeners();
-  
-  // Also cleanup socket manager
-  socketManager.removeAllConnections();
-  
-  console.log(`✅ ALL REAL SOCKETS DISCONNECTED AND CLEANED UP`);
-};
-
-// Lấy tất cả dữ liệu từ socket - ORIGINAL VERSION (fallback)
-export const getAllSocketDataOriginal = async (address: string, port: string): Promise<string[]> => {
-  const startTime = performance.now();
-  const key = `${address}:${port}`;
-  
-  try {
-    console.log(`🔍 FETCHING DATA from ${key} (ORIGINAL)...`);
-    
     const data = await GetAllSocketData(address, port);
-    const fetchTime = performance.now() - startTime;
-    
-    if (data && data.length > 0) {
-      console.log(`✅ GOT DATA from ${key}: ${data.length} packets in ${fetchTime.toFixed(2)}ms (ORIGINAL)`);
-      // Log first few characters of each packet
-      data.forEach((packet, index) => {
-        if (index < 3) { // Only log first 3 packets to avoid spam
-          console.log(`   📄 Packet ${index + 1}: ${packet.substring(0, 50)}${packet.length > 50 ? '...' : ''}`);
-        }
-      });
-      if (data.length > 3) {
-        console.log(`   📄 ...and ${data.length - 3} more packets`);
-      }
-    } else {
-      // Only log occasionally to avoid spam
-      if (Math.random() < 0.01) { // 1% chance to log
-        console.log(`📭 NO DATA from ${key} (${fetchTime.toFixed(2)}ms) (ORIGINAL)`);
-      }
-    }
-    
     // Trả về data ngay lập tức, không có bất kỳ processing nào
     return data || [];
   } catch (error) {
-    const fetchTime = performance.now() - startTime;
-    console.error(`💥 FETCH ERROR from ${key} in ${fetchTime.toFixed(2)}ms (ORIGINAL):`, error);
     // Không log error để tránh spam console
     return [];
   }
 };
 
-// Lấy tất cả dữ liệu từ socket - NEW VERSION using real socket
-export const getAllSocketData = getRealSocketData;
-
-// Real-time socket listener với callback và proper cleanup - ENHANCED VERSION
+// Real-time socket listener với callback và proper cleanup
 export const startSocketListener = (
   address: string,
   port: string,
   onDataReceived: (messages: SocketMessage[]) => void,
-  interval: number = 1 // Interval siêu nhanh - 1ms
+  interval: number = 10 // Interval cực nhanh
 ): void => {
   const key = `${address}:${port}`;
-  
-  console.log(`🚀 STARTING ENHANCED SOCKET LISTENER: ${key} with ${interval}ms interval`);
   
   // Dừng listener cũ nếu có
   stopSocketListener(address, port);
   
   let retryCount = 0;
-  let dataCount = 0;
-  let lastDataTime = Date.now();
   const maxRetries = 3;
   
   const listener = setInterval(async () => {
-    const startTime = performance.now();
-    
     try {
-      // Kiểm tra kết nối trước (using enhanced version)
+      // Kiểm tra kết nối trước
       const isConnected = await checkSocketConnection(address, port);
       if (!isConnected) {
-        console.warn(`❌ Socket ${key} disconnected, stopping listener`);
+        console.warn(`Socket ${key} disconnected, stopping listener`);
         stopSocketListener(address, port);
         return;
       }
       
-      // Lấy tất cả dữ liệu có sẵn (using real socket data)
+      // Lấy tất cả dữ liệu có sẵn
       const rawData = await getAllSocketData(address, port);
       
       if (rawData && rawData.length > 0) {
-        const currentTime = Date.now();
-        dataCount += rawData.length;
-        
-        console.log(`📦 LISTENER RECEIVED DATA: ${rawData.length} packets from ${key}`);
-        console.log(`⚡ DATA RATE: ${dataCount} total packets, last received ${currentTime - lastDataTime}ms ago`);
-        
         // Process TẤT CẢ data ngay lập tức - không giới hạn
-        const messages = rawData.map(data => {
-          const msg = formatSocketMessage(data, 'received');
-          console.log(`📨 LISTENER MESSAGE: ${data.substring(0, 50)}${data.length > 50 ? '...' : ''}`);
-          return msg;
-        });
-        
-        // Debug: Log before sending to callback
-        console.log(`🔄 LISTENER CALLING CALLBACK with ${messages.length} messages`);
+        const messages = rawData.map(data => formatSocketMessage(data, 'received'));
         
         // Append ngay lập tức - không check gì cả
-        const callbackStart = performance.now();
         onDataReceived(messages);
-        const callbackTime = performance.now() - callbackStart;
-        
-        console.log(`✅ LISTENER CALLBACK COMPLETED in ${callbackTime.toFixed(2)}ms`);
-        
-        lastDataTime = currentTime;
-      }
-      
-      const processingTime = performance.now() - startTime;
-      if (processingTime > 5) { // Log if processing takes more than 5ms
-        console.log(`⏱️ LISTENER PROCESSING TIME: ${processingTime.toFixed(2)}ms for ${key}`);
       }
       
       retryCount = 0; // Reset retry count on success
       
     } catch (error) {
-      const processingTime = performance.now() - startTime;
-      console.error(`💥 ERROR in enhanced socket listener ${key} (${processingTime.toFixed(2)}ms):`, error);
+      console.error(`Lỗi trong socket listener ${key}:`, error);
       retryCount++;
       
       if (retryCount >= maxRetries) {
-        console.error(`🔴 MAX RETRIES REACHED for ${key}, stopping listener`);
+        console.error(`Max retries reached for ${key}, stopping listener`);
         stopSocketListener(address, port);
       }
     }
   }, interval);
   
   socketListeners.set(key, listener);
-  console.log(`✨ STARTED enhanced socket listener for ${key} with interval ${interval}ms`);
-  
-  // Log performance stats every 5 seconds - TRACK stats interval để có thể cleanup
-  const statsInterval = setInterval(() => {
-    if (!socketListeners.has(key)) {
-      clearInterval(statsInterval);
-      socketStatsIntervals.delete(key);
-      return;
-    }
-    
-    const now = Date.now();
-    const timeSinceLastData = now - lastDataTime;
-    const realConnection = realSocketConnections.get(key);
-    const bufferSize = socketDataBuffers.get(key)?.length || 0;
-    
-    console.log(`📊 LISTENER STATS ${key}:`, {
-      totalPackets: dataCount,
-      timeSinceLastData: `${timeSinceLastData}ms`,
-      hasRealConnection: !!realConnection,
-      bufferSize: bufferSize,
-      connectionStatus: realConnection ? realConnection.getStatus() : null
-    });
-  }, 5000);
-  
-  // Store stats interval để có thể cleanup sau
-  socketStatsIntervals.set(key, statsInterval);
+  console.log(`Started socket listener for ${key} with interval ${interval}ms`);
 };
 
-// Dừng socket listener - ENHANCED với cleanup stats interval
+// Dừng socket listener
 export const stopSocketListener = (address: string, port: string): void => {
   const key = `${address}:${port}`;
   const listener = socketListeners.get(key);
-  const statsInterval = socketStatsIntervals.get(key);
-  
-  console.log(`🛑 STOPPING SOCKET LISTENER: ${key}`);
   
   if (listener) {
     clearInterval(listener);
     socketListeners.delete(key);
-    console.log(`✅ CLEARED MAIN LISTENER: ${key}`);
+    console.log(`Stopped socket listener for ${key}`);
   }
-  
-  if (statsInterval) {
-    clearInterval(statsInterval);
-    socketStatsIntervals.delete(key);
-    console.log(`✅ CLEARED STATS INTERVAL: ${key}`);
-  }
-  
-  console.log(`🧹 SOCKET LISTENER STOPPED: ${key}`);
 };
 
-// Dừng tất cả listeners - ENHANCED với cleanup toàn bộ
+// Dừng tất cả listeners
 export const stopAllSocketListeners = (): void => {
-  console.log(`🛑 STOPPING ALL SOCKET LISTENERS: ${socketListeners.size} listeners, ${socketStatsIntervals.size} stats intervals`);
-  
   socketListeners.forEach((listener, key) => {
     clearInterval(listener);
-    console.log(`✅ CLEARED LISTENER: ${key}`);
+    console.log(`Stopped socket listener for ${key}`);
   });
   socketListeners.clear();
-  
-  socketStatsIntervals.forEach((statsInterval, key) => {
-    clearInterval(statsInterval);
-    console.log(`✅ CLEARED STATS: ${key}`);
-  });
-  socketStatsIntervals.clear();
-  
-  console.log(`🧹 ALL SOCKET LISTENERS STOPPED`);
 };
 
 // High-performance socket listener với intelligent load balancing
@@ -848,8 +393,8 @@ export const createHighPerformanceSocketListener = (
     if (!isRunning) return;
 
     const interval = adaptiveThrottling 
-      ? Math.min(performanceMonitor.getAdaptiveInterval(), 2) // Giới hạn tối đa 2ms
-      : 1; // Interval siêu nhanh - 1ms
+      ? Math.min(performanceMonitor.getAdaptiveInterval(), 10) // Giới hạn tối đa 10ms
+      : 5; // Interval cực nhanh - 5ms
 
     // Direct timeout without requestAnimationFrame for immediate processing
     setTimeout(() => {
@@ -928,11 +473,11 @@ export const createThrottledSocketListener = (
   } = {}
 ) => {
   const {
-    interval = 2, // Interval siêu nhanh - 2ms
+    interval = 10, // Interval cực nhanh - 10ms
     maxRetries = 3,
     batchSize = 50,
     maxQueueSize = 1000,
-    throttleMs = 1, // Throttle siêu nhanh - 1ms
+    throttleMs = 5, // Throttle cực nhanh
     onError,
     onOverflow
   } = options;
@@ -1058,11 +603,11 @@ export const createSocketDataQueue = (
   } = {}
 ) => {
   const { 
-    interval = 2, // Interval siêu nhanh - 2ms  
+    interval = 10, // Interval cực nhanh - 10ms  
     maxRetries = 3, 
     batchSize = 20, 
     maxQueueSize = 1000,
-    throttleMs = 1 // Throttle siêu nhanh - 1ms
+    throttleMs = 5 // Throttle cực nhanh
   } = options;
   
   const key = `${address}:${port}`;
@@ -1540,475 +1085,6 @@ export const optimizeSocketSettings = (connectionCount: number) => {
   }
   
   return settings;
-};
-
-// REAL SOCKET CONNECTION - Đọc trực tiếp từ socket ở FE với enhanced debugging
-export const createRealSocketConnection = (
-  address: string,
-  port: string,
-  onDataReceived: (data: string) => void,
-  onError?: (error: Error) => void,
-  onConnect?: () => void,
-  onDisconnect?: () => void
-) => {
-  let socket: WebSocket | null = null;
-  let isConnected = false;
-  let reconnectTimeout: NodeJS.Timeout | null = null;
-  let heartbeatInterval: NodeJS.Timeout | null = null;
-  let reconnectAttempts = 0;
-  let totalMessagesReceived = 0;
-  let lastMessageTime = 0;
-  const maxReconnectAttempts = 10;
-  const reconnectDelay = 1000; // 1 giây
-
-  console.log(`🔧 INITIALIZING REAL SOCKET: ${address}:${port}`);
-
-  // Validate params
-  if (!validateSocketParams(address, port)) {
-    const error = new Error(`Invalid address or port: ${address}:${port}`);
-    console.error(`❌ VALIDATION FAILED:`, error.message);
-    if (onError) onError(error);
-    return null;
-  }
-
-  const connect = () => {
-    try {
-      // Tạo WebSocket URL
-      const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-      const wsUrl = `${protocol}//${address}:${port}`;
-      
-      console.log(`🚀 CONNECTING TO REAL SOCKET: ${wsUrl}`);
-      console.log(`📊 CONNECTION ATTEMPT: ${reconnectAttempts + 1}/${maxReconnectAttempts}`);
-      
-      socket = new WebSocket(wsUrl);
-
-      socket.onopen = () => {
-        const now = Date.now();
-        console.log(`✅ REAL SOCKET CONNECTED: ${address}:${port} at ${new Date(now).toISOString()}`);
-        console.log(`🔗 CONNECTION STATE: WebSocket.OPEN (${WebSocket.OPEN})`);
-        console.log(`📈 RECONNECT ATTEMPTS RESET: ${reconnectAttempts} -> 0`);
-        
-        isConnected = true;
-        reconnectAttempts = 0;
-        
-        // Start heartbeat
-        startHeartbeat();
-        
-        if (onConnect) {
-          console.log(`📞 CALLING onConnect CALLBACK`);
-          onConnect();
-        }
-      };
-
-      socket.onmessage = (event) => {
-        const now = Date.now();
-        const timeSinceLastMessage = lastMessageTime ? now - lastMessageTime : 0;
-        totalMessagesReceived++;
-        
-        console.log(`📨 MESSAGE RECEIVED (#${totalMessagesReceived}):`, {
-          timestamp: new Date(now).toISOString(),
-          timeSinceLastMessage: `${timeSinceLastMessage}ms`,
-          dataType: typeof event.data,
-          dataLength: event.data?.length || 0,
-          preview: event.data?.substring(0, 100) + (event.data?.length > 100 ? '...' : ''),
-          socketState: socket?.readyState
-        });
-        
-        // Nhận data ngay lập tức - không có delay
-        const data = event.data;
-        if (data && onDataReceived) {
-          console.log(`🔄 CALLING onDataReceived CALLBACK with data length: ${data.length}`);
-          const callbackStart = performance.now();
-          onDataReceived(data);
-          const callbackTime = performance.now() - callbackStart;
-          console.log(`✅ CALLBACK COMPLETED in ${callbackTime.toFixed(2)}ms`);
-        } else {
-          console.warn(`⚠️ NO DATA OR CALLBACK: data=${!!data}, callback=${!!onDataReceived}`);
-        }
-        
-        lastMessageTime = now;
-      };
-
-      socket.onclose = (event) => {
-        const now = Date.now();
-        console.log(`🔴 REAL SOCKET DISCONNECTED: ${address}:${port}`, {
-          timestamp: new Date(now).toISOString(),
-          code: event.code,
-          reason: event.reason,
-          wasClean: event.wasClean,
-          totalMessages: totalMessagesReceived
-        });
-        
-        isConnected = false;
-        stopHeartbeat();
-        
-        if (onDisconnect) {
-          console.log(`📞 CALLING onDisconnect CALLBACK`);
-          onDisconnect();
-        }
-        
-        // Auto reconnect nếu không phải manual close
-        if (event.code !== 1000 && reconnectAttempts < maxReconnectAttempts) {
-          console.log(`🔄 SCHEDULING AUTO-RECONNECT: attempt ${reconnectAttempts + 1}/${maxReconnectAttempts}`);
-          scheduleReconnect();
-        } else {
-          console.log(`🛑 NO AUTO-RECONNECT: code=${event.code}, attempts=${reconnectAttempts}/${maxReconnectAttempts}`);
-        }
-      };
-
-      socket.onerror = (error) => {
-        const now = Date.now();
-        console.error(`💥 REAL SOCKET ERROR: ${address}:${port}`, {
-          timestamp: new Date(now).toISOString(),
-          error,
-          socketState: socket?.readyState,
-          reconnectAttempts,
-          totalMessages: totalMessagesReceived
-        });
-        
-        if (onError) {
-          console.log(`📞 CALLING onError CALLBACK`);
-          onError(new Error(`Socket connection failed: ${address}:${port}`));
-        }
-      };
-
-    } catch (error) {
-      console.error(`💥 FAILED TO CREATE REAL SOCKET CONNECTION:`, {
-        address,
-        port,
-        error: error instanceof Error ? error.message : error
-      });
-      if (onError) onError(error as Error);
-    }
-  };
-
-  const scheduleReconnect = () => {
-    if (reconnectTimeout) {
-      console.log(`⏸️ RECONNECT ALREADY SCHEDULED`);
-      return;
-    }
-    
-    reconnectAttempts++;
-    const delay = reconnectDelay * Math.pow(1.5, reconnectAttempts - 1); // Exponential backoff
-    
-    console.log(`⏰ SCHEDULING RECONNECT: attempt ${reconnectAttempts} in ${delay}ms`);
-    reconnectTimeout = setTimeout(() => {
-      console.log(`🔄 EXECUTING RECONNECT: attempt ${reconnectAttempts}`);
-      reconnectTimeout = null;
-      connect();
-    }, delay);
-  };
-
-  const startHeartbeat = () => {
-    stopHeartbeat();
-    console.log(`💓 STARTING HEARTBEAT: 30s interval`);
-    heartbeatInterval = setInterval(() => {
-      if (socket && socket.readyState === WebSocket.OPEN) {
-        console.log(`💓 SENDING HEARTBEAT PING`);
-        socket.send('ping');
-      } else {
-        console.warn(`💔 HEARTBEAT FAILED: socket state=${socket?.readyState}`);
-      }
-    }, 30000); // 30 giây
-  };
-
-  const stopHeartbeat = () => {
-    if (heartbeatInterval) {
-      console.log(`💔 STOPPING HEARTBEAT`);
-      clearInterval(heartbeatInterval);
-      heartbeatInterval = null;
-    }
-  };
-
-  const send = (data: string) => {
-    if (socket && socket.readyState === WebSocket.OPEN) {
-      console.log(`📤 SENDING DATA: length=${data.length}, preview=${data.substring(0, 50)}`);
-      socket.send(data);
-      return true;
-    }
-    console.warn(`❌ CANNOT SEND DATA: socket not connected (state=${socket?.readyState})`);
-    return false;
-  };
-
-  const disconnect = () => {
-    console.log(`🛑 MANUALLY DISCONNECTING REAL SOCKET: ${address}:${port}`);
-    
-    // Clear timeouts
-    if (reconnectTimeout) {
-      console.log(`⏹️ CLEARING RECONNECT TIMEOUT`);
-      clearTimeout(reconnectTimeout);
-      reconnectTimeout = null;
-    }
-    stopHeartbeat();
-    
-    // Close socket
-    if (socket) {
-      console.log(`🔌 CLOSING WEBSOCKET CONNECTION`);
-      socket.close(1000, 'Manual disconnect'); // Normal closure
-      socket = null;
-    }
-    
-    isConnected = false;
-    reconnectAttempts = maxReconnectAttempts; // Prevent auto-reconnect
-    console.log(`✅ REAL SOCKET DISCONNECTED MANUALLY`);
-  };
-
-  const getStatus = () => {
-    const status = {
-      isConnected,
-      reconnectAttempts,
-      readyState: socket ? socket.readyState : -1,
-      url: socket ? socket.url : null,
-      totalMessagesReceived,
-      lastMessageTime: lastMessageTime ? new Date(lastMessageTime).toISOString() : null
-    };
-    console.log(`📊 SOCKET STATUS:`, status);
-    return status;
-  };
-
-  // Start connection
-  console.log(`🎬 STARTING INITIAL CONNECTION`);
-  connect();
-
-  return {
-    send,
-    disconnect,
-    getStatus,
-    isConnected: () => isConnected,
-    reconnect: () => {
-      console.log(`🔄 MANUAL RECONNECT REQUESTED`);
-      reconnectAttempts = 0;
-      connect();
-    }
-  };
-};
-
-// TCP SOCKET ALTERNATIVE - Sử dụng Fetch với streaming cho TCP-like behavior
-export const createTCPSocketConnection = (
-  address: string,
-  port: string,
-  onDataReceived: (data: string) => void,
-  onError?: (error: Error) => void,
-  onConnect?: () => void,
-  onDisconnect?: () => void
-) => {
-  let isConnected = false;
-  let controller: AbortController | null = null;
-  let pollInterval: NodeJS.Timeout | null = null;
-  let reader: ReadableStreamDefaultReader<Uint8Array> | null = null;
-
-  const connect = async () => {
-    try {
-      console.log(`Connecting to TCP socket: ${address}:${port}`);
-      
-      controller = new AbortController();
-      const url = `http://${address}:${port}`;
-      
-      // Sử dụng fetch với streaming
-      const response = await fetch(url, {
-        method: 'GET',
-        signal: controller.signal,
-        headers: {
-          'Accept': 'text/plain',
-          'Cache-Control': 'no-cache'
-        }
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-      }
-
-      if (!response.body) {
-        throw new Error('No response body available for streaming');
-      }
-
-      isConnected = true;
-      if (onConnect) onConnect();
-
-      // Stream data
-      reader = response.body.getReader();
-      const decoder = new TextDecoder();
-
-      while (isConnected) {
-        try {
-          const { done, value } = await reader.read();
-          
-          if (done) {
-            console.log('TCP stream ended');
-            break;
-          }
-
-          if (value) {
-            // Decode và send data ngay lập tức
-            const text = decoder.decode(value, { stream: true });
-            if (text && onDataReceived) {
-              onDataReceived(text);
-            }
-          }
-        } catch (readError) {
-          if (isConnected) { // Only log if not manually disconnected
-            console.error('TCP read error:', readError);
-            if (onError) onError(readError as Error);
-          }
-          break;
-        }
-      }
-
-    } catch (error) {
-      console.error(`TCP connection failed: ${address}:${port}`, error);
-      if (onError) onError(error as Error);
-    } finally {
-      cleanup();
-    }
-  };
-
-  const send = async (data: string): Promise<boolean> => {
-    if (!isConnected) {
-      console.warn(`Cannot send data, TCP socket not connected: ${address}:${port}`);
-      return false;
-    }
-
-    try {
-      const response = await fetch(`http://${address}:${port}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'text/plain'
-        },
-        body: data
-      });
-      
-      return response.ok;
-    } catch (error) {
-      console.error('TCP send error:', error);
-      if (onError) onError(error as Error);
-      return false;
-    }
-  };
-
-  const cleanup = () => {
-    isConnected = false;
-    
-    if (reader) {
-      reader.cancel();
-      reader = null;
-    }
-    
-    if (controller) {
-      controller.abort();
-      controller = null;
-    }
-    
-    if (pollInterval) {
-      clearInterval(pollInterval);
-      pollInterval = null;
-    }
-
-    if (onDisconnect) onDisconnect();
-  };
-
-  const disconnect = () => {
-    console.log(`Disconnecting TCP socket: ${address}:${port}`);
-    cleanup();
-  };
-
-  const getStatus = () => ({
-    isConnected,
-    hasReader: !!reader,
-    hasController: !!controller
-  });
-
-  // Start connection
-  connect();
-
-  return {
-    send,
-    disconnect,
-    getStatus,
-    isConnected: () => isConnected
-  };
-};
-
-// SIMPLE SOCKET READER - Đọc data từ raw socket endpoint
-export const createSimpleSocketReader = (
-  address: string,
-  port: string,
-  onDataReceived: (data: string) => void,
-  options: {
-    interval?: number;
-    protocol?: 'http' | 'https';
-    endpoint?: string;
-    method?: 'GET' | 'POST';
-  } = {}
-) => {
-  const {
-    interval = 10, // 10ms polling - siêu nhanh
-    protocol = 'http',
-    endpoint = '/data',
-    method = 'GET'
-  } = options;
-
-  let isRunning = false;
-  let pollInterval: NodeJS.Timeout | null = null;
-  let lastDataHash = '';
-
-  const url = `${protocol}://${address}:${port}${endpoint}`;
-
-  const readData = async () => {
-    try {
-      const response = await fetch(url, {
-        method,
-        headers: {
-          'Accept': 'text/plain',
-          'Cache-Control': 'no-cache'
-        },
-        cache: 'no-store'
-      });
-
-      if (response.ok) {
-        const data = await response.text();
-        
-        // Check if data changed để tránh duplicate
-        const dataHash = btoa(data); // Simple hash
-        if (data && dataHash !== lastDataHash) {
-          lastDataHash = dataHash;
-          onDataReceived(data);
-        }
-      }
-    } catch (error) {
-      console.error(`Simple socket read error: ${address}:${port}`, error);
-    }
-  };
-
-  const start = () => {
-    if (isRunning) return;
-    
-    isRunning = true;
-    console.log(`Starting simple socket reader: ${url} (${interval}ms interval)`);
-    
-    // Read immediately
-    readData();
-    
-    // Then poll
-    pollInterval = setInterval(readData, interval);
-  };
-
-  const stop = () => {
-    isRunning = false;
-    
-    if (pollInterval) {
-      clearInterval(pollInterval);
-      pollInterval = null;
-    }
-    
-    console.log(`Stopped simple socket reader: ${url}`);
-  };
-
-  return {
-    start,
-    stop,
-    isRunning: () => isRunning,
-    getUrl: () => url
-  };
 };
 
 // Helper function để validate socket address and port

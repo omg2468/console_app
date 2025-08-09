@@ -24,7 +24,6 @@ import {
   disconnectSocket,
   getAllSocketData,
   validateSocketParams,
-  getRealSocketData
 } from "./functions/socket";
 
 function ConnectComponent({
@@ -76,8 +75,7 @@ function ConnectComponent({
     }
 
     try {
-      // await connectSocket(context.socketAddress, context.socketPort);
-      await getRealSocketData(context.socketAddress, context.socketPort);
+      await connectSocket(context.socketAddress, context.socketPort);
       context.setIsSocketConnected(true);
       context.setIsConnected(true);
       setStatus(`Connected to ${context.socketAddress}:${context.socketPort}`);
