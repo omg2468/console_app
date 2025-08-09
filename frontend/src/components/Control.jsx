@@ -381,8 +381,14 @@ const Control = () => {
             <div className="flex-1 min-w-[200px] flex flex-col gap-2 border rounded-md p-2 bg-gray-50">
               <div className="flex items-center justify-between gap-4">
                 <button
-                  className={`flex-1 text-xs px-2 py-1 rounded min-w-[90px] transition bg-gray-200 hover:bg-gray-300 cursor-pointer`}
+                  disabled={!context.isConnected}
+                  className={`flex-1 text-xs px-2 py-1 rounded min-w-[90px] transition ${
+                    !context.isConnected
+                      ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                      : "bg-gray-200 hover:bg-gray-300 cursor-pointer"
+                  }`}
                   onClick={() => {
+                    if (!context.isConnected) return;
                     if (context.selectedConnection === "serial") {
                       GetMeasureMode();
                     } else if (context.selectedConnection === "ethernet") {
@@ -400,21 +406,30 @@ const Control = () => {
                     className={`
       px-3 py-1 rounded-lg text-xs font-semibold text-center min-w-[100px]
       ${
-        context.changeMode === "current"
+        !context.changeMode
+          ? "bg-gradient-to-r from-gray-50 to-gray-100 text-gray-500 border border-gray-200 shadow-sm"
+          : context.changeMode === "current"
           ? "bg-gradient-to-r from-blue-50 to-blue-100 text-blue-700 border border-blue-200 shadow-sm"
           : "bg-gradient-to-r from-green-50 to-green-100 text-green-700 border border-green-200 shadow-sm"
       }
     `}
                   >
-                    {context.changeMode.charAt(0).toUpperCase() +
-                      context.changeMode.slice(1)}{" "}
-                    Mode
+                    {!context.changeMode 
+                      ? "Unknown Mode" 
+                      : `${context.changeMode.charAt(0).toUpperCase() + context.changeMode.slice(1)} Mode`
+                    }
                   </div>
                 </div>
               </div>
               <button
-                className={`flex-1 text-xs px-2 py-1 rounded min-w-[90px] transition bg-gray-200 hover:bg-gray-300 cursor-pointer`}
+                disabled={!context.isConnected || !context.changeMode}
+                className={`flex-1 text-xs px-2 py-1 rounded min-w-[90px] transition ${
+                  !context.isConnected || !context.changeMode
+                    ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                    : "bg-gray-200 hover:bg-gray-300 cursor-pointer"
+                }`}
                 onClick={() => {
+                  if (!context.isConnected || !context.changeMode) return;
                   if (context.selectedConnection === "serial") {
                     SetMeasureMode(
                       context.changeMode === "current" ? "voltage" : "current"
@@ -428,31 +443,33 @@ const Control = () => {
                   }
                 }}
               >
-                Change to{" "}
-                {context.changeMode && context.changeMode === "current" ? "voltage" : "current"} mode
+                {!context.changeMode 
+                  ? "Get mode first" 
+                  : `Change to ${context.changeMode === "current" ? "voltage" : "current"} mode`
+                }
               </button>
               <div className="flex flex-col sm:flex-row gap-2 mt-2 flex-wrap">
                 <button
-                  disabled={!context.isConnected}
+                  disabled={!context.isConnected || !context.changeMode}
                   className={`flex-1 text-xs px-2 py-1 rounded min-w-[90px] transition ${
-                    !context.isConnected
-                      ? "bg-gray-100 text-gray-400"
+                    !context.isConnected || !context.changeMode
+                      ? "bg-gray-100 text-gray-400 cursor-not-allowed"
                       : "bg-gray-200 hover:bg-gray-300 cursor-pointer"
                   }`}
                   onClick={handleCalib4}
                 >
-                  CALIB {context.changeMode === "current" ? "4mA" : "2V"}
+                  CALIB {!context.changeMode ? "?" : context.changeMode === "current" ? "4mA" : "2V"}
                 </button>
                 <button
-                  disabled={!context.isConnected}
+                  disabled={!context.isConnected || !context.changeMode}
                   className={`flex-1 text-xs px-2 rounded min-w-[90px] transition ${
-                    !context.isConnected
-                      ? "bg-gray-100 text-gray-400"
+                    !context.isConnected || !context.changeMode
+                      ? "bg-gray-100 text-gray-400 cursor-not-allowed"
                       : "bg-gray-200 hover:bg-gray-300 cursor-pointer"
                   }`}
                   onClick={handleCalib16}
                 >
-                  CALIB {context.changeMode === "current" ? "16mA" : "8V"}
+                  CALIB {!context.changeMode ? "?" : context.changeMode === "current" ? "16mA" : "8V"}
                 </button>
               </div>
             </div>

@@ -711,11 +711,11 @@ func (ws *WorkspaceService) ConnectSocket(address string, port string) (string, 
 		return "", fmt.Errorf("không thể kết nối tới %s: %w", fullAddress, err)
 	}
 
-	// Tạo socket connection object với buffer lớn hơn
+	// Tạo socket connection object với buffer nhỏ hơn cho real-time
 	socketConn := &SocketConnection{
 		conn:      conn,
 		isActive:  true,
-		dataChain: make(chan string, 1000), // Tăng buffer để tránh hold data
+		dataChain: make(chan string, 100), // Giảm buffer để tránh delay
 	}
 
 	// Lưu connection
@@ -728,7 +728,7 @@ func (ws *WorkspaceService) ConnectSocket(address string, port string) (string, 
 	return fmt.Sprintf("Kết nối thành công tới %s", fullAddress), nil
 }
 
-// readSocketData đọc dữ liệu từ socket connection - optimized for real-time
+// readSocketData đọc dữ liệu từ socket connection - ULTRA FAST
 func (ws *WorkspaceService) readSocketData(connectionKey string, socketConn *SocketConnection) {
 	defer func() {
 		socketConn.mutex.Lock()
@@ -737,15 +737,12 @@ func (ws *WorkspaceService) readSocketData(connectionKey string, socketConn *Soc
 		close(socketConn.dataChain)
 		socketConn.mutex.Unlock()
 
-		// Xóa connection khỏi manager
 		ws.socketManager.mutex.Lock()
 		delete(ws.socketManager.connections, connectionKey)
 		ws.socketManager.mutex.Unlock()
-
-		fmt.Printf("🔌 Đã đóng kết nối socket: %s\n", connectionKey)
 	}()
 
-	buffer := make([]byte, 8192) // Tăng buffer size để đọc nhiều data hơn
+	buffer := make([]byte, 4096) // Giảm buffer để responsive hơn
 
 	for {
 		socketConn.mutex.Lock()
@@ -755,41 +752,29 @@ func (ws *WorkspaceService) readSocketData(connectionKey string, socketConn *Soc
 		}
 		socketConn.mutex.Unlock()
 
-		// Giảm timeout để responsive hơn
-		socketConn.conn.SetReadDeadline(time.Now().Add(5 * time.Second))
+		// Timeout cực ngắn để real-time
+		socketConn.conn.SetReadDeadline(time.Now().Add(100 * time.Millisecond))
 
 		n, err := socketConn.conn.Read(buffer)
 		if err != nil {
 			if netErr, ok := err.(net.Error); ok && netErr.Timeout() {
-				// Timeout - tiếp tục đọc ngay
-				continue
+				continue // Timeout ngắn - tiếp tục ngay
 			}
-			// Lỗi khác - dừng
-			fmt.Printf("❌ Lỗi đọc dữ liệu từ socket %s: %v\n", connectionKey, err)
-			break
+			break // Lỗi khác - thoát
 		}
 
 		if n > 0 {
 			data := string(buffer[:n])
-			// Loại bỏ log để tăng performance
-			// fmt.Printf("📥 Nhận dữ liệu từ socket %s: %s\n", connectionKey, data)
 
-			// Gửi dữ liệu vào channel (non-blocking với buffer lớn hơn)
+			// Push data ngay lập tức - NO BLOCKING
 			select {
 			case socketConn.dataChain <- data:
-				// Data sent successfully
 			default:
-				// Channel đầy - mở rộng bằng cách drop data cũ
-				select {
-				case <-socketConn.dataChain: // Drop oldest data
-				default:
+				// Channel đầy - clear hết và push data mới
+				for len(socketConn.dataChain) > 0 {
+					<-socketConn.dataChain
 				}
-				// Thử gửi lại
-				select {
-				case socketConn.dataChain <- data:
-				default:
-					fmt.Printf("⚠️ Vẫn không thể gửi data, bỏ qua\n")
-				}
+				socketConn.dataChain <- data
 			}
 		}
 	}
@@ -825,7 +810,7 @@ func (ws *WorkspaceService) GetSocketData(address string, port string) (string, 
 	}
 }
 
-// GetAllSocketData lấy tất cả dữ liệu có sẵn từ socket - optimized for speed
+// GetAllSocketData lấy tất cả dữ liệu có sẵn từ socket - ULTRA FAST
 func (ws *WorkspaceService) GetAllSocketData(address string, port string) ([]string, error) {
 	connectionKey := fmt.Sprintf("%s:%s", address, port)
 
@@ -834,50 +819,45 @@ func (ws *WorkspaceService) GetAllSocketData(address string, port string) ([]str
 	ws.socketManager.mutex.RUnlock()
 
 	if !exists {
-		return nil, fmt.Errorf("không có kết nối tới %s", connectionKey)
+		return []string{}, nil // Return empty thay vì error
 	}
 
 	socketConn.mutex.Lock()
 	if !socketConn.isActive {
 		socketConn.mutex.Unlock()
-		return nil, fmt.Errorf("kết nối tới %s không còn hoạt động", connectionKey)
+		return []string{}, nil
 	}
 
-	// Lấy buffer hiện tại
+	// Lấy buffer hiện tại và clear ngay
 	buffer := socketConn.buffer
+	socketConn.buffer = ""
 	socketConn.mutex.Unlock()
 
 	var results []string
 
-	// Đọc TẤT CẢ data có sẵn trong channel ngay lập tức
-	for {
+	// Đọc TẤT CẢ data từ channel trong 1 pass
+	for len(socketConn.dataChain) > 0 {
 		select {
 		case chunk := <-socketConn.dataChain:
 			buffer += chunk
 		default:
-			// Không còn data -> xử lý buffer và return ngay
-			goto ProcessBuffer
-		}
-	}
-
-ProcessBuffer:
-	// Xử lý buffer thành các dòng riêng biệt
-	for {
-		if idx := strings.Index(buffer, "\n"); idx >= 0 {
-			line := strings.TrimSpace(buffer[:idx])
-			if line != "" { // Chỉ thêm dòng không rỗng
-				results = append(results, line)
-			}
-			buffer = buffer[idx+1:]
-		} else {
 			break
 		}
 	}
 
-	// Lưu lại buffer còn lại
-	socketConn.mutex.Lock()
-	socketConn.buffer = buffer
-	socketConn.mutex.Unlock()
+	// Nếu có data thì xử lý, nếu không thì return ngay
+	if buffer == "" {
+		return []string{}, nil
+	}
+
+	// Split nhanh và return luôn
+	lines := strings.Split(buffer, "\n")
+	for _, line := range lines {
+		trimmed := strings.TrimSpace(line)
+		if trimmed != "" {
+			results = append(results, trimmed)
+		}
+	}
 
 	return results, nil
 }
