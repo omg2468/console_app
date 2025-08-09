@@ -12,9 +12,7 @@ import { ChangePassword } from "../../wailsjs/go/auth/AuthService";
 
 import { ShowErrorDialog, ShowInfoDialog } from "../../wailsjs/go/main/App";
 
-import {
-  GetLocalTimezoneOffset,
-} from "../../wailsjs/go/control/ControlService";
+import { GetLocalTimezoneOffset } from "../../wailsjs/go/control/ControlService";
 
 import {
   Login,
@@ -223,6 +221,23 @@ function ConnectComponent({
           context.setInfoDialog("Đặt thời gian thành công");
         } else {
           context.setInfoDialog("Đặt thời gian thất bại");
+        }
+        break;
+
+      case "get_measure_mode":
+        if (jsonData.mode) {
+          context.setChangeMode(jsonData.mode);
+        }
+
+      case "set_measure_mode":
+        if (jsonData.status === "success") {
+          context.setChangeMode(!context.changeMode);
+          ShowInfoDialog(
+            `Đặt chế độ đo ${context.changeMode === "current" ? "voltage" : "current"} thành công`,
+            "Set Measure Mode"
+          );
+        } else {
+          ShowErrorDialog("Đặt chế độ đo thất bại");
         }
         break;
 

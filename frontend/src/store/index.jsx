@@ -31,6 +31,7 @@ export const ContextMenuProvider = ({ children }) => {
   const [socketAddress, setSocketAddress] = useState("");
   const [socketPort, setSocketPort] = useState("");
   const [isSocketConnected, setIsSocketConnected] = useState(false);
+  const [changeMode, setChangeMode] = useState("");
 
   //Will remove this later
   const [dataTest, setDataTest] = useState("");
@@ -94,6 +95,8 @@ export const ContextMenuProvider = ({ children }) => {
         setIsSocketConnected,
         analogUnit,
         setAnalogUnit,
+        changeMode,
+        setChangeMode,
       }}
     >
       {children}
