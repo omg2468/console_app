@@ -3357,9 +3357,9 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                             }}
                             className='bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg max-w-[150px]'
                           >
-                            <option value={1}>Discrete Input</option>
-                            <option value={2}>Holding register</option>
-                            <option value={3}>Coil</option>
+                            <option value={1}>Coil</option>
+                            <option value={2}>Discrete Input</option>
+                            <option value={3}>Holding register</option>
                             <option value={4}>Input register</option>
                           </select>
                         </td>
@@ -3572,7 +3572,7 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
     },
     [parameter, setParameter],
   );
-
+  
   return <>{readParameter(parameter)}</>;
 };
 
