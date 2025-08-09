@@ -21,6 +21,7 @@ import {
   SetRTC,
   SetMeasureMode,
   GetMeasureMode,
+  GetLocalTimezoneOffset,
 } from "../../wailsjs/go/control/ControlService";
 
 import {
@@ -429,7 +430,10 @@ const Control = () => {
                 }}
               >
                 Change to{" "}
-                {context.changeMode && context.changeMode === "current" ? "voltage" : "current"} mode
+                {context.changeMode && context.changeMode === "current"
+                  ? "voltage"
+                  : "current"}{" "}
+                mode
               </button>
               <div className="flex flex-col sm:flex-row gap-2 mt-2 flex-wrap">
                 <button
@@ -638,26 +642,31 @@ const Control = () => {
                             break;
                           }
 
-                          const ts = Math.floor(date.getTime() / 1000); // giây
+                          const tsLocal = Math.floor(date.getTime() / 1000); // giây local
 
-                          if (context.selectedConnection === "serial") {
-                            SetRTC("manual", ts);
-                          } else if (
-                            context.selectedConnection === "ethernet"
-                          ) {
-                            SetRTCWS(
-                              context.socketAddress,
-                              context.socketPort,
-                              "manual",
-                              ts
-                            );
-                          }
+                          GetLocalTimezoneOffset().then((offsetSeconds) => {
+                            const tsUTC = tsLocal - offsetSeconds;
+
+                            if (context.selectedConnection === "serial") {
+                              SetRTC("manual", tsUTC);
+                            } else if (
+                              context.selectedConnection === "ethernet"
+                            ) {
+                              SetRTCWS(
+                                context.socketAddress,
+                                context.socketPort,
+                                "manual",
+                                tsUTC
+                              );
+                            }
+                          });
                           break;
+
                         case "set_rtc_internet":
                           context.setInfoDialog("Setting RTC via internet...");
                           if (context.selectedConnection === "serial") {
                             // Assuming setDataCommand is in the format "YYYY-MM-DD HH:MM:SS"
-                            SetRTC("internet", formattedDate);
+                            SetRTC("internet", 0);
                           } else if (
                             context.selectedConnection === "ethernet"
                           ) {
@@ -665,7 +674,7 @@ const Control = () => {
                               context.socketAddress,
                               context.socketPort,
                               "internet",
-                              formattedDate
+                              0
                             );
                           }
                           break;

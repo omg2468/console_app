@@ -228,12 +228,15 @@ function ConnectComponent({
         if (jsonData.mode) {
           context.setChangeMode(jsonData.mode);
         }
+        break;
 
       case "set_measure_mode":
         if (jsonData.status === "success") {
           context.setChangeMode(!context.changeMode);
           ShowInfoDialog(
-            `Đặt chế độ đo ${context.changeMode === "current" ? "voltage" : "current"} thành công`,
+            `Đặt chế độ đo ${
+              context.changeMode === "current" ? "voltage" : "current"
+            } thành công`,
             "Set Measure Mode"
           );
         } else {
@@ -242,15 +245,15 @@ function ConnectComponent({
         break;
 
       case "get_rtc":
-        if (jsonData.data) {
-          const tsSeconds = Number(jsonData.data);
-          const offsetSeconds = GetLocalTimezoneOffset();
-          // Nếu ts ở dạng UTC, cộng offset để ra giờ local
-          const localTsMs = (tsSeconds + offsetSeconds) * 1000;
+        if (jsonData.ts) {
+          const tsSeconds = Number(jsonData.ts);
 
-          context.setInfoDialog(
-            `Thời gian hiện tại: ${new Date(localTsMs).toLocaleString()}`
-          );
+          GetLocalTimezoneOffset().then((offsetSeconds) => {
+            const localTsMs = (tsSeconds + offsetSeconds) * 1000;
+            context.setInfoDialog(
+              `Thời gian hiện tại: ${new Date(localTsMs).toLocaleString()}`
+            );
+          });
         }
         break;
       case "download_config":
