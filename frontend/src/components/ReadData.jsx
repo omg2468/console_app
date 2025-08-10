@@ -127,6 +127,36 @@ const ReadData = ({
               ) : null}
             </div>
           );
+        case "ai":
+          return (
+            <div>
+              <p className='text-xs pl-2 border-b border-gray-100 bg-gray-200'>
+                AI SETTINGS
+              </p>
+              {dataFile?.ais
+                ? dataFile.ais.map((item, index) => (
+                    <div
+                      key={index}
+                      onClick={() => {
+                        setRightTab("Parameter");
+                        setParameter({
+                          key: "ais",
+                          idx: index,
+                          value: item,
+                        });
+                      }}
+                      className={`p-2 pl-6 cursor-pointer border-b border-gray-100 hover:bg-blue-100 ${
+                        parameter.key === "dis" && parameter.idx === index
+                          ? "bg-blue-200"
+                          : "white"
+                      }`}
+                    >
+                      <p className='text-xs'>AI.{index}</p>
+                    </div>
+                  ))
+                : null}
+            </div>
+          );
         case "di":
           return (
             <div>
@@ -493,7 +523,7 @@ const ReadData = ({
                 <div
                   onClick={() => {
                     setDataFile((prev) => {
-                      const newModbus=
+                      const newModbus =
                         prev.modbus_reader && prev.modbus_reader.length > 0
                           ? prev.modbus_reader.slice(0, -1)
                           : [];
@@ -502,7 +532,10 @@ const ReadData = ({
                           key: "modbus_reader",
                           idx: (dataFile.modbus_reader || []).length - 2,
                           value: (dataFile.modbus_reader || [])[
-                            Math.max(0, (dataFile.modbus_reader || []).length - 2)
+                            Math.max(
+                              0,
+                              (dataFile.modbus_reader || []).length - 2,
+                            )
                           ] || { name: "", value: 0, unit: "", status: "" },
                         });
                       } else {

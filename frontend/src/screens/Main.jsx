@@ -52,7 +52,11 @@ export default function Main({ onLoginOut }) {
     if (dataFile) return;
     GetDefaultData()
       .then((data) => {
-        setDataFile(JSON.parse(data));
+        const parsedData = JSON.parse(data);
+        if (!parsedData.ais) {
+            parsedData.ais = Array(12).fill().map(() => ({ measure_mode: 0 }));
+        }
+        setDataFile(parsedData);
         // setFileLoaded("default.json");
       })
       .catch((err) => {
@@ -121,7 +125,6 @@ export default function Main({ onLoginOut }) {
     if (!dataFile) return;
     const jsonData = JSON.stringify({ ...dataFile }, null, 2);
 
-
     SelectFileToExport("api-json.json").then(async (filePath) => {
       if (!filePath) {
         return;
@@ -149,7 +152,7 @@ export default function Main({ onLoginOut }) {
       setInput("");
       setShowModal(false);
       ShowInfoDialog(`Tạo project ${name} thành công!`, "New Project");
-      refreshFileList()
+      refreshFileList();
     } catch (err) {
       setInput("");
       setShowModal(false);
@@ -165,6 +168,7 @@ export default function Main({ onLoginOut }) {
     { label: "System", value: "system" },
     { label: "Ftp", value: "ftp" },
     { label: "Control", value: "control" },
+    { label: "Ai", value: "ai" },
     { label: "Di", value: "di" },
     { label: "Do", value: "do" },
     { label: "Tag", value: "tag" },
