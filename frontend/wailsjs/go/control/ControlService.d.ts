@@ -5,8 +5,6 @@ export function Calib16ma():Promise<void>;
 
 export function Calib4ma():Promise<void>;
 
-export function GetLocalTimezoneOffset():Promise<number>;
-
 export function GetMeasureMode():Promise<void>;
 
 export function GetNetworkInfo():Promise<void>;

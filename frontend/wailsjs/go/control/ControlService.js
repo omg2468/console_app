@@ -10,10 +10,6 @@ export function Calib4ma() {
   return window['go']['control']['ControlService']['Calib4ma']();
 }
 
-export function GetLocalTimezoneOffset() {
-  return window['go']['control']['ControlService']['GetLocalTimezoneOffset']();
-}
-
 export function GetMeasureMode() {
   return window['go']['control']['ControlService']['GetMeasureMode']();
 }

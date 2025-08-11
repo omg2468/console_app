@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"myproject/backend/auth"
-	"time"
 )
 
 // ControlService quản lý và xử lý các lệnh điều khiển
@@ -81,12 +80,6 @@ func (c *ControlService) SetMeasureMode(mode string) error {
 	}
 	return c.authService.Send(string(payload))
 }
-
-func (c *ControlService) GetLocalTimezoneOffset() int {
-	_, offset := time.Now().Zone()
-	return offset
-}
-
 
 func (c *ControlService) ReadTagView() error {
 	return c.authService.Send(`{"type":"read_tag_view", "data":"enable"}`)

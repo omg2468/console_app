@@ -21,7 +21,6 @@ import {
   SetRTC,
   SetMeasureMode,
   GetMeasureMode,
-  GetLocalTimezoneOffset,
 } from "../../wailsjs/go/control/ControlService";
 
 import {
@@ -415,10 +414,12 @@ const Control = () => {
       }
     `}
                   >
-                    {!context.changeMode 
-                      ? "Unknown Mode" 
-                      : `${context.changeMode.charAt(0).toUpperCase() + context.changeMode.slice(1)} Mode`
-                    }
+                    {!context.changeMode
+                      ? "Unknown Mode"
+                      : `${
+                          context.changeMode.charAt(0).toUpperCase() +
+                          context.changeMode.slice(1)
+                        } Mode`}
                   </div>
                 </div>
               </div>
@@ -444,10 +445,11 @@ const Control = () => {
                   }
                 }}
               >
-                {!context.changeMode 
-                  ? "Get mode first" 
-                  : `Change to ${context.changeMode === "current" ? "voltage" : "current"} mode`
-                }
+                {!context.changeMode
+                  ? "Get mode first"
+                  : `Change to ${
+                      context.changeMode === "current" ? "voltage" : "current"
+                    } mode`}
               </button>
               <div className="flex flex-col sm:flex-row gap-2 mt-2 flex-wrap">
                 <button
@@ -459,7 +461,12 @@ const Control = () => {
                   }`}
                   onClick={handleCalib4}
                 >
-                  CALIB {!context.changeMode ? "?" : context.changeMode === "current" ? "4mA" : "2V"}
+                  CALIB{" "}
+                  {!context.changeMode
+                    ? "?"
+                    : context.changeMode === "current"
+                    ? "4mA"
+                    : "2V"}
                 </button>
                 <button
                   disabled={!context.isConnected || !context.changeMode}
@@ -470,7 +477,12 @@ const Control = () => {
                   }`}
                   onClick={handleCalib16}
                 >
-                  CALIB {!context.changeMode ? "?" : context.changeMode === "current" ? "16mA" : "8V"}
+                  CALIB{" "}
+                  {!context.changeMode
+                    ? "?"
+                    : context.changeMode === "current"
+                    ? "16mA"
+                    : "8V"}
                 </button>
               </div>
             </div>
@@ -656,24 +668,20 @@ const Control = () => {
                             break;
                           }
 
-                          const tsLocal = Math.floor(date.getTime() / 1000); // giây local
+                          const tsUTC = Math.floor(date.getTime() / 1000);
 
-                          GetLocalTimezoneOffset().then((offsetSeconds) => {
-                            const tsUTC = tsLocal - offsetSeconds;
-
-                            if (context.selectedConnection === "serial") {
-                              SetRTC("manual", tsUTC);
-                            } else if (
-                              context.selectedConnection === "ethernet"
-                            ) {
-                              SetRTCWS(
-                                context.socketAddress,
-                                context.socketPort,
-                                "manual",
-                                tsUTC
-                              );
-                            }
-                          });
+                          if (context.selectedConnection === "serial") {
+                            SetRTC("manual", tsUTC);
+                          } else if (
+                            context.selectedConnection === "ethernet"
+                          ) {
+                            SetRTCWS(
+                              context.socketAddress,
+                              context.socketPort,
+                              "manual",
+                              tsUTC
+                            );
+                          }
                           break;
 
                         case "set_rtc_internet":
@@ -692,6 +700,7 @@ const Control = () => {
                             );
                           }
                           break;
+
                         case "get_rtc":
                           context.setInfoDialog("Getting RTC...");
                           if (context.selectedConnection === "serial") {

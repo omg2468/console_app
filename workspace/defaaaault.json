@@ -10,7 +10,7 @@
         "precision": 2,
         "time_sync": 1,
         "data_fields_order": 0,
-        "lcd_tag_change": 5
+        "lcd_tag_change":5
     },
     "control": {
         "duty": 1,
@@ -111,45 +111,7 @@
             "increment": 100,
             "memory": 29,
             "period": 100
-        }
-    ],
-    "ais": [
-        {
-            "measure_mode": 0
-        },
-        {
-            "measure_mode": 0
-        },
-        {
-            "measure_mode": 0
-        },
-        {
-            "measure_mode": 0
-        },
-        {
-            "measure_mode": 0
-        },
-        {
-            "measure_mode": 0
-        },
-        {
-            "measure_mode": 1
-        },
-        {
-            "measure_mode": 1
-        },
-        {
-            "measure_mode": 1
-        },
-        {
-            "measure_mode": 1
-        },
-        {
-            "measure_mode": 1
-        },
-        {
-            "measure_mode": 1
-        }
+        }	
     ],
     "dos": [
         {

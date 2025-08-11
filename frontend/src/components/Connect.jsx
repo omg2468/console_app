@@ -1,4 +1,4 @@
-import { useEffect, useState, useContext } from "react";
+import { useEffect, useState, useContext, useCallback } from "react";
 import * as AuthService from "../../wailsjs/go/auth/AuthService";
 import {
   DownloadConfig,
@@ -11,8 +11,6 @@ import { ContextMenuContext } from "../store";
 import { ChangePassword } from "../../wailsjs/go/auth/AuthService";
 
 import { ShowErrorDialog, ShowInfoDialog } from "../../wailsjs/go/main/App";
-
-import { GetLocalTimezoneOffset } from "../../wailsjs/go/control/ControlService";
 
 import {
   Login,
@@ -197,200 +195,211 @@ function ConnectComponent({
   };
 
   // Function xử lý data response
-  const handleDataResponse = (jsonData) => {
-    switch (jsonData.type) {
-      case "read_analog":
-        if (jsonData.data) {
-          context.setAnalogData(jsonData.data);
-          context.setAnalogUnit(jsonData.unit || "V");
-        }
-        break;
-      case "read_tag_view":
-        if (jsonData.data) {
-          context.setTagViewData(jsonData.data);
-        }
-        break;
-      case "read_memory_view":
-        if (jsonData.data) {
-          context.setMemoryViewData(jsonData.data);
-        }
-        break;
+  const handleDataResponse = useCallback(
+    (jsonData) => {
+      switch (jsonData.type) {
+        case "read_analog":
+          if (jsonData.data) {
+            context.setAnalogData(jsonData.data);
+            context.setAnalogUnit(jsonData.unit || "V");
+          }
+          break;
 
-      case "set_rtc":
-        if (jsonData.status === "success") {
-          context.setInfoDialog("Đặt thời gian thành công");
-        } else {
-          context.setInfoDialog("Đặt thời gian thất bại");
-        }
-        break;
+        case "read_tag_view":
+          if (jsonData.data) {
+            context.setTagViewData(jsonData.data);
+          }
+          break;
 
-      case "get_measure_mode":
-        if (jsonData.mode) {
-          context.setChangeMode(jsonData.mode);
-        }
-        break;
+        case "read_memory_view":
+          if (jsonData.data) {
+            context.setMemoryViewData(jsonData.data);
+          }
+          break;
 
-      case "set_measure_mode":
-        if (jsonData.status === "success") {
-          context.setChangeMode(!context.changeMode);
-          ShowInfoDialog(
-            `Đặt chế độ đo ${
-              context.changeMode === "current" ? "voltage" : "current"
-            } thành công`,
-            "Set Measure Mode"
-          );
-        } else {
-          ShowErrorDialog("Đặt chế độ đo thất bại");
-        }
-        break;
+        case "set_rtc":
+          if (jsonData.status === "success") {
+            context.setInfoDialog("Đặt thời gian thành công");
+          } else {
+            context.setInfoDialog("Đặt thời gian thất bại");
+          }
+          break;
 
-      case "get_rtc":
-        if (jsonData.ts) {
-          const tsSeconds = Number(jsonData.ts);
+        case "get_measure_mode":
+          if (jsonData.mode) {
+            context.setChangeMode(jsonData.mode);
+          }
+          break;
 
-          GetLocalTimezoneOffset().then((offsetSeconds) => {
-            const localTsMs = (tsSeconds + offsetSeconds) * 1000;
-            context.setInfoDialog(
-              `Thời gian hiện tại: ${new Date(localTsMs).toLocaleString()}`
+        case "set_measure_mode":
+          if (jsonData.status === "success") {
+            const newMode =
+              context.changeMode === "current" ? "voltage" : "current";
+            context.setChangeMode(newMode);
+          
+            ShowInfoDialog(
+              `Đặt chế độ đo ${newMode} thành công`,
+              "Set Measure Mode"
             );
-          });
-        }
-        break;
-      case "download_config":
-        // if (jsonData.data) {
-        setFileLoaded("");
-        setDataFile(jsonData);
-        ShowInfoDialog("Đã tải xuống cấu hình thành công", "Download Config");
-        // } else {
-        //   ShowErrorDialog("Tải xuống cấu hình thất bại");
-        // }
-        break;
-      case "upload_config":
-        if (jsonData.status === "success") {
-          ShowInfoDialog("Upload thành công", "Login");
-        } else {
-          ShowErrorDialog("Upload thất bại");
-        }
-        break;
-      case "login":
-        if (jsonData.status === "success") {
-          context.setIsLogin(true);
-          context.setRole(jsonData.role || "user");
-          ShowInfoDialog("Đăng nhập thành công", "Login");
-        } else {
-          ShowErrorDialog("Đăng nhập thất bại");
-        }
-        break;
-      case "logout":
-        if (jsonData.status === "success") {
-          context.setIsLogin(false);
-          context.setRole("");
-          ShowInfoDialog("Đăng xuất thành công", "Logout");
-        } else {
-          ShowErrorDialog("Đăng xuất thất bại");
-        }
-        break;
-      case "change_password":
-        if (jsonData.status === "success") {
-          ShowInfoDialog("Đổi mật khẩu thành công", "Change Password");
-        } else {
-          ShowErrorDialog(jsonData.message);
-        }
-        break;
-      case "network_setting":
-        if (jsonData.status === "success") {
-          ShowInfoDialog(
-            "Cài đặt mạng thành công. Reboot thiết bị để áp dụng thay đổi",
-            "Network Setting"
-          );
-        } else {
-          ShowErrorDialog("Cài đặt mạng thất bại");
-        }
-        break;
-      case "network":
-        context.setFormData(jsonData);
-        break;
-      case "calib_4ma":
-        if (jsonData.status === "success") {
-          ShowInfoDialog("Calib 4mA thành công", "Calib 4mA");
-        } else {
-          ShowErrorDialog("Calib 4mA thất bại");
-        }
-        break;
-      case "calib_16ma":
-        if (jsonData.status === "success") {
-          ShowInfoDialog("Calib 16mA thành công", "Calib 16mA");
-        } else {
-          ShowErrorDialog("Calib 16mA thất bại");
-        }
-        break;
-      case "set_digital_output":
-        if (jsonData.status === "success") {
-          ShowInfoDialog(
-            "Đã cập nhật đầu Digital Output thành công",
-            "Set Digital Output"
-          );
-        } else {
-          ShowErrorDialog("Cập nhật đầu Digital Output thất bại");
-        }
-        break;
-      case "read_system_info":
-        if (jsonData.data) {
-          context.setInfoDialog(jsonData.data.replaceAll(",", "\n"));
-        } else {
-          context.setInfoDialog("Không có dữ liệu hệ thống");
-        }
-        break;
-      case "read_sim_info":
-        if (jsonData.data) {
-          context.setInfoDialog(jsonData.data);
-        } else {
-          context.setInfoDialog("Không có thông tin SIM");
-        }
-        break;
-      case "read_sdcard_info":
-        if (jsonData.data) {
-          context.setInfoDialog(jsonData.data);
-        } else {
-          context.setInfoDialog("Không có thông tin thẻ SD");
-        }
-        break;
-      case "ping":
-        if (jsonData.status === "success") {
-          context.setInfoDialog("Ping thành công");
-        } else {
-          context.setInfoDialog("Ping thất bại");
-        }
-        break;
+          } else {
+            ShowErrorDialog("Đặt chế độ đo thất bại");
+          }
+          break;
 
-      case "write_serial_number":
-        if (jsonData.status === "success") {
-          context.setInfoDialog("Write serial number thành công");
-        } else {
-          context.setInfoDialog("Write serial number thất bại");
-        }
-        break;
+        case "get_rtc":
+          if (jsonData.ts) {
+            const tsSeconds = Number(jsonData.ts); // UTC giây
+            const localTimeStr = new Date(tsSeconds * 1000).toLocaleString();
+            context.setInfoDialog(`Thời gian hiện tại: ${localTimeStr}`);
+          }
+          break;
 
-      case "write_mac":
-        if (jsonData.status === "success") {
-          context.setInfoDialog("Write mac thành công");
-        } else {
-          context.setInfoDialog("Write mac thất bại");
-        }
-        break;
+        case "download_config":
+          setFileLoaded("");
+          setDataFile(jsonData);
+          ShowInfoDialog("Đã tải xuống cấu hình thành công", "Download Config");
+          break;
 
-      case "reset_configuration":
-        if (jsonData.status === "success") {
-          context.setInfoDialog("Reset configuration thành công");
-        } else {
-          context.setInfoDialog("Reset configuration thất bại");
-        }
-        break;
+        case "upload_config":
+          if (jsonData.status === "success") {
+            ShowInfoDialog("Upload thành công", "Login");
+          } else {
+            ShowErrorDialog("Upload thất bại");
+          }
+          break;
 
-      default:
-        break;
-    }
-  };
+        case "login":
+          if (jsonData.status === "success") {
+            context.setIsLogin(true);
+            context.setRole(jsonData.role || "user");
+            ShowInfoDialog("Đăng nhập thành công", "Login");
+          } else {
+            ShowErrorDialog("Đăng nhập thất bại");
+          }
+          break;
+
+        case "logout":
+          if (jsonData.status === "success") {
+            context.setIsLogin(false);
+            context.setRole("");
+            ShowInfoDialog("Đăng xuất thành công", "Logout");
+          } else {
+            ShowErrorDialog("Đăng xuất thất bại");
+          }
+          break;
+
+        case "change_password":
+          if (jsonData.status === "success") {
+            ShowInfoDialog("Đổi mật khẩu thành công", "Change Password");
+          } else {
+            ShowErrorDialog(jsonData.message);
+          }
+          break;
+
+        case "network_setting":
+          if (jsonData.status === "success") {
+            ShowInfoDialog(
+              "Cài đặt mạng thành công. Reboot thiết bị để áp dụng thay đổi",
+              "Network Setting"
+            );
+          } else {
+            ShowErrorDialog("Cài đặt mạng thất bại");
+          }
+          break;
+
+        case "network":
+          context.setFormData(jsonData);
+          break;
+
+        case "calib_4ma":
+          if (jsonData.status === "success") {
+            ShowInfoDialog("Calib 4mA thành công", "Calib 4mA");
+          } else {
+            ShowErrorDialog("Calib 4mA thất bại");
+          }
+          break;
+
+        case "calib_16ma":
+          if (jsonData.status === "success") {
+            ShowInfoDialog("Calib 16mA thành công", "Calib 16mA");
+          } else {
+            ShowErrorDialog("Calib 16mA thất bại");
+          }
+          break;
+
+        case "set_digital_output":
+          if (jsonData.status === "success") {
+            ShowInfoDialog(
+              "Đã cập nhật đầu Digital Output thành công",
+              "Set Digital Output"
+            );
+          } else {
+            ShowErrorDialog("Cập nhật đầu Digital Output thất bại");
+          }
+          break;
+
+        case "read_system_info":
+          if (jsonData.data) {
+            context.setInfoDialog(jsonData.data.replaceAll(",", "\n"));
+          } else {
+            context.setInfoDialog("Không có dữ liệu hệ thống");
+          }
+          break;
+
+        case "read_sim_info":
+          if (jsonData.data) {
+            context.setInfoDialog(jsonData.data);
+          } else {
+            context.setInfoDialog("Không có thông tin SIM");
+          }
+          break;
+
+        case "read_sdcard_info":
+          if (jsonData.data) {
+            context.setInfoDialog(jsonData.data);
+          } else {
+            context.setInfoDialog("Không có thông tin thẻ SD");
+          }
+          break;
+
+        case "ping":
+          if (jsonData.status === "success") {
+            context.setInfoDialog("Ping thành công");
+          } else {
+            context.setInfoDialog("Ping thất bại");
+          }
+          break;
+
+        case "write_serial_number":
+          if (jsonData.status === "success") {
+            context.setInfoDialog("Write serial number thành công");
+          } else {
+            context.setInfoDialog("Write serial number thất bại");
+          }
+          break;
+
+        case "write_mac":
+          if (jsonData.status === "success") {
+            context.setInfoDialog("Write mac thành công");
+          } else {
+            context.setInfoDialog("Write mac thất bại");
+          }
+          break;
+
+        case "reset_configuration":
+          if (jsonData.status === "success") {
+            context.setInfoDialog("Reset configuration thành công");
+          } else {
+            context.setInfoDialog("Reset configuration thất bại");
+          }
+          break;
+
+        default:
+          break;
+      }
+    },
+    [context.changeMode]
+  );
 
   // Socket data reader
   const readSocketData = async () => {
@@ -485,6 +494,7 @@ function ConnectComponent({
     context.selectedPort,
     context.selectedConnection,
     context.isSocketConnected,
+    context.changeMode,
   ]);
 
   // Cleanup effect to disconnect when component unmounts
