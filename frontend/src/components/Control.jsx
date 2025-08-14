@@ -46,7 +46,6 @@ import {
 import { ShowQuestionDialog } from "../../wailsjs/go/main/App";
 
 const Control = () => {
-  const [display, setDisplay] = useState(false);
   const [digitalOutput, setDigitalOutput] = useState(Array(8).fill(false));
   const [loadingPos, setLoadingPos] = useState(0);
   const [dataCommand, setDataCommand] = useState("");
@@ -293,7 +292,7 @@ const Control = () => {
               disabled={!context.isConnected}
               type="checkbox"
               className="w-4 h-4"
-              checked={display}
+              checked={context.displayAnalogUnit}
               onChange={(e) => {
                 if (e.target.checked) {
                   if (context.selectedConnection === "serial") {
@@ -316,7 +315,7 @@ const Control = () => {
                     );
                   }
                 }
-                setDisplay(e.target.checked);
+                context.setDisplayAnalogUnit(e.target.checked);
               }}
             />
             <span className="text-sm">Display analog value</span>
@@ -327,7 +326,7 @@ const Control = () => {
                   width: `${analogData?.length ? barWidth : 0}%`,
                   left: `${loadingPos}%`,
                   transition: "left 0.01s linear",
-                  display: display && analogData?.length ? "block" : "none",
+                  display: context.displayAnalogUnit && analogData?.length ? "block" : "none",
                 }}
               />
             </div>
@@ -350,7 +349,7 @@ const Control = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {analogData.length === 0 || !display
+                  {analogData.length === 0 || !context.displayAnalogUnit
                     ? Array.from({ length: 12 }, (_, index) => (
                         <tr key={index}>
                           <td className="border-r border-b p-2 text-right min-w-[150px] whitespace-nowrap">

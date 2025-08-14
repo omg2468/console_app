@@ -9,7 +9,6 @@ import {
 import { ReadTagView as ReadTagViewWS } from "../../wailsjs/go/workspace/WorkspaceService";
 
 const TagView = () => {
-  const [display, setDisplay] = useState(false);
   const [loadingPos, setLoadingPos] = useState(0);
   const barWidth = 40;
 
@@ -33,7 +32,7 @@ const TagView = () => {
           disabled={!context.isConnected}
           type="checkbox"
           className="custom"
-          checked={display}
+          checked={context.displayTagView}
           onChange={(e) => {
             const checked = e.target.checked;
 
@@ -59,7 +58,7 @@ const TagView = () => {
               }
             }
 
-            setDisplay(checked);
+            context.setDisplayTagView(checked);
           }}
         />
 
@@ -71,7 +70,8 @@ const TagView = () => {
               width: `${data?.length ? barWidth : 0}%`,
               left: `${loadingPos}%`,
               transition: "left 0.01s linear",
-              display: display && data?.length ? "block" : "none",
+              display:
+                context.displayTagView && data?.length ? "block" : "none",
             }}
           />
         </div>
@@ -87,7 +87,7 @@ const TagView = () => {
           }}
         >
           <table className="w-full text-xs border-collapse">
-            <thead>
+            {/* <thead>
               <tr className="bg-gray-100">
                 <th className="border px-2 py-1 text-right">ID</th>
                 <th className="border px-2 py-1">Name</th>
@@ -95,12 +95,12 @@ const TagView = () => {
                 <th className="border px-2 py-1">Unit</th>
                 <th className="border px-2 py-1">Status</th>
               </tr>
-            </thead>
+            </thead> */}
             <tbody>
-              {display &&
+              {context.displayTagView &&
                 data.map((tag) => (
                   <tr key={tag.id}>
-                    <td className="border px-2 py-1 text-right">{tag.id}</td>
+                    {/* <td className="border px-2 py-1 text-right">{tag.id}</td> */}
                     <td className="border px-2 py-1">{tag.name}</td>
                     <td className="border px-2 py-1 text-right">
                       {tag.value.toFixed(2)}

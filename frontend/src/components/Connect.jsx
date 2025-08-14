@@ -236,7 +236,7 @@ function ConnectComponent({
             const newMode =
               context.changeMode === "current" ? "voltage" : "current";
             context.setChangeMode(newMode);
-          
+
             ShowInfoDialog(
               `Đặt chế độ đo ${newMode} thành công`,
               "Set Measure Mode"
@@ -412,14 +412,16 @@ function ConnectComponent({
       );
       console.log(data);
       if (data && data.length > 0) {
-        const latestData = data[data.length - 1];
-        context.setDataTest(latestData);
-
-        try {
-          const jsonData = JSON.parse(latestData);
-          handleDataResponse(jsonData);
-        } catch (parseErr) {
-          console.log("Non-JSON data received:", latestData);
+        for (let i = 0; i < data.length; i++) {
+          const result = data[i];
+          context.setDataTest(result);
+          try {
+            const jsonData = JSON.parse(result);
+            console.log(jsonData)
+            handleDataResponse(jsonData);
+          } catch (parseErr) {
+            console.log("Non-JSON data received:", latestData);
+          }
         }
       }
     } catch (err) {

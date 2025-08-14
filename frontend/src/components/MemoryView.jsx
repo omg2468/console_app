@@ -9,7 +9,6 @@ import {
 import { ReadMemoryView as ReadMemoryViewWS } from "../../wailsjs/go/workspace/WorkspaceService";
 
 const MemoryView = () => {
-  const [display, setDisplay] = useState(false);
   const [loadingPos, setLoadingPos] = useState(0);
   const [precision, setPrecision] = useState(2);
   const barWidth = 40;
@@ -43,7 +42,7 @@ const MemoryView = () => {
         );
         cells.push(
           <td key={`val-${col}-${row}`} className="border px-2 py-1 ">
-            {memory && display
+            {memory && context.displayMemoryView
               ? Number.isInteger(memory[idx])
                 ? memory[idx]
                 : memory[idx]?.toFixed(precision)
@@ -111,7 +110,7 @@ const MemoryView = () => {
           disabled={!context.isConnected}
           type="checkbox"
           className="custom"
-          checked={display}
+          checked={context.displayMemoryView}
           onChange={(e) => {
             if (e.target.checked) {
               if (context.selectedConnection === "serial") {
@@ -137,7 +136,7 @@ const MemoryView = () => {
                 );
               }
             }
-            setDisplay(e.target.checked);
+            context.setDisplayMemoryView(e.target.checked);
           }}
         />
         <span className="text-sm">Display memory value</span>
@@ -148,7 +147,7 @@ const MemoryView = () => {
               width: `${memory?.length ? barWidth : 0}%`,
               left: `${loadingPos}%`,
               transition: "left 0.01s linear",
-              display: display && memory?.length ? "block" : "none",
+              display: context.displayMemoryView && memory?.length ? "block" : "none",
             }}
           />
         </div>

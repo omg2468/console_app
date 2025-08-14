@@ -32,6 +32,9 @@ export const ContextMenuProvider = ({ children }) => {
   const [socketPort, setSocketPort] = useState("");
   const [isSocketConnected, setIsSocketConnected] = useState(false);
   const [changeMode, setChangeMode] = useState("");
+  const [displayAnalogUnit, setDisplayAnalogUnit] = useState(false);
+  const [displayMemoryView, setDisplayMemoryView] = useState(false);
+  const [displayTagView, setDisplayTagView] = useState(false);
 
   //Will remove this later
   const [dataTest, setDataTest] = useState("");
@@ -97,6 +100,12 @@ export const ContextMenuProvider = ({ children }) => {
         setAnalogUnit,
         changeMode,
         setChangeMode,
+        displayAnalogUnit,
+        setDisplayAnalogUnit,
+        displayMemoryView,
+        setDisplayMemoryView,
+        displayTagView,
+        setDisplayTagView,
       }}
     >
       {children}
