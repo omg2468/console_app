@@ -16,6 +16,7 @@ const ReadData = ({
   keyType,
   setRightTab,
 }) => {
+
   const readData = useCallback(
     (key) => {
       switch (key) {
@@ -133,28 +134,22 @@ const ReadData = ({
               <p className='text-xs pl-2 border-b border-gray-100 bg-gray-200'>
                 AI SETTINGS
               </p>
-              {dataFile?.ais
-                ? dataFile.ais.map((item, index) => (
-                    <div
-                      key={index}
-                      onClick={() => {
-                        setRightTab("Parameter");
-                        setParameter({
-                          key: "ais",
-                          idx: index,
-                          value: item,
-                        });
-                      }}
-                      className={`p-2 pl-6 cursor-pointer border-b border-gray-100 hover:bg-blue-100 ${
-                        parameter.key === "dis" && parameter.idx === index
-                          ? "bg-blue-200"
-                          : "white"
-                      }`}
-                    >
-                      <p className='text-xs'>AI.{index}</p>
-                    </div>
-                  ))
-                : null}
+              {dataFile.ais && (
+                <div
+                  onClick={() => {
+                    setRightTab("Parameter");
+                    setParameter({
+                      key: "ais",
+                      value: dataFile.ais,
+                    });
+                  }}
+                  className={`p-2 pl-6 cursor-pointer border-b border-gray-100 hover:bg-blue-100 ${
+                    parameter.key === "ais" ? "bg-blue-200" : "white"
+                  }`}
+                >
+                  <p className='text-xs'>AI</p>
+                </div>
+              )}
             </div>
           );
         case "di":

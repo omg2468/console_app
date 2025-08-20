@@ -10,10 +10,13 @@ import { ReadMemoryView as ReadMemoryViewWS } from "../../wailsjs/go/workspace/W
 
 const MemoryView = () => {
   const [loadingPos, setLoadingPos] = useState(0);
-  const [precision, setPrecision] = useState(2);
   const barWidth = 40;
 
   const context = useContext(ContextMenuContext);
+
+  // Use precision from context instead of local state
+  const precision = context.memoryPrecision;
+  const setPrecision = context.setMemoryPrecision;
 
   const memory = context.memoryViewData;
   const totalRegisters = 256;

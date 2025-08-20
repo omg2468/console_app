@@ -19,7 +19,7 @@ export const handleUpdateParameter = ({
   value,
 }: FunctionParameter) => {
   let newDataFile = { ...dataFile };
-
+  
   switch (key) {
     case "rtu_master":
     case "rtu_slave":

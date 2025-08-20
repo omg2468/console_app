@@ -36,6 +36,15 @@ export const ContextMenuProvider = ({ children }) => {
   const [displayMemoryView, setDisplayMemoryView] = useState(false);
   const [displayTagView, setDisplayTagView] = useState(false);
 
+  // Control tab states
+  const [digitalOutput, setDigitalOutput] = useState(Array(8).fill(false));
+  const [dataCommand, setDataCommand] = useState("");
+  const [selectedCommand, setSelectedCommand] = useState("read_system_info");
+  const [inputType, setInputType] = useState("text");
+
+  // MemoryView tab states
+  const [memoryPrecision, setMemoryPrecision] = useState(2);
+
   //Will remove this later
   const [dataTest, setDataTest] = useState("");
 
@@ -106,6 +115,18 @@ export const ContextMenuProvider = ({ children }) => {
         setDisplayMemoryView,
         displayTagView,
         setDisplayTagView,
+        // Control tab states
+        digitalOutput,
+        setDigitalOutput,
+        dataCommand,
+        setDataCommand,
+        selectedCommand,
+        setSelectedCommand,
+        inputType,
+        setInputType,
+        // MemoryView tab states
+        memoryPrecision,
+        setMemoryPrecision,
       }}
     >
       {children}

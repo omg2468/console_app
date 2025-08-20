@@ -28,7 +28,9 @@ func main() {
 		Title:         "DataLogger",
 		Width:         1224,
 		Height:        800,
-		DisableResize: true,
+		MinWidth:      1100,
+		MinHeight:     700,
+		DisableResize: false,
 		AssetServer: &assetserver.Options{
 			Assets: assets,
 		},

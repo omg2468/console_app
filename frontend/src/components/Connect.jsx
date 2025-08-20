@@ -291,6 +291,10 @@ function ConnectComponent({
         case "change_password":
           if (jsonData.status === "success") {
             ShowInfoDialog("Đổi mật khẩu thành công", "Change Password");
+            setShowModal(false); // Đóng modal khi đổi mật khẩu thành công
+            setOldPassword(""); // Clear form
+            setPasswordInput("");
+            setPasswordConfirm("");
           } else {
             ShowErrorDialog(jsonData.message);
           }
@@ -410,14 +414,13 @@ function ConnectComponent({
         context.socketAddress,
         context.socketPort
       );
-      console.log(data);
+
       if (data && data.length > 0) {
         for (let i = 0; i < data.length; i++) {
           const result = data[i];
           context.setDataTest(result);
           try {
             const jsonData = JSON.parse(result);
-            console.log(jsonData)
             handleDataResponse(jsonData);
           } catch (parseErr) {
             console.log("Non-JSON data received:", latestData);
@@ -716,7 +719,7 @@ function ConnectComponent({
         Change Password
       </button>
       <button
-        disabled={!context.isConnected}
+        disabled={!context.isConnected || !context.isLogin}
         onClick={handleUploadConfig}
         className={`flex-1 px-2 w-full py-1 rounded border text-xs transition
     ${
