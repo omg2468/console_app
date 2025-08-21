@@ -24,7 +24,6 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
 
   const readParameter = useCallback(
     (item) => {
-
       switch (item.key) {
         case "rtu_master":
           return (
@@ -1245,24 +1244,30 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                       </tr>
                       <tr className="">
                         <td className="px-2 py-1 text-xs text-right font-semibold">
-                          Log at second
+                          Log at duration
                         </td>
                         <td className="px-2 py-1 text-xs">
-                          <input
-                            type="number"
-                            value={parameter.value.second}
+                          <select
+                            value={parameter.value.duration}
                             onChange={(e) =>
                               handleUpdateParameter({
                                 dataFile,
                                 setDataFile,
                                 key: item.key,
                                 index: item.idx,
-                                paramKey: "second",
+                                paramKey: "duration",
                                 value: Number(e.target.value),
                               })
                             }
                             className="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg px-2 py-1 w-full"
-                          />
+                          >
+                            <option value={1}>1</option>
+                            <option value={5}>5</option>
+                            <option value={10}>10</option>
+                            <option value={20}>20</option>
+                            <option value={30}>30</option>
+                            <option value={60}>60</option>
+                          </select>
                         </td>
                       </tr>
                       <tr className="">
@@ -1613,23 +1618,22 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                       Value
                     </th>
                   </tr>
-                  <tr className='bg-gray-200'>
-                    <th className='px-2 py-1 text-xs text-right min-w-[150px] border-b '>
+                  <tr className="bg-gray-200">
+                    <th className="px-2 py-1 text-xs text-right min-w-[150px] border-b ">
                       Mode
                     </th>
-                    <th className='px-2 py-1 text-xs text-left w-full border-b font-normal'>
-                    </th>
+                    <th className="px-2 py-1 text-xs text-left w-full border-b font-normal"></th>
                   </tr>
                 </thead>
                 <tbody>
                   {item.value?.length > 0 && (
                     <>
                       {item.value.map((param, idx) => (
-                        <tr className='' key={idx}>
-                          <td className='px-2 py-1 text-xs text-right font-semibold'>
-                          AI.{idx}
+                        <tr className="" key={idx}>
+                          <td className="px-2 py-1 text-xs text-right font-semibold">
+                            AI.{idx}
                           </td>
-                          <td className='px-2 py-1 text-xs'>
+                          <td className="px-2 py-1 text-xs">
                             <select
                               value={param.measure_mode}
                               onChange={(event) => {
@@ -1642,7 +1646,7 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                                   value: Number(event.target.value),
                                 });
                               }}
-                              className='bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg max-w-[150px]'
+                              className="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg max-w-[150px]"
                             >
                               <option value={0}>Current</option>
                               <option value={1}>Voltage</option>

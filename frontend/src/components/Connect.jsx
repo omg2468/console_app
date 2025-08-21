@@ -127,6 +127,10 @@ function ConnectComponent({
     context.setIsConnected(false);
     context.setIsLogin(false);
     context.setRole("");
+    context.setDisplayAnalogUnit(false)
+    context.setDisplayMemoryView(false)
+    context.setDisplayTagView(false)
+    context.setDigitalOutput([])
     setStatus("Disconnected");
   };
 
@@ -264,7 +268,7 @@ function ConnectComponent({
 
         case "upload_config":
           if (jsonData.status === "success") {
-            ShowInfoDialog("Upload thành công", "Login");
+            ShowInfoDialog("Đã upload lên thiết bị thành công", "Upload Config");
             handleDisconnect();
             // Reset all data after upload
           } else {
@@ -416,10 +420,10 @@ function ConnectComponent({
           break;
 
         case "get_gps":
-          if (jsonData.status === "success") {
-            context.setInfoDialog(jsonData.data || "Không có dữ liệu GPS");
+          if (jsonData.data) {
+            context.setInfoDialog(jsonData.data);
           } else {
-            context.setInfoDialog("Get GPS thất bại");
+            context.setInfoDialog("Không có dữ liệu GPS");
           }
           break;
 
@@ -755,7 +759,7 @@ function ConnectComponent({
         onClick={handleUploadConfig}
         className={`flex-1 px-2 w-full py-1 rounded border text-xs transition
     ${
-      context.isConnected
+      context.isConnected && context.isLogin
         ? "bg-gray-200 text-gray-700 border-gray-400 hover:bg-gray-300 cursor-pointer"
         : "bg-gray-100 text-gray-400 border-gray-300"
     }

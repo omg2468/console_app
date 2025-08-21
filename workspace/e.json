@@ -230,8 +230,8 @@
                 "provin": "BTh",
                 "station": "KHIUN1"
             },
-            "duration": 0,
-            "en": true
+            "en": true,
+            "second": 15
         },
         {
             "client": {
@@ -255,7 +255,7 @@
                 "station": "KHIUN1"
             },
             "en": false,
-            "duration": 1
+            "second": 0
         },
         {
             "client": {
@@ -279,7 +279,7 @@
                 "station": "stat"
             },
             "en": false,
-            "duration": 1
+            "second": 59
         },
         {
             "client": {
@@ -303,7 +303,7 @@
                 "station": "stat"
             },
             "en": false,
-            "duration": 1
+            "second": 59
         },
         {
             "client": {
@@ -327,7 +327,7 @@
                 "station": "stat"
             },
             "en": false,
-            "duration": 1
+            "second": 59
         }
     ],
     "modbus_reader": [
