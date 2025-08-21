@@ -48,6 +48,10 @@ func (c *ControlService) StopReadMemoryView() error {
 	return c.authService.Send(`{"type":"read_memory_view", "data":"disable"}`)
 }
 
+func (c *ControlService) GetGps() error {
+	return c.authService.Send(`{"type":"get_gps"}`)
+}
+
 func (c *ControlService) SetRTC(mode string, ts int64) error {
 	data := map[string]interface{}{
 		"type": "set_rtc",

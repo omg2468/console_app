@@ -230,6 +230,7 @@
                 "provin": "BTh",
                 "station": "KHIUN1"
             },
+            "duration": 0,
             "en": true,
             "second": 15
         },
@@ -254,6 +255,7 @@
                 "provin": "BTh",
                 "station": "KHIUN1"
             },
+            "duration": 5,
             "en": false,
             "second": 0
         },
@@ -278,6 +280,7 @@
                 "provin": "prov",
                 "station": "stat"
             },
+            "duration": 5,
             "en": false,
             "second": 59
         },
@@ -302,6 +305,7 @@
                 "provin": "prov",
                 "station": "stat"
             },
+            "duration": 5,
             "en": false,
             "second": 59
         },
@@ -326,6 +330,7 @@
                 "provin": "prov",
                 "station": "stat"
             },
+            "duration": 5,
             "en": false,
             "second": 59
         }
@@ -549,8 +554,7 @@
             "stat_flag": 3,
             "stat_idx": 216,
             "unit": "mg/Nm3",
-            "val_idx": 60,
-            "precision": 3
+            "val_idx": 60
         },
         {
             "avg": 0,
@@ -561,8 +565,7 @@
             "stat_flag": 3,
             "stat_idx": 207,
             "unit": "mg/Nm3",
-            "val_idx": 117,
-            "precision": 3
+            "val_idx": 117
         },
         {
             "avg": 0,
@@ -573,8 +576,7 @@
             "stat_flag": 2,
             "stat_idx": 205,
             "unit": "%V",
-            "val_idx": 106,
-            "precision": 3
+            "val_idx": 106
         },
         {
             "avg": 0,
@@ -585,8 +587,84 @@
             "stat_flag": 0,
             "stat_idx": 200,
             "unit": "mg/Nm3",
-            "val_idx": 101,
-            "precision": 3
+            "val_idx": 101
+        },
+        {
+            "avg": 0,
+            "desc": "Value O2",
+            "en": true,
+            "flag": 0,
+            "name": "O2",
+            "stat_flag": 3,
+            "stat_idx": 208,
+            "unit": "%V",
+            "val_idx": 109
+        },
+        {
+            "avg": 0,
+            "desc": "Value NOx",
+            "en": true,
+            "flag": 0,
+            "name": "NOx",
+            "stat_flag": 3,
+            "stat_idx": 206,
+            "unit": "mg/Nm3",
+            "val_idx": 107
+        },
+        {
+            "avg": 0,
+            "desc": "Value Dust",
+            "en": true,
+            "flag": 0,
+            "name": "PM",
+            "stat_flag": 3,
+            "stat_idx": 209,
+            "unit": "mg/Nm3",
+            "val_idx": 115
+        },
+        {
+            "avg": 0,
+            "desc": "Luu luong",
+            "en": true,
+            "flag": 0,
+            "name": "Flow",
+            "stat_flag": 3,
+            "stat_idx": 210,
+            "unit": "m3/h",
+            "val_idx": 111
+        },
+        {
+            "avg": 0,
+            "desc": "Ap suat",
+            "en": true,
+            "flag": 0,
+            "name": "P",
+            "stat_flag": 3,
+            "stat_idx": 211,
+            "unit": "kPa",
+            "val_idx": 112
+        },
+        {
+            "avg": 0,
+            "desc": "Nhiet do",
+            "en": true,
+            "flag": 0,
+            "name": "Temp",
+            "stat_flag": 3,
+            "stat_idx": 212,
+            "unit": "oC",
+            "val_idx": 113
+        },
+        {
+            "avg": 0,
+            "desc": "",
+            "en": false,
+            "flag": 0,
+            "name": "default",
+            "stat_flag": 0,
+            "stat_idx": 0,
+            "unit": "default",
+            "val_idx": 0
         }
     ],
     "tcp_master": {

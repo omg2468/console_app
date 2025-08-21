@@ -58,6 +58,10 @@ export function GetDefaultData() {
   return window['go']['workspace']['WorkspaceService']['GetDefaultData']();
 }
 
+export function GetGps(arg1, arg2) {
+  return window['go']['workspace']['WorkspaceService']['GetGps'](arg1, arg2);
+}
+
 export function GetMeasureMode(arg1, arg2) {
   return window['go']['workspace']['WorkspaceService']['GetMeasureMode'](arg1, arg2);
 }

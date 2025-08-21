@@ -5,6 +5,8 @@ export function Calib16ma():Promise<void>;
 
 export function Calib4ma():Promise<void>;
 
+export function GetGps():Promise<void>;
+
 export function GetMeasureMode():Promise<void>;
 
 export function GetNetworkInfo():Promise<void>;

@@ -27,34 +27,34 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
       switch (item.key) {
         case "rtu_master":
           return (
-            <div className='h-full flex-1'>
-              <table className='w-full'>
+            <div className="h-full flex-1">
+              <table className="w-full">
                 <thead>
-                  <tr className=''>
-                    <th className='px-2 py-1 text-xs text-center min-w-[150px] border-b'>
+                  <tr className="">
+                    <th className="px-2 py-1 text-xs text-center min-w-[150px] border-b">
                       Parameter
                     </th>
-                    <th className='px-2 py-1 text-xs text-center w-full border-b border-l border-r'>
+                    <th className="px-2 py-1 text-xs text-center w-full border-b border-l border-r">
                       Value
                     </th>
                   </tr>
-                  <tr className='bg-gray-200'>
-                    <th className='px-2 py-1 text-xs text-right min-w-[150px] border-b'>
+                  <tr className="bg-gray-200">
+                    <th className="px-2 py-1 text-xs text-right min-w-[150px] border-b">
                       Modbus RTU master
                     </th>
-                    <th className='px-2 py-1 text-xs text-left w-full border-b font-normal'></th>
+                    <th className="px-2 py-1 text-xs text-left w-full border-b font-normal"></th>
                   </tr>
                 </thead>
                 <tbody>
                   {item.value && (
                     <>
-                      <tr className=''>
-                        <td className='px-2 py-1 text-xs text-right font-semibold'>
+                      <tr className="">
+                        <td className="px-2 py-1 text-xs text-right font-semibold">
                           Enable
                         </td>
-                        <td className='px-2 py-1 text-xs'>
+                        <td className="px-2 py-1 text-xs">
                           <input
-                            type='checkbox'
+                            type="checkbox"
                             checked={!!parameter.value.en}
                             onChange={(event) => {
                               handleUpdateParameter({
@@ -65,17 +65,17 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                                 value: event.target.checked,
                               });
                             }}
-                            className='w-4 h-4 accent-blue-500 cursor-pointer'
+                            className="w-4 h-4 accent-blue-500 cursor-pointer"
                           />
                         </td>
                       </tr>
-                      <tr className=''>
-                        <td className='px-2 py-1 text-xs text-right font-semibold align-top'>
+                      <tr className="">
+                        <td className="px-2 py-1 text-xs text-right font-semibold align-top">
                           Baudrate
                         </td>
-                        <td className='px-2 py-1 text-xs  flex flex-col gap-1'>
+                        <td className="px-2 py-1 text-xs  flex flex-col gap-1">
                           <input
-                            type='number'
+                            type="number"
                             value={parameter.value.baudrate}
                             onChange={(e) => {
                               handleUpdateParameter({
@@ -86,15 +86,15 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                                 value: Number(e.target.value),
                               });
                             }}
-                            className='bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg px-2 py-1 w-full'
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg px-2 py-1 w-full"
                           />
                         </td>
                       </tr>
-                      <tr className=''>
-                        <td className='px-2 py-1 text-xs text-right font-semibold'>
+                      <tr className="">
+                        <td className="px-2 py-1 text-xs text-right font-semibold">
                           Parity
                         </td>
-                        <td className='px-2 py-1 text-xs'>
+                        <td className="px-2 py-1 text-xs">
                           <select
                             value={parameter.value.parity}
                             onChange={(e) =>
@@ -106,7 +106,7 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                                 value: e.target.value,
                               })
                             }
-                            className='bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg max-w-[150px]'
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg max-w-[150px]"
                           >
                             <option value={"N"}>None</option>
                             <option value={"E"}>Even</option>
@@ -114,11 +114,11 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                           </select>
                         </td>
                       </tr>
-                      <tr className=''>
-                        <td className='px-2 py-1 text-xs text-right font-semibold'>
+                      <tr className="">
+                        <td className="px-2 py-1 text-xs text-right font-semibold">
                           Stop bits
                         </td>
-                        <td className='px-2 py-1 text-xs'>
+                        <td className="px-2 py-1 text-xs">
                           <select
                             value={parameter.value.stopbits}
                             onChange={(e) =>
@@ -130,20 +130,20 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                                 value: Number(e.target.value),
                               })
                             }
-                            className='bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg max-w-[150px]'
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg max-w-[150px]"
                           >
                             <option value={1}>1</option>
                             <option value={2}>2</option>
                           </select>
                         </td>
                       </tr>
-                      <tr className=''>
-                        <td className='px-2 py-1 text-xs text-right font-semibold align-top'>
+                      <tr className="">
+                        <td className="px-2 py-1 text-xs text-right font-semibold align-top">
                           Round delay(ms)
                         </td>
-                        <td className='px-2 py-1 text-xs  flex flex-col gap-1'>
+                        <td className="px-2 py-1 text-xs  flex flex-col gap-1">
                           <input
-                            type='number'
+                            type="number"
                             value={parameter.value.delay}
                             onChange={(e) => {
                               handleUpdateParameter({
@@ -154,17 +154,17 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                                 value: Number(e.target.value),
                               });
                             }}
-                            className='bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg px-2 py-1 w-full'
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg px-2 py-1 w-full"
                           />
                         </td>
                       </tr>
-                      <tr className=''>
-                        <td className='px-2 py-1 text-xs text-right font-semibold align-top'>
+                      <tr className="">
+                        <td className="px-2 py-1 text-xs text-right font-semibold align-top">
                           Read delay(ms)
                         </td>
-                        <td className='px-2 py-1 text-xs  flex flex-col gap-1'>
+                        <td className="px-2 py-1 text-xs  flex flex-col gap-1">
                           <input
-                            type='number'
+                            type="number"
                             value={parameter.value.rddelay}
                             onChange={(e) => {
                               handleUpdateParameter({
@@ -175,17 +175,17 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                                 value: Number(e.target.value),
                               });
                             }}
-                            className='bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg px-2 py-1 w-full'
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg px-2 py-1 w-full"
                           />
                         </td>
                       </tr>
-                      <tr className=''>
-                        <td className='px-2 py-1 text-xs text-right font-semibold align-top'>
+                      <tr className="">
+                        <td className="px-2 py-1 text-xs text-right font-semibold align-top">
                           Wait max(ms)
                         </td>
-                        <td className='px-2 py-1 text-xs  flex flex-col gap-1'>
+                        <td className="px-2 py-1 text-xs  flex flex-col gap-1">
                           <input
-                            type='number'
+                            type="number"
                             value={parameter.value.wait}
                             onChange={(e) => {
                               handleUpdateParameter({
@@ -196,17 +196,17 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                                 value: Number(e.target.value),
                               });
                             }}
-                            className='bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg px-2 py-1 w-full'
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg px-2 py-1 w-full"
                           />
                         </td>
                       </tr>
-                      <tr className=''>
-                        <td className='px-2 py-1 text-xs text-right font-semibold align-top'>
+                      <tr className="">
+                        <td className="px-2 py-1 text-xs text-right font-semibold align-top">
                           Retry
                         </td>
-                        <td className='px-2 py-1 text-xs  flex flex-col gap-1'>
+                        <td className="px-2 py-1 text-xs  flex flex-col gap-1">
                           <input
-                            type='number'
+                            type="number"
                             value={parameter.value.retry}
                             onChange={(e) => {
                               handleUpdateParameter({
@@ -217,7 +217,7 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                                 value: Number(e.target.value),
                               });
                             }}
-                            className='bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg px-2 py-1 w-full'
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg px-2 py-1 w-full"
                           />
                         </td>
                       </tr>
@@ -229,34 +229,34 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
           );
         case "rtu_slave":
           return (
-            <div className='h-full flex-1'>
-              <table className='w-full'>
+            <div className="h-full flex-1">
+              <table className="w-full">
                 <thead>
-                  <tr className=''>
-                    <th className='px-2 py-1 text-xs text-center min-w-[150px] border-b'>
+                  <tr className="">
+                    <th className="px-2 py-1 text-xs text-center min-w-[150px] border-b">
                       Parameter
                     </th>
-                    <th className='px-2 py-1 text-xs text-center w-full border-b border-l border-r'>
+                    <th className="px-2 py-1 text-xs text-center w-full border-b border-l border-r">
                       Value
                     </th>
                   </tr>
-                  <tr className='bg-gray-200'>
-                    <th className='px-2 py-1 text-xs text-right min-w-[150px] border-b'>
+                  <tr className="bg-gray-200">
+                    <th className="px-2 py-1 text-xs text-right min-w-[150px] border-b">
                       Modbus RTU slave
                     </th>
-                    <th className='px-2 py-1 text-xs text-left w-full border-b font-normal'></th>
+                    <th className="px-2 py-1 text-xs text-left w-full border-b font-normal"></th>
                   </tr>
                 </thead>
                 <tbody>
                   {item.value && (
                     <>
-                      <tr className=''>
-                        <td className='px-2 py-1 text-xs text-right font-semibold'>
+                      <tr className="">
+                        <td className="px-2 py-1 text-xs text-right font-semibold">
                           Enable
                         </td>
-                        <td className='px-2 py-1 text-xs'>
+                        <td className="px-2 py-1 text-xs">
                           <input
-                            type='checkbox'
+                            type="checkbox"
                             onChange={(event) => {
                               handleUpdateParameter({
                                 dataFile,
@@ -267,17 +267,17 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                               });
                             }}
                             checked={!!parameter.value.en}
-                            className='w-4 h-4 accent-blue-500 cursor-pointer'
+                            className="w-4 h-4 accent-blue-500 cursor-pointer"
                           />
                         </td>
                       </tr>
-                      <tr className=''>
-                        <td className='px-2 py-1 text-xs text-right font-semibold align-top'>
+                      <tr className="">
+                        <td className="px-2 py-1 text-xs text-right font-semibold align-top">
                           ID
                         </td>
-                        <td className='px-2 py-1 text-xs  flex flex-col gap-1'>
+                        <td className="px-2 py-1 text-xs  flex flex-col gap-1">
                           <input
-                            type='number'
+                            type="number"
                             value={parameter.value.id}
                             onChange={(e) => {
                               handleUpdateParameter({
@@ -288,17 +288,17 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                                 value: Number(e.target.value),
                               });
                             }}
-                            className='bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg px-2 py-1 w-full'
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg px-2 py-1 w-full"
                           />
                         </td>
                       </tr>
-                      <tr className=''>
-                        <td className='px-2 py-1 text-xs text-right font-semibold align-top'>
+                      <tr className="">
+                        <td className="px-2 py-1 text-xs text-right font-semibold align-top">
                           Baudrate
                         </td>
-                        <td className='px-2 py-1 text-xs  flex flex-col gap-1'>
+                        <td className="px-2 py-1 text-xs  flex flex-col gap-1">
                           <input
-                            type='number'
+                            type="number"
                             value={parameter.value.baudrate}
                             onChange={(e) => {
                               handleUpdateParameter({
@@ -309,15 +309,15 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                                 value: Number(e.target.value),
                               });
                             }}
-                            className='bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg px-2 py-1 w-full'
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg px-2 py-1 w-full"
                           />
                         </td>
                       </tr>
-                      <tr className=''>
-                        <td className='px-2 py-1 text-xs text-right font-semibold'>
+                      <tr className="">
+                        <td className="px-2 py-1 text-xs text-right font-semibold">
                           Parity
                         </td>
-                        <td className='px-2 py-1 text-xs'>
+                        <td className="px-2 py-1 text-xs">
                           <select
                             value={parameter.value.parity}
                             onChange={(e) =>
@@ -329,7 +329,7 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                                 value: e.target.value,
                               })
                             }
-                            className='bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg max-w-[150px]'
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg max-w-[150px]"
                           >
                             <option value={"N"}>None</option>
                             <option value={"E"}>Even</option>
@@ -337,11 +337,11 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                           </select>
                         </td>
                       </tr>
-                      <tr className=''>
-                        <td className='px-2 py-1 text-xs text-right font-semibold'>
+                      <tr className="">
+                        <td className="px-2 py-1 text-xs text-right font-semibold">
                           Stop bits
                         </td>
-                        <td className='px-2 py-1 text-xs'>
+                        <td className="px-2 py-1 text-xs">
                           <select
                             value={parameter.value.stopbits}
                             onChange={(e) =>
@@ -353,18 +353,18 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                                 value: Number(e.target.value),
                               })
                             }
-                            className='bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg max-w-[150px]'
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg max-w-[150px]"
                           >
                             <option value={1}>1</option>
                             <option value={2}>2</option>
                           </select>
                         </td>
                       </tr>
-                      <tr className=''>
-                        <td className='px-2 py-1 text-xs text-right font-semibold'>
+                      <tr className="">
+                        <td className="px-2 py-1 text-xs text-right font-semibold">
                           Data order
                         </td>
-                        <td className='px-2 py-1 text-xs'>
+                        <td className="px-2 py-1 text-xs">
                           <select
                             value={parameter.value.order}
                             onChange={(e) =>
@@ -376,7 +376,7 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                                 value: Number(e.target.value),
                               })
                             }
-                            className='bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg max-w-[150px]'
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg max-w-[150px]"
                           >
                             <option value={0}>AB CD</option>
                             <option value={1}>CD AB</option>
@@ -385,13 +385,13 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                           </select>
                         </td>
                       </tr>
-                      <tr className=''>
-                        <td className='px-2 py-1 text-xs text-right font-semibold align-top'>
+                      <tr className="">
+                        <td className="px-2 py-1 text-xs text-right font-semibold align-top">
                           Address offset
                         </td>
-                        <td className='px-2 py-1 text-xs  flex flex-col gap-1'>
+                        <td className="px-2 py-1 text-xs  flex flex-col gap-1">
                           <input
-                            type='number'
+                            type="number"
                             value={parameter.value.offset}
                             onChange={(e) => {
                               handleUpdateParameter({
@@ -402,7 +402,7 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                                 value: Number(e.target.value),
                               });
                             }}
-                            className='bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg px-2 py-1 w-full'
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg px-2 py-1 w-full"
                           />
                         </td>
                       </tr>
@@ -414,34 +414,34 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
           );
         case "tcp_master":
           return (
-            <div className='h-full flex-1'>
-              <table className='w-full'>
+            <div className="h-full flex-1">
+              <table className="w-full">
                 <thead>
-                  <tr className=''>
-                    <th className='px-2 py-1 text-xs text-center min-w-[150px] border-b'>
+                  <tr className="">
+                    <th className="px-2 py-1 text-xs text-center min-w-[150px] border-b">
                       Parameter
                     </th>
-                    <th className='px-2 py-1 text-xs text-center w-full border-b border-l border-r'>
+                    <th className="px-2 py-1 text-xs text-center w-full border-b border-l border-r">
                       Value
                     </th>
                   </tr>
-                  <tr className='bg-gray-200'>
-                    <th className='px-2 py-1 text-xs text-right min-w-[150px] border-b'>
+                  <tr className="bg-gray-200">
+                    <th className="px-2 py-1 text-xs text-right min-w-[150px] border-b">
                       Modbus TCP master
                     </th>
-                    <th className='px-2 py-1 text-xs text-left w-full border-b font-normal'></th>
+                    <th className="px-2 py-1 text-xs text-left w-full border-b font-normal"></th>
                   </tr>
                 </thead>
                 <tbody>
                   {item.value && (
                     <>
-                      <tr className=''>
-                        <td className='px-2 py-1 text-xs text-right font-semibold'>
+                      <tr className="">
+                        <td className="px-2 py-1 text-xs text-right font-semibold">
                           Enable
                         </td>
-                        <td className='px-2 py-1 text-xs'>
+                        <td className="px-2 py-1 text-xs">
                           <input
-                            type='checkbox'
+                            type="checkbox"
                             onChange={(event) => {
                               handleUpdateParameter({
                                 dataFile,
@@ -452,17 +452,17 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                               });
                             }}
                             checked={!!parameter.value.en}
-                            className='w-4 h-4 accent-blue-500 cursor-pointer'
+                            className="w-4 h-4 accent-blue-500 cursor-pointer"
                           />
                         </td>
                       </tr>
-                      <tr className=''>
-                        <td className='px-2 py-1 text-xs text-right font-semibold align-top'>
+                      <tr className="">
+                        <td className="px-2 py-1 text-xs text-right font-semibold align-top">
                           Delay
                         </td>
-                        <td className='px-2 py-1 text-xs  flex flex-col gap-1'>
+                        <td className="px-2 py-1 text-xs  flex flex-col gap-1">
                           <input
-                            type='number'
+                            type="number"
                             value={parameter.value.delay}
                             onChange={(e) => {
                               handleUpdateParameter({
@@ -473,7 +473,7 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                                 value: Number(e.target.value),
                               });
                             }}
-                            className='bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg px-2 py-1 w-full'
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg px-2 py-1 w-full"
                           />
                         </td>
                       </tr>
@@ -485,34 +485,34 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
           );
         case "tcp_slave":
           return (
-            <div className='h-full flex-1'>
-              <table className='w-full'>
+            <div className="h-full flex-1">
+              <table className="w-full">
                 <thead>
-                  <tr className=''>
-                    <th className='px-2 py-1 text-xs text-center min-w-[150px] border-b'>
+                  <tr className="">
+                    <th className="px-2 py-1 text-xs text-center min-w-[150px] border-b">
                       Parameter
                     </th>
-                    <th className='px-2 py-1 text-xs text-center w-full border-b border-l border-r'>
+                    <th className="px-2 py-1 text-xs text-center w-full border-b border-l border-r">
                       Value
                     </th>
                   </tr>
-                  <tr className='bg-gray-200'>
-                    <th className='px-2 py-1 text-xs text-right min-w-[150px] border-b'>
+                  <tr className="bg-gray-200">
+                    <th className="px-2 py-1 text-xs text-right min-w-[150px] border-b">
                       Modbus TCP slave
                     </th>
-                    <th className='px-2 py-1 text-xs text-left w-full border-b font-normal'></th>
+                    <th className="px-2 py-1 text-xs text-left w-full border-b font-normal"></th>
                   </tr>
                 </thead>
                 <tbody>
                   {item.value && (
                     <>
-                      <tr className=''>
-                        <td className='px-2 py-1 text-xs text-right font-semibold'>
+                      <tr className="">
+                        <td className="px-2 py-1 text-xs text-right font-semibold">
                           Enable
                         </td>
-                        <td className='px-2 py-1 text-xs'>
+                        <td className="px-2 py-1 text-xs">
                           <input
-                            type='checkbox'
+                            type="checkbox"
                             onChange={(event) => {
                               handleUpdateParameter({
                                 dataFile,
@@ -523,17 +523,17 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                               });
                             }}
                             checked={!!parameter.value.en}
-                            className='w-4 h-4 accent-blue-500 cursor-pointer'
+                            className="w-4 h-4 accent-blue-500 cursor-pointer"
                           />
                         </td>
                       </tr>
-                      <tr className=''>
-                        <td className='px-2 py-1 text-xs text-right font-semibold align-top'>
+                      <tr className="">
+                        <td className="px-2 py-1 text-xs text-right font-semibold align-top">
                           Port
                         </td>
-                        <td className='px-2 py-1 text-xs  flex flex-col gap-1'>
+                        <td className="px-2 py-1 text-xs  flex flex-col gap-1">
                           <input
-                            type='number'
+                            type="number"
                             value={parameter.value.port}
                             onChange={(e) => {
                               handleUpdateParameter({
@@ -544,17 +544,17 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                                 value: Number(e.target.value),
                               });
                             }}
-                            className='bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg px-2 py-1 w-full'
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg px-2 py-1 w-full"
                           />
                         </td>
                       </tr>
-                      <tr className=''>
-                        <td className='px-2 py-1 text-xs text-right font-semibold align-top'>
+                      <tr className="">
+                        <td className="px-2 py-1 text-xs text-right font-semibold align-top">
                           UnitID
                         </td>
-                        <td className='px-2 py-1 text-xs  flex flex-col gap-1'>
+                        <td className="px-2 py-1 text-xs  flex flex-col gap-1">
                           <input
-                            type='number'
+                            type="number"
                             value={parameter.value.id}
                             onChange={(e) => {
                               handleUpdateParameter({
@@ -565,15 +565,15 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                                 value: Number(e.target.value),
                               });
                             }}
-                            className='bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg px-2 py-1 w-full'
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg px-2 py-1 w-full"
                           />
                         </td>
                       </tr>
-                      <tr className=''>
-                        <td className='px-2 py-1 text-xs text-right font-semibold'>
+                      <tr className="">
+                        <td className="px-2 py-1 text-xs text-right font-semibold">
                           Data order
                         </td>
-                        <td className='px-2 py-1 text-xs'>
+                        <td className="px-2 py-1 text-xs">
                           <select
                             value={parameter.value.order}
                             onChange={(e) =>
@@ -585,7 +585,7 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                                 value: Number(e.target.value),
                               })
                             }
-                            className='bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg max-w-[150px]'
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg max-w-[150px]"
                           >
                             <option value={0}>AB CD</option>
                             <option value={1}>CD AB</option>
@@ -594,13 +594,13 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                           </select>
                         </td>
                       </tr>
-                      <tr className=''>
-                        <td className='px-2 py-1 text-xs text-right font-semibold align-top'>
+                      <tr className="">
+                        <td className="px-2 py-1 text-xs text-right font-semibold align-top">
                           Address offset
                         </td>
-                        <td className='px-2 py-1 text-xs  flex flex-col gap-1'>
+                        <td className="px-2 py-1 text-xs  flex flex-col gap-1">
                           <input
-                            type='number'
+                            type="number"
                             value={parameter.value.offset}
                             onChange={(e) => {
                               handleUpdateParameter({
@@ -611,7 +611,7 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                                 value: Number(e.target.value),
                               });
                             }}
-                            className='bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg px-2 py-1 w-full'
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg px-2 py-1 w-full"
                           />
                         </td>
                       </tr>
@@ -623,34 +623,34 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
           );
         case "common":
           return (
-            <div className='h-full flex-1'>
-              <table className='w-full'>
+            <div className="h-full flex-1">
+              <table className="w-full">
                 <thead>
-                  <tr className=''>
-                    <th className='px-2 py-1 text-xs text-center min-w-[150px] border-b'>
+                  <tr className="">
+                    <th className="px-2 py-1 text-xs text-center min-w-[150px] border-b">
                       Parameter
                     </th>
-                    <th className='px-2 py-1 text-xs text-center w-full border-b border-l border-r'>
+                    <th className="px-2 py-1 text-xs text-center w-full border-b border-l border-r">
                       Value
                     </th>
                   </tr>
-                  <tr className='bg-gray-200'>
-                    <th className='px-2 py-1 text-xs text-right min-w-[150px] border-b'>
+                  <tr className="bg-gray-200">
+                    <th className="px-2 py-1 text-xs text-right min-w-[150px] border-b">
                       System common
                     </th>
-                    <th className='px-2 py-1 text-xs text-left w-full border-b font-normal'></th>
+                    <th className="px-2 py-1 text-xs text-left w-full border-b font-normal"></th>
                   </tr>
                 </thead>
                 <tbody>
                   {item.value && (
                     <>
-                      <tr className=''>
-                        <td className='px-2 py-1 text-xs text-right font-semibold align-top'>
+                      <tr className="">
+                        <td className="px-2 py-1 text-xs text-right font-semibold align-top">
                           LCD page time
                         </td>
-                        <td className='px-2 py-1 text-xs  flex flex-col gap-1'>
+                        <td className="px-2 py-1 text-xs  flex flex-col gap-1">
                           <input
-                            type='number'
+                            type="number"
                             value={parameter.value.page_dur}
                             onChange={(e) => {
                               handleUpdateParameter({
@@ -661,15 +661,15 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                                 value: Number(e.target.value),
                               });
                             }}
-                            className='bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg px-2 py-1 w-full'
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg px-2 py-1 w-full"
                           />
                         </td>
                       </tr>
-                      <tr className=''>
-                        <td className='px-2 py-1 text-xs text-right font-semibold'>
+                      <tr className="">
+                        <td className="px-2 py-1 text-xs text-right font-semibold">
                           Sync time from
                         </td>
-                        <td className='px-2 py-1 text-xs'>
+                        <td className="px-2 py-1 text-xs">
                           <select
                             value={parameter.value.time_sync}
                             onChange={(e) =>
@@ -681,7 +681,7 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                                 value: Number(e.target.value),
                               })
                             }
-                            className='bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg max-w-[150px]'
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg max-w-[150px]"
                           >
                             <option value={0}>None</option>
                             <option value={1}>Internet</option>
@@ -689,13 +689,13 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                           </select>
                         </td>
                       </tr>
-                      <tr className=''>
-                        <td className='px-2 py-1 text-xs text-right font-semibold'>
+                      <tr className="">
+                        <td className="px-2 py-1 text-xs text-right font-semibold">
                           Null context
                         </td>
-                        <td className='px-2 py-1 text-xs'>
+                        <td className="px-2 py-1 text-xs">
                           <input
-                            type='checkbox'
+                            type="checkbox"
                             checked={!!parameter.value.null_ctx}
                             onChange={(event) => {
                               handleUpdateParameter({
@@ -706,17 +706,17 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                                 value: event.target.checked,
                               });
                             }}
-                            className='w-4 h-4 accent-blue-500 cursor-pointer'
+                            className="w-4 h-4 accent-blue-500 cursor-pointer"
                           />
                         </td>
                       </tr>
-                      <tr className=''>
-                        <td className='px-2 py-1 text-xs text-right font-semibold align-top'>
+                      <tr className="">
+                        <td className="px-2 py-1 text-xs text-right font-semibold align-top">
                           Config port
                         </td>
-                        <td className='px-2 py-1 text-xs  flex flex-col gap-1'>
+                        <td className="px-2 py-1 text-xs  flex flex-col gap-1">
                           <input
-                            type='number'
+                            type="number"
                             value={parameter.value.conf_port}
                             onChange={(e) => {
                               handleUpdateParameter({
@@ -727,17 +727,17 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                                 value: Number(e.target.value),
                               });
                             }}
-                            className='bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg px-2 py-1 w-full'
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg px-2 py-1 w-full"
                           />
                         </td>
                       </tr>
-                      <tr className=''>
-                        <td className='px-2 py-1 text-xs text-right font-semibold align-top'>
+                      <tr className="">
+                        <td className="px-2 py-1 text-xs text-right font-semibold align-top">
                           Report precision
                         </td>
-                        <td className='px-2 py-1 text-xs  flex flex-col gap-1'>
+                        <td className="px-2 py-1 text-xs  flex flex-col gap-1">
                           <input
-                            type='number'
+                            type="number"
                             value={parameter.value.precision}
                             onChange={(e) => {
                               handleUpdateParameter({
@@ -748,17 +748,17 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                                 value: Number(e.target.value),
                               });
                             }}
-                            className='bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg px-2 py-1 w-full'
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg px-2 py-1 w-full"
                           />
                         </td>
                       </tr>
-                      <tr className=''>
-                        <td className='px-2 py-1 text-xs text-right font-semibold align-top'>
+                      <tr className="">
+                        <td className="px-2 py-1 text-xs text-right font-semibold align-top">
                           AI location
                         </td>
-                        <td className='px-2 py-1 text-xs  flex flex-col gap-1'>
+                        <td className="px-2 py-1 text-xs  flex flex-col gap-1">
                           <input
-                            type='number'
+                            type="number"
                             value={parameter.value.ai_loc}
                             onChange={(e) => {
                               handleUpdateParameter({
@@ -769,17 +769,17 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                                 value: Number(e.target.value),
                               });
                             }}
-                            className='bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg px-2 py-1 w-full'
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg px-2 py-1 w-full"
                           />
                         </td>
                       </tr>
-                      <tr className=''>
-                        <td className='px-2 py-1 text-xs text-right font-semibold align-top'>
+                      <tr className="">
+                        <td className="px-2 py-1 text-xs text-right font-semibold align-top">
                           DI location
                         </td>
-                        <td className='px-2 py-1 text-xs  flex flex-col gap-1'>
+                        <td className="px-2 py-1 text-xs  flex flex-col gap-1">
                           <input
-                            type='number'
+                            type="number"
                             value={parameter.value.di_loc}
                             onChange={(e) => {
                               handleUpdateParameter({
@@ -790,17 +790,17 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                                 value: Number(e.target.value),
                               });
                             }}
-                            className='bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg px-2 py-1 w-full'
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg px-2 py-1 w-full"
                           />
                         </td>
                       </tr>
-                      <tr className=''>
-                        <td className='px-2 py-1 text-xs text-right font-semibold align-top'>
+                      <tr className="">
+                        <td className="px-2 py-1 text-xs text-right font-semibold align-top">
                           DO location
                         </td>
-                        <td className='px-2 py-1 text-xs  flex flex-col gap-1'>
+                        <td className="px-2 py-1 text-xs  flex flex-col gap-1">
                           <input
-                            type='number'
+                            type="number"
                             value={parameter.value.do_loc}
                             onChange={(e) => {
                               handleUpdateParameter({
@@ -811,17 +811,17 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                                 value: Number(e.target.value),
                               });
                             }}
-                            className='bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg px-2 py-1 w-full'
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg px-2 py-1 w-full"
                           />
                         </td>
                       </tr>
-                      <tr className=''>
-                        <td className='px-2 py-1 text-xs text-right font-semibold align-top'>
+                      <tr className="">
+                        <td className="px-2 py-1 text-xs text-right font-semibold align-top">
                           Data Fields Order
                         </td>
-                        <td className='px-2 py-1 text-xs  flex flex-col gap-1'>
+                        <td className="px-2 py-1 text-xs  flex flex-col gap-1">
                           <input
-                            type='number'
+                            type="number"
                             value={parameter.value.data_fields_order}
                             onChange={(e) => {
                               handleUpdateParameter({
@@ -832,38 +832,17 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                                 value: Number(e.target.value),
                               });
                             }}
-                            className='bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg px-2 py-1 w-full'
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg px-2 py-1 w-full"
                           />
                         </td>
                       </tr>
-                      <tr className=''>
-                        <td className='px-2 py-1 text-xs text-right font-semibold align-top'>
-                          LCD tag change
-                        </td>
-                        <td className='px-2 py-1 text-xs  flex flex-col gap-1'>
-                          <input
-                            type='number'
-                            value={parameter.value.lcd_tag_change}
-                            onChange={(e) => {
-                              handleUpdateParameter({
-                                dataFile,
-                                setDataFile,
-                                key: item.key,
-                                paramKey: "lcd_tag_change",
-                                value: Number(e.target.value),
-                              });
-                            }}
-                            className='bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg px-2 py-1 w-full'
-                          />
-                        </td>
-                      </tr>
-                      <tr className=''>
-                        <td className='px-2 py-1 text-xs text-right font-semibold'>
+                      <tr className="">
+                        <td className="px-2 py-1 text-xs text-right font-semibold">
                           Memory persistent
                         </td>
-                        <td className='px-2 py-1 text-xs'>
+                        <td className="px-2 py-1 text-xs">
                           <input
-                            type='checkbox'
+                            type="checkbox"
                             checked={!!parameter.value.persist}
                             onChange={(event) => {
                               handleUpdateParameter({
@@ -874,7 +853,7 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                                 value: event.target.checked,
                               });
                             }}
-                            className='w-4 h-4 accent-blue-500 cursor-pointer'
+                            className="w-4 h-4 accent-blue-500 cursor-pointer"
                           />
                         </td>
                       </tr>
@@ -886,22 +865,22 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
           );
         case "ftp":
           return (
-            <div className='h-full flex-1'>
-              <table className='w-full'>
+            <div className="h-full flex-1">
+              <table className="w-full">
                 <thead>
-                  <tr className=''>
-                    <th className='px-2 py-1 text-xs text-center min-w-[150px] border-b'>
+                  <tr className="">
+                    <th className="px-2 py-1 text-xs text-center min-w-[150px] border-b">
                       Parameter
                     </th>
-                    <th className='px-2 py-1 text-xs text-center w-full border-b border-l border-r'>
+                    <th className="px-2 py-1 text-xs text-center w-full border-b border-l border-r">
                       Value
                     </th>
                   </tr>
-                  <tr className='bg-gray-200'>
-                    <th className='px-2 py-1 text-xs text-right min-w-[150px] border-b'>
+                  <tr className="bg-gray-200">
+                    <th className="px-2 py-1 text-xs text-right min-w-[150px] border-b">
                       Ftp Server
                     </th>
-                    <th className='px-2 py-1 text-xs text-left w-full border-b font-normal'>
+                    <th className="px-2 py-1 text-xs text-left w-full border-b font-normal">
                       {item.idx}
                     </th>
                   </tr>
@@ -909,13 +888,13 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                 <tbody>
                   {item.value && (
                     <>
-                      <tr className=''>
-                        <td className='px-2 py-1 text-xs text-right font-semibold'>
+                      <tr className="">
+                        <td className="px-2 py-1 text-xs text-right font-semibold">
                           Enable
                         </td>
-                        <td className='px-2 py-1 text-xs'>
+                        <td className="px-2 py-1 text-xs">
                           <input
-                            type='checkbox'
+                            type="checkbox"
                             checked={!!parameter.value.en}
                             onChange={(event) => {
                               handleUpdateParameter({
@@ -927,17 +906,17 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                                 value: event.target.checked,
                               });
                             }}
-                            className='w-4 h-4 accent-blue-500 cursor-pointer'
+                            className="w-4 h-4 accent-blue-500 cursor-pointer"
                           />
                         </td>
                       </tr>
-                      <tr className=''>
-                        <td className='px-2 py-1 text-xs text-right font-semibold'>
+                      <tr className="">
+                        <td className="px-2 py-1 text-xs text-right font-semibold">
                           Global
                         </td>
-                        <td className='px-2 py-1 text-xs'>
+                        <td className="px-2 py-1 text-xs">
                           <input
-                            type='checkbox'
+                            type="checkbox"
                             checked={!!parameter.value.client.global}
                             onChange={(event) => {
                               handleUpdateParameter({
@@ -950,15 +929,15 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                                 value: event.target.checked,
                               });
                             }}
-                            className='w-4 h-4 accent-blue-500 cursor-pointer'
+                            className="w-4 h-4 accent-blue-500 cursor-pointer"
                           />
                         </td>
                       </tr>
-                      <tr className=''>
-                        <td className='px-2 py-1 text-xs text-right font-semibold'>
+                      <tr className="">
+                        <td className="px-2 py-1 text-xs text-right font-semibold">
                           Make directory
                         </td>
-                        <td className='px-2 py-1 text-xs'>
+                        <td className="px-2 py-1 text-xs">
                           <select
                             value={parameter.value.client.make_dir_type}
                             onChange={(e) =>
@@ -972,7 +951,7 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                                 value: Number(e.target.value),
                               })
                             }
-                            className='bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg max-w-[150px]'
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg max-w-[150px]"
                           >
                             <option value={0}>Normal</option>
                             <option value={1}>Day only</option>
@@ -980,13 +959,13 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                           </select>
                         </td>
                       </tr>
-                      <tr className=''>
-                        <td className='px-2 py-1 text-xs text-right font-semibold'>
+                      <tr className="">
+                        <td className="px-2 py-1 text-xs text-right font-semibold">
                           Ip/hostname
                         </td>
-                        <td className='px-2 py-1 text-xs'>
+                        <td className="px-2 py-1 text-xs">
                           <input
-                            type='text'
+                            type="text"
                             value={parameter.value.client.ip}
                             onChange={(e) =>
                               handleUpdateParameter({
@@ -999,17 +978,17 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                                 value: e.target.value,
                               })
                             }
-                            className='bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg px-2 py-1 w-full'
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg px-2 py-1 w-full"
                           />
                         </td>
                       </tr>
-                      <tr className=''>
-                        <td className='px-2 py-1 text-xs text-right font-semibold align-top'>
+                      <tr className="">
+                        <td className="px-2 py-1 text-xs text-right font-semibold align-top">
                           Port
                         </td>
-                        <td className='px-2 py-1 text-xs  flex flex-col gap-1'>
+                        <td className="px-2 py-1 text-xs  flex flex-col gap-1">
                           <input
-                            type='number'
+                            type="number"
                             value={parameter.value.client.port}
                             onChange={(e) =>
                               handleUpdateParameter({
@@ -1022,17 +1001,17 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                                 value: Number(e.target.value),
                               })
                             }
-                            className='bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg px-2 py-1 w-full'
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg px-2 py-1 w-full"
                           />
                         </td>
                       </tr>
-                      <tr className=''>
-                        <td className='px-2 py-1 text-xs text-right font-semibold'>
+                      <tr className="">
+                        <td className="px-2 py-1 text-xs text-right font-semibold">
                           Username
                         </td>
-                        <td className='px-2 py-1 text-xs'>
+                        <td className="px-2 py-1 text-xs">
                           <input
-                            type='text'
+                            type="text"
                             value={parameter.value.client.user}
                             onChange={(e) =>
                               handleUpdateParameter({
@@ -1045,17 +1024,17 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                                 value: e.target.value,
                               })
                             }
-                            className='bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg px-2 py-1 w-full'
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg px-2 py-1 w-full"
                           />
                         </td>
                       </tr>
-                      <tr className=''>
-                        <td className='px-2 py-1 text-xs text-right font-semibold'>
+                      <tr className="">
+                        <td className="px-2 py-1 text-xs text-right font-semibold">
                           Password
                         </td>
-                        <td className='px-2 py-1 text-xs'>
+                        <td className="px-2 py-1 text-xs">
                           <input
-                            type='text'
+                            type="text"
                             value={parameter.value.client.passwd}
                             onChange={(e) =>
                               handleUpdateParameter({
@@ -1068,17 +1047,17 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                                 value: e.target.value,
                               })
                             }
-                            className='bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg px-2 py-1 w-full'
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg px-2 py-1 w-full"
                           />
                         </td>
                       </tr>
-                      <tr className=''>
-                        <td className='px-2 py-1 text-xs text-right font-semibold'>
+                      <tr className="">
+                        <td className="px-2 py-1 text-xs text-right font-semibold">
                           Log folder
                         </td>
-                        <td className='px-2 py-1 text-xs'>
+                        <td className="px-2 py-1 text-xs">
                           <input
-                            type='text'
+                            type="text"
                             value={parameter.value.client.remote_prefix}
                             onChange={(e) =>
                               handleUpdateParameter({
@@ -1091,17 +1070,17 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                                 value: e.target.value,
                               })
                             }
-                            className='bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg px-2 py-1 w-full'
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg px-2 py-1 w-full"
                           />
                         </td>
                       </tr>
-                      <tr className=''>
-                        <td className='px-2 py-1 text-xs text-right font-semibold'>
+                      <tr className="">
+                        <td className="px-2 py-1 text-xs text-right font-semibold">
                           Assert
                         </td>
-                        <td className='px-2 py-1 text-xs'>
+                        <td className="px-2 py-1 text-xs">
                           <input
-                            type='checkbox'
+                            type="checkbox"
                             checked={!!parameter.value.client.assert}
                             onChange={(event) => {
                               handleUpdateParameter({
@@ -1114,17 +1093,17 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                                 value: event.target.checked,
                               });
                             }}
-                            className='w-4 h-4 accent-blue-500 cursor-pointer'
+                            className="w-4 h-4 accent-blue-500 cursor-pointer"
                           />
                         </td>
                       </tr>
-                      <tr className=''>
-                        <td className='px-2 py-1 text-xs text-right font-semibold'>
+                      <tr className="">
+                        <td className="px-2 py-1 text-xs text-right font-semibold">
                           Disable EPASV
                         </td>
-                        <td className='px-2 py-1 text-xs'>
+                        <td className="px-2 py-1 text-xs">
                           <input
-                            type='checkbox'
+                            type="checkbox"
                             checked={!!parameter.value.client.dep}
                             onChange={(event) => {
                               handleUpdateParameter({
@@ -1137,17 +1116,17 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                                 value: event.target.checked,
                               });
                             }}
-                            className='w-4 h-4 accent-blue-500 cursor-pointer'
+                            className="w-4 h-4 accent-blue-500 cursor-pointer"
                           />
                         </td>
                       </tr>
-                      <tr className=''>
-                        <td className='px-2 py-1 text-xs text-right font-semibold'>
+                      <tr className="">
+                        <td className="px-2 py-1 text-xs text-right font-semibold">
                           Provin
                         </td>
-                        <td className='px-2 py-1 text-xs'>
+                        <td className="px-2 py-1 text-xs">
                           <input
-                            type='text'
+                            type="text"
                             value={parameter.value.creator.provin}
                             onChange={(e) =>
                               handleUpdateParameter({
@@ -1160,17 +1139,17 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                                 value: e.target.value,
                               })
                             }
-                            className='bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg px-2 py-1 w-full'
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg px-2 py-1 w-full"
                           />
                         </td>
                       </tr>
-                      <tr className=''>
-                        <td className='px-2 py-1 text-xs text-right font-semibold'>
+                      <tr className="">
+                        <td className="px-2 py-1 text-xs text-right font-semibold">
                           District
                         </td>
-                        <td className='px-2 py-1 text-xs'>
+                        <td className="px-2 py-1 text-xs">
                           <input
-                            type='text'
+                            type="text"
                             value={parameter.value.creator.district}
                             onChange={(e) =>
                               handleUpdateParameter({
@@ -1183,17 +1162,17 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                                 value: e.target.value,
                               })
                             }
-                            className='bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg px-2 py-1 w-full'
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg px-2 py-1 w-full"
                           />
                         </td>
                       </tr>
-                      <tr className=''>
-                        <td className='px-2 py-1 text-xs text-right font-semibold'>
+                      <tr className="">
+                        <td className="px-2 py-1 text-xs text-right font-semibold">
                           Station
                         </td>
-                        <td className='px-2 py-1 text-xs'>
+                        <td className="px-2 py-1 text-xs">
                           <input
-                            type='text'
+                            type="text"
                             value={parameter.value.creator.station}
                             onChange={(e) =>
                               handleUpdateParameter({
@@ -1206,15 +1185,15 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                                 value: e.target.value,
                               })
                             }
-                            className='bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg px-2 py-1 w-full'
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg px-2 py-1 w-full"
                           />
                         </td>
                       </tr>
-                      <tr className=''>
-                        <td className='px-2 py-1 text-xs text-right font-semibold'>
+                      <tr className="">
+                        <td className="px-2 py-1 text-xs text-right font-semibold">
                           File type
                         </td>
-                        <td className='px-2 py-1 text-xs'>
+                        <td className="px-2 py-1 text-xs">
                           <select
                             value={parameter.value.creator.file_type}
                             onChange={(e) =>
@@ -1228,7 +1207,7 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                                 value: Number(e.target.value),
                               })
                             }
-                            className='bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg max-w-[150px]'
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg max-w-[150px]"
                           >
                             <option value={0}>TXT</option>
                             <option value={1}>CSV</option>
@@ -1236,11 +1215,11 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                           </select>
                         </td>
                       </tr>
-                      <tr className=''>
-                        <td className='px-2 py-1 text-xs text-right font-semibold'>
+                      <tr className="">
+                        <td className="px-2 py-1 text-xs text-right font-semibold">
                           Backup months
                         </td>
-                        <td className='px-2 py-1 text-xs'>
+                        <td className="px-2 py-1 text-xs">
                           <select
                             value={parameter.value.creator.keep_month}
                             onChange={(e) =>
@@ -1254,7 +1233,7 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                                 value: Number(e.target.value),
                               })
                             }
-                            className='bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg max-w-[150px]'
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg max-w-[150px]"
                           >
                             <option value={0}>0</option>
                             <option value={1}>1</option>
@@ -1263,35 +1242,13 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                           </select>
                         </td>
                       </tr>
-                      <tr className=''>
-                        <td className='px-2 py-1 text-xs text-right font-semibold'>
-                          Log duration
-                        </td>
-                        <td className='px-2 py-1 text-xs'>
-                          <input
-                            type='number'
-                            value={parameter.value.duration}
-                            onChange={(e) =>
-                              handleUpdateParameter({
-                                dataFile,
-                                setDataFile,
-                                key: item.key,
-                                index: item.idx,
-                                paramKey: "duration",
-                                value: Number(e.target.value),
-                              })
-                            }
-                            className='bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg px-2 py-1 w-full'
-                          />
-                        </td>
-                      </tr>
-                      <tr className=''>
-                        <td className='px-2 py-1 text-xs text-right font-semibold'>
+                      <tr className="">
+                        <td className="px-2 py-1 text-xs text-right font-semibold">
                           Log at second
                         </td>
-                        <td className='px-2 py-1 text-xs'>
+                        <td className="px-2 py-1 text-xs">
                           <input
-                            type='number'
+                            type="number"
                             value={parameter.value.second}
                             onChange={(e) =>
                               handleUpdateParameter({
@@ -1303,17 +1260,17 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                                 value: Number(e.target.value),
                               })
                             }
-                            className='bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg px-2 py-1 w-full'
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg px-2 py-1 w-full"
                           />
                         </td>
                       </tr>
-                      <tr className=''>
-                        <td className='px-2 py-1 text-xs text-right font-semibold'>
+                      <tr className="">
+                        <td className="px-2 py-1 text-xs text-right font-semibold">
                           Copy to Sdcard
                         </td>
-                        <td className='px-2 py-1 text-xs'>
+                        <td className="px-2 py-1 text-xs">
                           <input
-                            type='checkbox'
+                            type="checkbox"
                             checked={!!parameter.value.client.clone}
                             onChange={(event) => {
                               handleUpdateParameter({
@@ -1326,7 +1283,7 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                                 value: event.target.checked,
                               });
                             }}
-                            className='w-4 h-4 accent-blue-500 cursor-pointer'
+                            className="w-4 h-4 accent-blue-500 cursor-pointer"
                           />
                         </td>
                       </tr>
@@ -1338,34 +1295,34 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
           );
         case "control":
           return (
-            <div className='h-full flex-1'>
-              <table className='w-full'>
+            <div className="h-full flex-1">
+              <table className="w-full">
                 <thead>
-                  <tr className=''>
-                    <th className='px-2 py-1 text-xs text-center min-w-[150px] border-b'>
+                  <tr className="">
+                    <th className="px-2 py-1 text-xs text-center min-w-[150px] border-b">
                       Parameter
                     </th>
-                    <th className='px-2 py-1 text-xs text-center w-full border-b border-l border-r'>
+                    <th className="px-2 py-1 text-xs text-center w-full border-b border-l border-r">
                       Value
                     </th>
                   </tr>
-                  <tr className='bg-gray-200'>
-                    <th className='px-2 py-1 text-xs text-right min-w-[150px] border-b'>
+                  <tr className="bg-gray-200">
+                    <th className="px-2 py-1 text-xs text-right min-w-[150px] border-b">
                       Control Server
                     </th>
-                    <th className='px-2 py-1 text-xs text-left w-full border-b font-normal'></th>
+                    <th className="px-2 py-1 text-xs text-left w-full border-b font-normal"></th>
                   </tr>
                 </thead>
                 <tbody>
                   {item.value && (
                     <>
-                      <tr className=''>
-                        <td className='px-2 py-1 text-xs text-right font-semibold'>
+                      <tr className="">
+                        <td className="px-2 py-1 text-xs text-right font-semibold">
                           Enable
                         </td>
-                        <td className='px-2 py-1 text-xs'>
+                        <td className="px-2 py-1 text-xs">
                           <input
-                            type='checkbox'
+                            type="checkbox"
                             checked={!!parameter.value.en}
                             onChange={(event) => {
                               handleUpdateParameter({
@@ -1376,15 +1333,15 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                                 value: event.target.checked,
                               });
                             }}
-                            className='w-4 h-4 accent-blue-500 cursor-pointer'
+                            className="w-4 h-4 accent-blue-500 cursor-pointer"
                           />
                         </td>
                       </tr>
-                      <tr className=''>
-                        <td className='px-2 py-1 text-xs text-right font-semibold'>
+                      <tr className="">
+                        <td className="px-2 py-1 text-xs text-right font-semibold">
                           Type
                         </td>
-                        <td className='px-2 py-1 text-xs'>
+                        <td className="px-2 py-1 text-xs">
                           <select
                             value={parameter.value.type}
                             onChange={(e) =>
@@ -1396,7 +1353,7 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                                 value: Number(e.target.value),
                               })
                             }
-                            className='bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg max-w-[150px]'
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg max-w-[150px]"
                           >
                             <option value={0}>RAW</option>
                             <option value={1}>MQTT</option>
@@ -1405,13 +1362,13 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                           </select>
                         </td>
                       </tr>
-                      <tr className=''>
-                        <td className='px-2 py-1 text-xs text-right font-semibold'>
+                      <tr className="">
+                        <td className="px-2 py-1 text-xs text-right font-semibold">
                           Ip/hostname
                         </td>
-                        <td className='px-2 py-1 text-xs'>
+                        <td className="px-2 py-1 text-xs">
                           <input
-                            type='text'
+                            type="text"
                             value={parameter.value.ip}
                             onChange={(e) =>
                               handleUpdateParameter({
@@ -1422,17 +1379,17 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                                 value: e.target.value,
                               })
                             }
-                            className='bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg px-2 py-1 w-full'
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg px-2 py-1 w-full"
                           />
                         </td>
                       </tr>
-                      <tr className=''>
-                        <td className='px-2 py-1 text-xs text-right font-semibold align-top'>
+                      <tr className="">
+                        <td className="px-2 py-1 text-xs text-right font-semibold align-top">
                           Port
                         </td>
-                        <td className='px-2 py-1 text-xs  flex flex-col gap-1'>
+                        <td className="px-2 py-1 text-xs  flex flex-col gap-1">
                           <input
-                            type='number'
+                            type="number"
                             value={parameter.value.port}
                             onChange={(e) =>
                               handleUpdateParameter({
@@ -1443,17 +1400,17 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                                 value: Number(e.target.value),
                               })
                             }
-                            className='bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg px-2 py-1 w-full'
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg px-2 py-1 w-full"
                           />
                         </td>
                       </tr>
-                      <tr className=''>
-                        <td className='px-2 py-1 text-xs text-right font-semibold'>
+                      <tr className="">
+                        <td className="px-2 py-1 text-xs text-right font-semibold">
                           Username
                         </td>
-                        <td className='px-2 py-1 text-xs'>
+                        <td className="px-2 py-1 text-xs">
                           <input
-                            type='text'
+                            type="text"
                             value={parameter.value.user}
                             onChange={(e) =>
                               handleUpdateParameter({
@@ -1464,17 +1421,17 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                                 value: e.target.value,
                               })
                             }
-                            className='bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg px-2 py-1 w-full'
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg px-2 py-1 w-full"
                           />
                         </td>
                       </tr>
-                      <tr className=''>
-                        <td className='px-2 py-1 text-xs text-right font-semibold'>
+                      <tr className="">
+                        <td className="px-2 py-1 text-xs text-right font-semibold">
                           Password
                         </td>
-                        <td className='px-2 py-1 text-xs'>
+                        <td className="px-2 py-1 text-xs">
                           <input
-                            type='text'
+                            type="text"
                             value={parameter.value.passwd}
                             onChange={(e) =>
                               handleUpdateParameter({
@@ -1485,17 +1442,17 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                                 value: e.target.value,
                               })
                             }
-                            className='bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg px-2 py-1 w-full'
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg px-2 py-1 w-full"
                           />
                         </td>
                       </tr>
-                      <tr className=''>
-                        <td className='px-2 py-1 text-xs text-right font-semibold'>
+                      <tr className="">
+                        <td className="px-2 py-1 text-xs text-right font-semibold">
                           Identify
                         </td>
-                        <td className='px-2 py-1 text-xs'>
+                        <td className="px-2 py-1 text-xs">
                           <input
-                            type='text'
+                            type="text"
                             value={parameter.value.uuid}
                             onChange={(e) =>
                               handleUpdateParameter({
@@ -1506,17 +1463,17 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                                 value: e.target.value,
                               })
                             }
-                            className='bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg px-2 py-1 w-full'
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg px-2 py-1 w-full"
                           />
                         </td>
                       </tr>
-                      <tr className=''>
-                        <td className='px-2 py-1 text-xs text-right font-semibold'>
+                      <tr className="">
+                        <td className="px-2 py-1 text-xs text-right font-semibold">
                           Identify2
                         </td>
-                        <td className='px-2 py-1 text-xs'>
+                        <td className="px-2 py-1 text-xs">
                           <input
-                            type='text'
+                            type="text"
                             value={parameter.value.uuid2}
                             onChange={(e) =>
                               handleUpdateParameter({
@@ -1527,17 +1484,17 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                                 value: e.target.value,
                               })
                             }
-                            className='bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg px-2 py-1 w-full'
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg px-2 py-1 w-full"
                           />
                         </td>
                       </tr>
-                      <tr className=''>
-                        <td className='px-2 py-1 text-xs text-right font-semibold align-top'>
+                      <tr className="">
+                        <td className="px-2 py-1 text-xs text-right font-semibold align-top">
                           Pin index
                         </td>
-                        <td className='px-2 py-1 text-xs  flex flex-col gap-1'>
+                        <td className="px-2 py-1 text-xs  flex flex-col gap-1">
                           <input
-                            type='number'
+                            type="number"
                             value={parameter.value.index}
                             onChange={(e) =>
                               handleUpdateParameter({
@@ -1548,17 +1505,17 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                                 value: Number(e.target.value),
                               })
                             }
-                            className='bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg px-2 py-1 w-full'
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg px-2 py-1 w-full"
                           />
                         </td>
                       </tr>
-                      <tr className=''>
-                        <td className='px-2 py-1 text-xs text-right font-semibold align-top'>
+                      <tr className="">
+                        <td className="px-2 py-1 text-xs text-right font-semibold align-top">
                           Pulse Duty(s)
                         </td>
-                        <td className='px-2 py-1 text-xs  flex flex-col gap-1'>
+                        <td className="px-2 py-1 text-xs  flex flex-col gap-1">
                           <input
-                            type='number'
+                            type="number"
                             value={parameter.value.duty}
                             onChange={(e) =>
                               handleUpdateParameter({
@@ -1569,17 +1526,17 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                                 value: Number(e.target.value),
                               })
                             }
-                            className='bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg px-2 py-1 w-full'
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg px-2 py-1 w-full"
                           />
                         </td>
                       </tr>
-                      <tr className=''>
-                        <td className='px-2 py-1 text-xs text-right font-semibold align-top'>
+                      <tr className="">
+                        <td className="px-2 py-1 text-xs text-right font-semibold align-top">
                           Port 2
                         </td>
-                        <td className='px-2 py-1 text-xs  flex flex-col gap-1'>
+                        <td className="px-2 py-1 text-xs  flex flex-col gap-1">
                           <input
-                            type='number'
+                            type="number"
                             value={parameter.value.port2}
                             onChange={(e) =>
                               handleUpdateParameter({
@@ -1590,17 +1547,17 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                                 value: Number(e.target.value),
                               })
                             }
-                            className='bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg px-2 py-1 w-full'
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg px-2 py-1 w-full"
                           />
                         </td>
                       </tr>
-                      <tr className=''>
-                        <td className='px-2 py-1 text-xs text-right font-semibold'>
+                      <tr className="">
+                        <td className="px-2 py-1 text-xs text-right font-semibold">
                           Username 2
                         </td>
-                        <td className='px-2 py-1 text-xs'>
+                        <td className="px-2 py-1 text-xs">
                           <input
-                            type='text'
+                            type="text"
                             value={parameter.value.user2}
                             onChange={(e) =>
                               handleUpdateParameter({
@@ -1611,17 +1568,17 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                                 value: e.target.value,
                               })
                             }
-                            className='bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg px-2 py-1 w-full'
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg px-2 py-1 w-full"
                           />
                         </td>
                       </tr>
-                      <tr className=''>
-                        <td className='px-2 py-1 text-xs text-right font-semibold'>
+                      <tr className="">
+                        <td className="px-2 py-1 text-xs text-right font-semibold">
                           Password 2
                         </td>
-                        <td className='px-2 py-1 text-xs'>
+                        <td className="px-2 py-1 text-xs">
                           <input
-                            type='text'
+                            type="text"
                             value={parameter.value.passwd2}
                             onChange={(e) =>
                               handleUpdateParameter({
@@ -1632,7 +1589,7 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                                 value: e.target.value,
                               })
                             }
-                            className='bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg px-2 py-1 w-full'
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg px-2 py-1 w-full"
                           />
                         </td>
                       </tr>
@@ -1644,22 +1601,22 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
           );
         case "ais":
           return (
-            <div className='h-full flex-1'>
-              <table className='w-full'>
+            <div className="h-full flex-1">
+              <table className="w-full">
                 <thead>
-                  <tr className=''>
-                    <th className='px-2 py-1 text-xs text-center min-w-[150px] border-b'>
+                  <tr className="">
+                    <th className="px-2 py-1 text-xs text-center min-w-[150px] border-b">
                       Parameter
                     </th>
-                    <th className='px-2 py-1 text-xs text-center w-full border-b border-l border-r'>
+                    <th className="px-2 py-1 text-xs text-center w-full border-b border-l border-r">
                       Value
                     </th>
                   </tr>
-                  <tr className='bg-gray-200'>
-                    <th className='px-2 py-1 text-xs text-right min-w-[150px] border-b '>
+                  <tr className="bg-gray-200">
+                    <th className="px-2 py-1 text-xs text-right min-w-[150px] border-b ">
                       {item.key.toUpperCase()}
                     </th>
-                    <th className='px-2 py-1 text-xs text-left w-full border-b font-normal'>
+                    <th className="px-2 py-1 text-xs text-left w-full border-b font-normal">
                       {item.idx}
                     </th>
                   </tr>
@@ -1667,11 +1624,11 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                 <tbody>
                   {item.value && (
                     <>
-                      <tr className=''>
-                        <td className='px-2 py-1 text-xs text-right font-semibold'>
+                      <tr className="">
+                        <td className="px-2 py-1 text-xs text-right font-semibold">
                           Mode
                         </td>
-                        <td className='px-2 py-1 text-xs'>
+                        <td className="px-2 py-1 text-xs">
                           <select
                             value={parameter.value.measure_mode}
                             onChange={(event) => {
@@ -1684,7 +1641,7 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                                 value: Number(event.target.value),
                               });
                             }}
-                            className='bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg max-w-[150px]'
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg max-w-[150px]"
                           >
                             <option value={0}>Current</option>
                             <option value={1}>Voltage</option>
@@ -1699,22 +1656,22 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
           );
         case "dis":
           return (
-            <div className='h-full flex-1'>
-              <table className='w-full'>
+            <div className="h-full flex-1">
+              <table className="w-full">
                 <thead>
-                  <tr className=''>
-                    <th className='px-2 py-1 text-xs text-center min-w-[150px] border-b'>
+                  <tr className="">
+                    <th className="px-2 py-1 text-xs text-center min-w-[150px] border-b">
                       Parameter
                     </th>
-                    <th className='px-2 py-1 text-xs text-center w-full border-b border-l border-r'>
+                    <th className="px-2 py-1 text-xs text-center w-full border-b border-l border-r">
                       Value
                     </th>
                   </tr>
-                  <tr className='bg-gray-200'>
-                    <th className='px-2 py-1 text-xs text-right min-w-[150px] border-b '>
+                  <tr className="bg-gray-200">
+                    <th className="px-2 py-1 text-xs text-right min-w-[150px] border-b ">
                       {item.key.toUpperCase()}
                     </th>
-                    <th className='px-2 py-1 text-xs text-left w-full border-b font-normal'>
+                    <th className="px-2 py-1 text-xs text-left w-full border-b font-normal">
                       {item.idx}
                     </th>
                   </tr>
@@ -1722,11 +1679,11 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                 <tbody>
                   {item.value && (
                     <>
-                      <tr className=''>
-                        <td className='px-2 py-1 text-xs text-right font-semibold'>
+                      <tr className="">
+                        <td className="px-2 py-1 text-xs text-right font-semibold">
                           Active level
                         </td>
-                        <td className='px-2 py-1 text-xs font-normat'>
+                        <td className="px-2 py-1 text-xs font-normat">
                           <select
                             value={parameter.value.act_lev}
                             onChange={(event) => {
@@ -1739,18 +1696,18 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                                 value: Number(event.target.value),
                               });
                             }}
-                            className='bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg max-w-[150px]'
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg max-w-[150px]"
                           >
                             <option value={0}>Low</option>
                             <option value={1}>High</option>
                           </select>
                         </td>
                       </tr>
-                      <tr className=''>
-                        <td className='px-2 py-1 text-xs text-right font-semibold'>
+                      <tr className="">
+                        <td className="px-2 py-1 text-xs text-right font-semibold">
                           Function
                         </td>
-                        <td className='px-2 py-1 text-xs'>
+                        <td className="px-2 py-1 text-xs">
                           <select
                             value={parameter.value.act_type}
                             onChange={(event) => {
@@ -1763,20 +1720,20 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                                 value: Number(event.target.value),
                               });
                             }}
-                            className='bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg max-w-[150px]'
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg max-w-[150px]"
                           >
                             <option value={0}>Level</option>
                             <option value={1}>Pulse</option>
                           </select>
                         </td>
                       </tr>
-                      <tr className=''>
-                        <td className='px-2 py-1 text-xs text-right font-semibold align-top'>
+                      <tr className="">
+                        <td className="px-2 py-1 text-xs text-right font-semibold align-top">
                           Value per pulse
                         </td>
-                        <td className='px-2 py-1 text-xs  flex flex-col gap-1'>
+                        <td className="px-2 py-1 text-xs  flex flex-col gap-1">
                           <input
-                            type='number'
+                            type="number"
                             value={Number(parameter.value.increment) || 0}
                             onChange={(e) => {
                               let val = e.target.value;
@@ -1794,7 +1751,7 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                                 value: numValue,
                               });
                             }}
-                            className='bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg px-2 py-1 w-full'
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg px-2 py-1 w-full"
                           />
                         </td>
                       </tr>
@@ -1806,22 +1763,22 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
           );
         case "dos":
           return (
-            <div className='h-full flex-1'>
-              <table className='w-full'>
+            <div className="h-full flex-1">
+              <table className="w-full">
                 <thead>
-                  <tr className=''>
-                    <th className='px-2 py-1 text-xs text-center min-w-[150px] border-b'>
+                  <tr className="">
+                    <th className="px-2 py-1 text-xs text-center min-w-[150px] border-b">
                       Parameter
                     </th>
-                    <th className='px-2 py-1 text-xs text-center w-full border-b border-l border-r'>
+                    <th className="px-2 py-1 text-xs text-center w-full border-b border-l border-r">
                       Value
                     </th>
                   </tr>
-                  <tr className='bg-gray-200'>
-                    <th className='px-2 py-1 text-xs text-right min-w-[150px] border-b '>
+                  <tr className="bg-gray-200">
+                    <th className="px-2 py-1 text-xs text-right min-w-[150px] border-b ">
                       {item.key.toUpperCase()}
                     </th>
-                    <th className='px-2 py-1 text-xs text-left w-full border-b font-normal'>
+                    <th className="px-2 py-1 text-xs text-left w-full border-b font-normal">
                       {item.idx}
                     </th>
                   </tr>
@@ -1829,11 +1786,11 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                 <tbody>
                   {item.value && (
                     <>
-                      <tr className=''>
-                        <td className='px-2 py-1 text-xs text-right font-semibold'>
+                      <tr className="">
+                        <td className="px-2 py-1 text-xs text-right font-semibold">
                           Active type
                         </td>
-                        <td className='px-2 py-1 text-xs font-normat'>
+                        <td className="px-2 py-1 text-xs font-normat">
                           <select
                             value={parameter.value.act_lev}
                             onChange={(event) => {
@@ -1846,18 +1803,18 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                                 value: Number(event.target.value),
                               });
                             }}
-                            className='bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg max-w-[150px]'
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg max-w-[150px]"
                           >
                             <option value={0}>Low</option>
                             <option value={1}>High</option>
                           </select>
                         </td>
                       </tr>
-                      <tr className=''>
-                        <td className='px-2 py-1 text-xs text-right font-semibold'>
+                      <tr className="">
+                        <td className="px-2 py-1 text-xs text-right font-semibold">
                           Control type
                         </td>
-                        <td className='px-2 py-1 text-xs'>
+                        <td className="px-2 py-1 text-xs">
                           <select
                             value={parameter.value.act_type}
                             onChange={(event) => {
@@ -1870,20 +1827,20 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                                 value: Number(event.target.value),
                               });
                             }}
-                            className='bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg max-w-[150px]'
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg max-w-[150px]"
                           >
                             <option value={0}>Level</option>
                             <option value={1}>Pulse</option>
                           </select>
                         </td>
                       </tr>
-                      <tr className=''>
-                        <td className='px-2 py-1 text-xs text-right font-semibold'>
+                      <tr className="">
+                        <td className="px-2 py-1 text-xs text-right font-semibold">
                           Duty (s)
                         </td>
-                        <td className='px-2 py-1 text-xs'>
+                        <td className="px-2 py-1 text-xs">
                           <input
-                            type='number'
+                            type="number"
                             value={parameter.value.duty}
                             onChange={(e) =>
                               handleUpdateParameter({
@@ -1895,17 +1852,17 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                                 value: Number(e.target.value),
                               })
                             }
-                            className='bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg px-2 py-1 w-full'
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg px-2 py-1 w-full"
                           />
                         </td>
                       </tr>
-                      <tr className=''>
-                        <td className='px-2 py-1 text-xs text-right font-semibold'>
+                      <tr className="">
+                        <td className="px-2 py-1 text-xs text-right font-semibold">
                           Period
                         </td>
-                        <td className='px-2 py-1 text-xs'>
+                        <td className="px-2 py-1 text-xs">
                           <input
-                            type='number'
+                            type="number"
                             value={parameter.value.period}
                             onChange={(e) =>
                               handleUpdateParameter({
@@ -1917,7 +1874,7 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                                 value: Number(e.target.value),
                               })
                             }
-                            className='bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg px-2 py-1 w-full'
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg px-2 py-1 w-full"
                           />
                         </td>
                       </tr>
@@ -1929,22 +1886,22 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
           );
         case "tags":
           return (
-            <div className='h-full flex-1'>
-              <table className='w-full'>
+            <div className="h-full flex-1">
+              <table className="w-full">
                 <thead>
-                  <tr className=''>
-                    <th className='px-2 py-1 text-xs text-center min-w-[150px] border-b'>
+                  <tr className="">
+                    <th className="px-2 py-1 text-xs text-center min-w-[150px] border-b">
                       Parameter
                     </th>
-                    <th className='px-2 py-1 text-xs text-center w-full border-b border-l border-r'>
+                    <th className="px-2 py-1 text-xs text-center w-full border-b border-l border-r">
                       Value
                     </th>
                   </tr>
-                  <tr className='bg-gray-200'>
-                    <th className='px-2 py-1 text-xs text-right min-w-[150px] border-b '>
+                  <tr className="bg-gray-200">
+                    <th className="px-2 py-1 text-xs text-right min-w-[150px] border-b ">
                       TAG
                     </th>
-                    <th className='px-2 py-1 text-xs text-left w-full border-b font-normal'>
+                    <th className="px-2 py-1 text-xs text-left w-full border-b font-normal">
                       {item.idx}
                     </th>
                   </tr>
@@ -1952,13 +1909,13 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                 <tbody>
                   {item.value && (
                     <>
-                      <tr className=''>
-                        <td className='px-2 py-1 text-xs text-right font-semibold'>
+                      <tr className="">
+                        <td className="px-2 py-1 text-xs text-right font-semibold">
                           Enabled
                         </td>
-                        <td className='px-2 py-1 text-xs'>
+                        <td className="px-2 py-1 text-xs">
                           <input
-                            type='checkbox'
+                            type="checkbox"
                             checked={!!parameter.value.en}
                             onChange={(event) => {
                               handleUpdateParameter({
@@ -1970,17 +1927,17 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                                 value: event.target.checked,
                               });
                             }}
-                            className='w-4 h-4 accent-blue-500 cursor-pointer'
+                            className="w-4 h-4 accent-blue-500 cursor-pointer"
                           />
                         </td>
                       </tr>
-                      <tr className=''>
-                        <td className='px-2 py-1 text-xs text-right font-semibold'>
+                      <tr className="">
+                        <td className="px-2 py-1 text-xs text-right font-semibold">
                           Description
                         </td>
-                        <td className='px-2 py-1 text-xs font-normat'>
+                        <td className="px-2 py-1 text-xs font-normat">
                           <input
-                            type='text'
+                            type="text"
                             value={parameter.value.desc}
                             onChange={(e) =>
                               handleUpdateParameter({
@@ -1992,17 +1949,17 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                                 value: e.target.value,
                               })
                             }
-                            className='bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg px-2 py-1 w-full'
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg px-2 py-1 w-full"
                           />
                         </td>
                       </tr>
-                      <tr className=''>
-                        <td className='px-2 py-1 text-xs text-right font-semibold'>
+                      <tr className="">
+                        <td className="px-2 py-1 text-xs text-right font-semibold">
                           Name
                         </td>
-                        <td className='px-2 py-1 text-xs font-normat'>
+                        <td className="px-2 py-1 text-xs font-normat">
                           <input
-                            type='text'
+                            type="text"
                             value={parameter.value.name}
                             onChange={(e) =>
                               handleUpdateParameter({
@@ -2014,17 +1971,17 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                                 value: e.target.value,
                               })
                             }
-                            className='bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg px-2 py-1 w-full'
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg px-2 py-1 w-full"
                           />
                         </td>
                       </tr>
-                      <tr className=''>
-                        <td className='px-2 py-1 text-xs text-right font-semibold'>
+                      <tr className="">
+                        <td className="px-2 py-1 text-xs text-right font-semibold">
                           Unit
                         </td>
-                        <td className='px-2 py-1 text-xs font-normat'>
+                        <td className="px-2 py-1 text-xs font-normat">
                           <input
-                            type='text'
+                            type="text"
                             value={parameter.value.unit}
                             onChange={(e) =>
                               handleUpdateParameter({
@@ -2036,17 +1993,17 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                                 value: e.target.value,
                               })
                             }
-                            className='bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg px-2 py-1 w-full'
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg px-2 py-1 w-full"
                           />
                         </td>
                       </tr>
-                      <tr className=''>
-                        <td className='px-2 py-1 text-xs text-right font-semibold align-top'>
+                      <tr className="">
+                        <td className="px-2 py-1 text-xs text-right font-semibold align-top">
                           Value index
                         </td>
-                        <td className='px-2 py-1 text-xs  flex flex-col gap-1'>
+                        <td className="px-2 py-1 text-xs  flex flex-col gap-1">
                           <input
-                            type='number'
+                            type="number"
                             value={parameter.value.val_idx}
                             onChange={(e) =>
                               handleUpdateParameter({
@@ -2058,17 +2015,17 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                                 value: Number(e.target.value),
                               })
                             }
-                            className='bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg px-2 py-1 w-full'
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg px-2 py-1 w-full"
                           />
                         </td>
                       </tr>
-                      <tr className=''>
-                        <td className='px-2 py-1 text-xs text-right font-semibold'>
+                      <tr className="">
+                        <td className="px-2 py-1 text-xs text-right font-semibold">
                           Use 64bits
                         </td>
-                        <td className='px-2 py-1 text-xs'>
+                        <td className="px-2 py-1 text-xs">
                           <input
-                            type='checkbox'
+                            type="checkbox"
                             checked={!!parameter.value.flag}
                             onChange={(event) => {
                               handleUpdateParameter({
@@ -2080,17 +2037,17 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                                 value: event.target.checked ? 1 : 0,
                               });
                             }}
-                            className='w-4 h-4 accent-blue-500 cursor-pointer'
+                            className="w-4 h-4 accent-blue-500 cursor-pointer"
                           />
                         </td>
                       </tr>
-                      <tr className=''>
-                        <td className='px-2 py-1 text-xs text-right font-semibold align-top'>
+                      <tr className="">
+                        <td className="px-2 py-1 text-xs text-right font-semibold align-top">
                           Status index
                         </td>
-                        <td className='px-2 py-1 text-xs  flex flex-col gap-1'>
+                        <td className="px-2 py-1 text-xs  flex flex-col gap-1">
                           <input
-                            type='number'
+                            type="number"
                             value={parameter.value.stat_idx}
                             onChange={(e) =>
                               handleUpdateParameter({
@@ -2102,17 +2059,17 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                                 value: Number(e.target.value),
                               })
                             }
-                            className='bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg px-2 py-1 w-full'
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg px-2 py-1 w-full"
                           />
                         </td>
                       </tr>
-                      <tr className=''>
-                        <td className='px-2 py-1 text-xs text-right font-semibold'>
+                      <tr className="">
+                        <td className="px-2 py-1 text-xs text-right font-semibold">
                           Report ftp servers
                         </td>
-                        <td className='px-2 py-1 text-xs font-normat'>
+                        <td className="px-2 py-1 text-xs font-normat">
                           <input
-                            type='number'
+                            type="number"
                             value={parameter.value.stat_flag}
                             onChange={(e) =>
                               handleUpdateParameter({
@@ -2124,17 +2081,17 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                                 value: Number(e.target.value),
                               })
                             }
-                            className='bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg px-2 py-1 w-full'
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg px-2 py-1 w-full"
                           />
                         </td>
                       </tr>
-                      <tr className=''>
-                        <td className='px-2 py-1 text-xs text-right font-semibold'>
+                      <tr className="">
+                        <td className="px-2 py-1 text-xs text-right font-semibold">
                           Average
                         </td>
-                        <td className='px-2 py-1 text-xs font-normat'>
+                        <td className="px-2 py-1 text-xs font-normat">
                           <input
-                            type='number'
+                            type="number"
                             value={parameter.value.avg}
                             onChange={(e) =>
                               handleUpdateParameter({
@@ -2146,7 +2103,29 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                                 value: Number(e.target.value),
                               })
                             }
-                            className='bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg px-2 py-1 w-full'
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg px-2 py-1 w-full"
+                          />
+                        </td>
+                      </tr>
+                      <tr className="">
+                        <td className="px-2 py-1 text-xs text-right font-semibold">
+                          Precision
+                        </td>
+                        <td className="px-2 py-1 text-xs font-normat">
+                          <input
+                            type="number"
+                            value={parameter.value.precision}
+                            onChange={(e) =>
+                              handleUpdateParameter({
+                                dataFile,
+                                setDataFile,
+                                key: "tags",
+                                index: item.idx,
+                                paramKey: "precision",
+                                value: Number(e.target.value),
+                              })
+                            }
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg px-2 py-1 w-full"
                           />
                         </td>
                       </tr>
@@ -2158,22 +2137,22 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
           );
         case "prog":
           return (
-            <div className='h-full flex-1'>
-              <table className='w-full'>
+            <div className="h-full flex-1">
+              <table className="w-full">
                 <thead>
-                  <tr className=''>
-                    <th className='px-2 py-1 text-xs text-center min-w-[150px] border-b'>
+                  <tr className="">
+                    <th className="px-2 py-1 text-xs text-center min-w-[150px] border-b">
                       Parameter
                     </th>
-                    <th className='px-2 py-1 text-xs text-center w-full border-b border-l border-r'>
+                    <th className="px-2 py-1 text-xs text-center w-full border-b border-l border-r">
                       Value
                     </th>
                   </tr>
-                  <tr className='bg-gray-200'>
-                    <th className='px-2 py-1 text-xs text-right min-w-[150px] border-b '>
+                  <tr className="bg-gray-200">
+                    <th className="px-2 py-1 text-xs text-right min-w-[150px] border-b ">
                       Program
                     </th>
-                    <th className='px-2 py-1 text-xs text-left w-full border-b font-normal'>
+                    <th className="px-2 py-1 text-xs text-left w-full border-b font-normal">
                       {item.idx}
                     </th>
                   </tr>
@@ -2181,13 +2160,13 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                 <tbody>
                   {item.value && (
                     <>
-                      <tr className=''>
-                        <td className='px-2 py-1 text-xs text-right font-semibold'>
+                      <tr className="">
+                        <td className="px-2 py-1 text-xs text-right font-semibold">
                           Enabled
                         </td>
-                        <td className='px-2 py-1 text-xs'>
+                        <td className="px-2 py-1 text-xs">
                           <input
-                            type='checkbox'
+                            type="checkbox"
                             checked={!!parameter.value.en}
                             onChange={(event) => {
                               handleUpdateParameter({
@@ -2199,17 +2178,17 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                                 value: event.target.checked,
                               });
                             }}
-                            className='w-4 h-4 accent-blue-500 cursor-pointer'
+                            className="w-4 h-4 accent-blue-500 cursor-pointer"
                           />
                         </td>
                       </tr>
-                      <tr className=''>
-                        <td className='px-2 py-1 text-xs text-right font-semibold'>
+                      <tr className="">
+                        <td className="px-2 py-1 text-xs text-right font-semibold">
                           Description
                         </td>
-                        <td className='px-2 py-1 text-xs font-normat'>
+                        <td className="px-2 py-1 text-xs font-normat">
                           <input
-                            type='text'
+                            type="text"
                             value={parameter.value.desc}
                             onChange={(e) =>
                               handleUpdateParameter({
@@ -2221,15 +2200,15 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                                 value: e.target.value,
                               })
                             }
-                            className='bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg px-2 py-1 w-full'
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg px-2 py-1 w-full"
                           />
                         </td>
                       </tr>
-                      <tr className=''>
-                        <td className='px-2 py-1 text-xs text-right font-semibold'>
+                      <tr className="">
+                        <td className="px-2 py-1 text-xs text-right font-semibold">
                           Code
                         </td>
-                        <td className='px-2 py-1 text-xs font-normat'>
+                        <td className="px-2 py-1 text-xs font-normat">
                           <textarea
                             value={parameter.value.code}
                             onChange={(event) => {
@@ -2243,8 +2222,8 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                               });
                             }}
                             rows={25}
-                            className='bg-gray-50 border max-w-[550px] border-gray-300 text-gray-900 text-xs rounded-lg px-2 py-1 w-full resize-y font-mono'
-                            placeholder='Enter code here...'
+                            className="bg-gray-50 border max-w-[550px] border-gray-300 text-gray-900 text-xs rounded-lg px-2 py-1 w-full resize-y font-mono"
+                            placeholder="Enter code here..."
                           />
                         </td>
                       </tr>
@@ -2256,22 +2235,22 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
           );
         case "timers":
           return (
-            <div className='h-full flex-1'>
-              <table className='w-full'>
+            <div className="h-full flex-1">
+              <table className="w-full">
                 <thead>
-                  <tr className=''>
-                    <th className='px-2 py-1 text-xs text-center min-w-[150px] border-b'>
+                  <tr className="">
+                    <th className="px-2 py-1 text-xs text-center min-w-[150px] border-b">
                       Parameter
                     </th>
-                    <th className='px-2 py-1 text-xs text-center w-full border-b border-l border-r'>
+                    <th className="px-2 py-1 text-xs text-center w-full border-b border-l border-r">
                       Value
                     </th>
                   </tr>
-                  <tr className='bg-gray-200'>
-                    <th className='px-2 py-1 text-xs text-right min-w-[150px] border-b '>
+                  <tr className="bg-gray-200">
+                    <th className="px-2 py-1 text-xs text-right min-w-[150px] border-b ">
                       Timer
                     </th>
-                    <th className='px-2 py-1 text-xs text-left w-full border-b font-normal'>
+                    <th className="px-2 py-1 text-xs text-left w-full border-b font-normal">
                       {item.idx}
                     </th>
                   </tr>
@@ -2279,13 +2258,13 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                 <tbody>
                   {item.value && (
                     <>
-                      <tr className=''>
-                        <td className='px-2 py-1 text-xs text-right font-semibold'>
+                      <tr className="">
+                        <td className="px-2 py-1 text-xs text-right font-semibold">
                           Enabled
                         </td>
-                        <td className='px-2 py-1 text-xs'>
+                        <td className="px-2 py-1 text-xs">
                           <input
-                            type='checkbox'
+                            type="checkbox"
                             checked={!!parameter.value.en}
                             onChange={(event) => {
                               handleUpdateParameter({
@@ -2297,17 +2276,17 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                                 value: event.target.checked,
                               });
                             }}
-                            className='w-4 h-4 accent-blue-500 cursor-pointer'
+                            className="w-4 h-4 accent-blue-500 cursor-pointer"
                           />
                         </td>
                       </tr>
-                      <tr className=''>
-                        <td className='px-2 py-1 text-xs text-right font-semibold'>
+                      <tr className="">
+                        <td className="px-2 py-1 text-xs text-right font-semibold">
                           Oneshot
                         </td>
-                        <td className='px-2 py-1 text-xs'>
+                        <td className="px-2 py-1 text-xs">
                           <input
-                            type='checkbox'
+                            type="checkbox"
                             checked={!!parameter.value.one}
                             onChange={(event) => {
                               handleUpdateParameter({
@@ -2319,17 +2298,17 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                                 value: event.target.checked,
                               });
                             }}
-                            className='w-4 h-4 accent-blue-500 cursor-pointer'
+                            className="w-4 h-4 accent-blue-500 cursor-pointer"
                           />
                         </td>
                       </tr>
-                      <tr className=''>
-                        <td className='px-2 py-1 text-xs text-right font-semibold'>
+                      <tr className="">
+                        <td className="px-2 py-1 text-xs text-right font-semibold">
                           Interval
                         </td>
-                        <td className='px-2 py-1 text-xs font-normat'>
+                        <td className="px-2 py-1 text-xs font-normat">
                           <input
-                            type='number'
+                            type="number"
                             value={parameter.value.int}
                             onChange={(e) =>
                               handleUpdateParameter({
@@ -2341,17 +2320,17 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                                 value: Number(e.target.value),
                               })
                             }
-                            className='bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg px-2 py-1 w-full'
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg px-2 py-1 w-full"
                           />
                         </td>
                       </tr>
-                      <tr className=''>
-                        <td className='px-2 py-1 text-xs text-right font-semibold'>
+                      <tr className="">
+                        <td className="px-2 py-1 text-xs text-right font-semibold">
                           Descripton
                         </td>
-                        <td className='px-2 py-1 text-xs font-normat'>
+                        <td className="px-2 py-1 text-xs font-normat">
                           <input
-                            type='text'
+                            type="text"
                             value={parameter.value.desc}
                             onChange={(e) =>
                               handleUpdateParameter({
@@ -2363,15 +2342,15 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                                 value: e.target.value,
                               })
                             }
-                            className='bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg px-2 py-1 w-full'
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg px-2 py-1 w-full"
                           />
                         </td>
                       </tr>
-                      <tr className=''>
-                        <td className='px-2 py-1 text-xs text-right font-semibold'>
+                      <tr className="">
+                        <td className="px-2 py-1 text-xs text-right font-semibold">
                           Code
                         </td>
-                        <td className='px-2 py-1 text-xs font-normat'>
+                        <td className="px-2 py-1 text-xs font-normat">
                           <textarea
                             value={parameter.value.code}
                             onChange={(event) => {
@@ -2385,8 +2364,8 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                               });
                             }}
                             rows={25}
-                            className='bg-gray-50 border max-w-[550px] border-gray-300 text-gray-900 text-xs rounded-lg px-2 py-1 w-full resize-y font-mono'
-                            placeholder='Enter code here...'
+                            className="bg-gray-50 border max-w-[550px] border-gray-300 text-gray-900 text-xs rounded-lg px-2 py-1 w-full resize-y font-mono"
+                            placeholder="Enter code here..."
                           />
                         </td>
                       </tr>
@@ -2398,22 +2377,22 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
           );
         case "modbus_reader":
           return (
-            <div className='h-full flex-1'>
-              <table className='w-full'>
+            <div className="h-full flex-1">
+              <table className="w-full">
                 <thead>
-                  <tr className=''>
-                    <th className='px-2 py-1 text-xs text-center min-w-[150px] border-b'>
+                  <tr className="">
+                    <th className="px-2 py-1 text-xs text-center min-w-[150px] border-b">
                       Parameter
                     </th>
-                    <th className='px-2 py-1 text-xs text-center w-full border-b border-l border-r'>
+                    <th className="px-2 py-1 text-xs text-center w-full border-b border-l border-r">
                       Value
                     </th>
                   </tr>
-                  <tr className='bg-gray-200'>
-                    <th className='px-2 py-1 text-xs text-right min-w-[150px] border-b '>
+                  <tr className="bg-gray-200">
+                    <th className="px-2 py-1 text-xs text-right min-w-[150px] border-b ">
                       Modbus reader
                     </th>
-                    <th className='px-2 py-1 text-xs text-left w-full border-b font-normal'>
+                    <th className="px-2 py-1 text-xs text-left w-full border-b font-normal">
                       {item.idx}
                     </th>
                   </tr>
@@ -2421,13 +2400,13 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                 <tbody>
                   {item.value && (
                     <>
-                      <tr className=''>
-                        <td className='px-2 py-1 text-xs text-right font-semibold'>
+                      <tr className="">
+                        <td className="px-2 py-1 text-xs text-right font-semibold">
                           Description
                         </td>
-                        <td className='px-2 py-1 text-xs font-normat'>
+                        <td className="px-2 py-1 text-xs font-normat">
                           <input
-                            type='text'
+                            type="text"
                             value={parameter.value.desc}
                             onChange={(e) =>
                               handleUpdateParameter({
@@ -2439,17 +2418,17 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                                 value: e.target.value,
                               })
                             }
-                            className='bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg px-2 py-1 w-full'
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg px-2 py-1 w-full"
                           />
                         </td>
                       </tr>
-                      <tr className=''>
-                        <td className='px-2 py-1 text-xs text-right font-semibold'>
+                      <tr className="">
+                        <td className="px-2 py-1 text-xs text-right font-semibold">
                           Enabled
                         </td>
-                        <td className='px-2 py-1 text-xs'>
+                        <td className="px-2 py-1 text-xs">
                           <input
-                            type='checkbox'
+                            type="checkbox"
                             checked={!!parameter.value.en}
                             onChange={(event) => {
                               handleUpdateParameter({
@@ -2461,15 +2440,15 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                                 value: event.target.checked,
                               });
                             }}
-                            className='w-4 h-4 accent-blue-500 cursor-pointer'
+                            className="w-4 h-4 accent-blue-500 cursor-pointer"
                           />
                         </td>
                       </tr>
-                      <tr className=''>
-                        <td className='px-2 py-1 text-xs text-right font-semibold'>
+                      <tr className="">
+                        <td className="px-2 py-1 text-xs text-right font-semibold">
                           Type
                         </td>
-                        <td className='px-2 py-1 text-xs'>
+                        <td className="px-2 py-1 text-xs">
                           <select
                             value={parameter.value.type}
                             onChange={(event) => {
@@ -2482,20 +2461,20 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                                 value: Number(event.target.value),
                               });
                             }}
-                            className='bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg max-w-[150px]'
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg max-w-[150px]"
                           >
                             <option value={1}>RTU</option>
                             <option value={2}>TCP</option>
                           </select>
                         </td>
                       </tr>
-                      <tr className=''>
-                        <td className='px-2 py-1 text-xs text-right font-semibold align-top'>
+                      <tr className="">
+                        <td className="px-2 py-1 text-xs text-right font-semibold align-top">
                           Address
                         </td>
-                        <td className='px-2 py-1 text-xs  flex flex-col gap-1'>
+                        <td className="px-2 py-1 text-xs  flex flex-col gap-1">
                           <input
-                            type='text'
+                            type="text"
                             value={parameter.value.dev_a}
                             onChange={(e) => {
                               const value = e.target.value;
@@ -2508,18 +2487,18 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                                 value: value,
                               });
                             }}
-                            placeholder='192.168.1.1:502'
-                            className='bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg px-2 py-1 w-full'
+                            placeholder="192.168.1.1:502"
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg px-2 py-1 w-full"
                           />
                         </td>
                       </tr>
-                      <tr className=''>
-                        <td className='px-2 py-1 text-xs text-right font-semibold align-top'>
+                      <tr className="">
+                        <td className="px-2 py-1 text-xs text-right font-semibold align-top">
                           ID
                         </td>
-                        <td className='px-2 py-1 text-xs  flex flex-col gap-1'>
+                        <td className="px-2 py-1 text-xs  flex flex-col gap-1">
                           <input
-                            type='number'
+                            type="number"
                             value={parameter.value.id}
                             onChange={(e) =>
                               handleUpdateParameter({
@@ -2531,17 +2510,17 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                                 value: Number(e.target.value),
                               })
                             }
-                            className='bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg px-2 py-1 w-full'
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg px-2 py-1 w-full"
                           />
                         </td>
                       </tr>
-                      <tr className=''>
-                        <td className='px-2 py-1 text-xs text-right font-semibold align-top'>
+                      <tr className="">
+                        <td className="px-2 py-1 text-xs text-right font-semibold align-top">
                           Register address
                         </td>
-                        <td className='px-2 py-1 text-xs  flex flex-col gap-1'>
+                        <td className="px-2 py-1 text-xs  flex flex-col gap-1">
                           <input
-                            type='number'
+                            type="number"
                             value={parameter.value.reg_a}
                             onChange={(e) =>
                               handleUpdateParameter({
@@ -2553,15 +2532,15 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                                 value: Number(e.target.value),
                               })
                             }
-                            className='bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg px-2 py-1 w-full'
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg px-2 py-1 w-full"
                           />
                         </td>
                       </tr>
-                      <tr className=''>
-                        <td className='px-2 py-1 text-xs text-right font-semibold'>
+                      <tr className="">
+                        <td className="px-2 py-1 text-xs text-right font-semibold">
                           Data Type
                         </td>
-                        <td className='px-2 py-1 text-xs'>
+                        <td className="px-2 py-1 text-xs">
                           <select
                             value={parameter.value.d_t}
                             onChange={(event) => {
@@ -2574,7 +2553,7 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                                 value: Number(event.target.value),
                               });
                             }}
-                            className='bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg max-w-[150px]'
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg max-w-[150px]"
                           >
                             <option value={1}>Coils</option>
                             <option value={2}>Discrete Input</option>
@@ -2583,11 +2562,11 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                           </select>
                         </td>
                       </tr>
-                      <tr className=''>
-                        <td className='px-2 py-1 text-xs text-right font-semibold'>
+                      <tr className="">
+                        <td className="px-2 py-1 text-xs text-right font-semibold">
                           Data order
                         </td>
-                        <td className='px-2 py-1 text-xs'>
+                        <td className="px-2 py-1 text-xs">
                           <select
                             value={parameter.value.d_o}
                             onChange={(event) => {
@@ -2600,7 +2579,7 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                                 value: Number(event.target.value),
                               });
                             }}
-                            className='bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg max-w-[150px]'
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg max-w-[150px]"
                           >
                             <option value={0}>AB CD</option>
                             <option value={1}>CD AB</option>
@@ -2609,11 +2588,11 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                           </select>
                         </td>
                       </tr>
-                      <tr className=''>
-                        <td className='px-2 py-1 text-xs text-right font-semibold'>
+                      <tr className="">
+                        <td className="px-2 py-1 text-xs text-right font-semibold">
                           Data format
                         </td>
-                        <td className='px-2 py-1 text-xs'>
+                        <td className="px-2 py-1 text-xs">
                           <select
                             value={parameter.value.d_f}
                             onChange={(event) => {
@@ -2626,7 +2605,7 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                                 value: Number(event.target.value),
                               });
                             }}
-                            className='bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg max-w-[150px]'
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg max-w-[150px]"
                           >
                             <option value={0}>8bits integer</option>
                             <option value={1}>16bit integer</option>
@@ -2637,13 +2616,13 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                           </select>
                         </td>
                       </tr>
-                      <tr className=''>
-                        <td className='px-2 py-1 text-xs text-right font-semibold'>
+                      <tr className="">
+                        <td className="px-2 py-1 text-xs text-right font-semibold">
                           Number object
                         </td>
-                        <td className='px-2 py-1 text-xs'>
+                        <td className="px-2 py-1 text-xs">
                           <input
-                            type='number'
+                            type="number"
                             value={parameter.value.n_obj}
                             onChange={(e) =>
                               handleUpdateParameter({
@@ -2655,17 +2634,17 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                                 value: Number(e.target.value),
                               })
                             }
-                            className='bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg px-2 py-1 w-full'
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg px-2 py-1 w-full"
                           />
                         </td>
                       </tr>
-                      <tr className=''>
-                        <td className='px-2 py-1 text-xs text-right font-semibold align-top'>
+                      <tr className="">
+                        <td className="px-2 py-1 text-xs text-right font-semibold align-top">
                           Values location
                         </td>
-                        <td className='px-2 py-1 text-xs  flex flex-col gap-1'>
+                        <td className="px-2 py-1 text-xs  flex flex-col gap-1">
                           <input
-                            type='number'
+                            type="number"
                             value={parameter.value.loc_val}
                             onChange={(e) =>
                               handleUpdateParameter({
@@ -2677,17 +2656,17 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                                 value: Number(e.target.value),
                               })
                             }
-                            className='bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg px-2 py-1 w-full'
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg px-2 py-1 w-full"
                           />
                         </td>
                       </tr>
-                      <tr className=''>
-                        <td className='px-2 py-1 text-xs text-right font-semibold align-top'>
+                      <tr className="">
+                        <td className="px-2 py-1 text-xs text-right font-semibold align-top">
                           Status location
                         </td>
-                        <td className='px-2 py-1 text-xs  flex flex-col gap-1'>
+                        <td className="px-2 py-1 text-xs  flex flex-col gap-1">
                           <input
-                            type='number'
+                            type="number"
                             value={parameter.value.loc_stat}
                             onChange={(e) =>
                               handleUpdateParameter({
@@ -2699,17 +2678,17 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                                 value: Number(e.target.value),
                               })
                             }
-                            className='bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg px-2 py-1 w-full'
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg px-2 py-1 w-full"
                           />
                         </td>
                       </tr>
-                      <tr className=''>
-                        <td className='px-2 py-1 text-xs text-right font-semibold'>
+                      <tr className="">
+                        <td className="px-2 py-1 text-xs text-right font-semibold">
                           Hold when read fail
                         </td>
-                        <td className='px-2 py-1 text-xs'>
+                        <td className="px-2 py-1 text-xs">
                           <input
-                            type='checkbox'
+                            type="checkbox"
                             checked={!!parameter.value.kf}
                             onChange={(event) => {
                               handleUpdateParameter({
@@ -2721,7 +2700,7 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                                 value: event.target.checked,
                               });
                             }}
-                            className='w-4 h-4 accent-blue-500 cursor-pointer'
+                            className="w-4 h-4 accent-blue-500 cursor-pointer"
                           />
                         </td>
                       </tr>
@@ -2735,7 +2714,7 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
           return null;
       }
     },
-    [parameter, setParameter],
+    [parameter, setParameter]
   );
 
   return <>{readParameter(parameter)}</>;

@@ -31,6 +31,8 @@ export function GetAllSocketData(arg1:string,arg2:string):Promise<Array<string>>
 
 export function GetDefaultData():Promise<string>;
 
+export function GetGps(arg1:string,arg2:string):Promise<void>;
+
 export function GetMeasureMode(arg1:string,arg2:string):Promise<void>;
 
 export function GetRTC(arg1:string,arg2:string):Promise<void>;

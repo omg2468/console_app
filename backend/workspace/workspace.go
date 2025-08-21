@@ -1098,6 +1098,18 @@ func (ws *WorkspaceService) GetRTC(address, port string) error {
 	return nil
 }
 
+func (ws *WorkspaceService) GetGps(address, port string) error {
+	message := `{"type":"get_gps"}`
+
+	err := ws.SendSocketData(address, port, message)
+	if err != nil {
+		return fmt.Errorf("không thể gửi yêu cầu get_gps: %w", err)
+	}
+
+	fmt.Println("✅ Đã gửi get_gps tới thiết bị.")
+	return nil
+}
+
 func (ws *WorkspaceService) SetRTC(address, port, mode string, ts int64) error {
 	// Chỉ chấp nhận "manual" hoặc "internet"
 	if mode != "manual" && mode != "internet" {

@@ -8,7 +8,6 @@ export const ContextMenuProvider = ({ children }) => {
   const [content, setContent] = useState(null);
   const [clipBoard, setClipboard] = useState(null);
   const [analogData, setAnalogData] = useState([]);
-  const [analogUnit, setAnalogUnit] = useState("V");
   const [memoryViewData, setMemoryViewData] = useState([]);
   const [tagViewData, setTagViewData] = useState([]);
   const [isConnected, setIsConnected] = useState(false);
@@ -25,7 +24,6 @@ export const ContextMenuProvider = ({ children }) => {
     proxy: "",
     secondary_ip: "",
     global: "",
-    modem: false,
   });
   const [infoDialog, setInfoDialog] = useState(null);
   const [socketAddress, setSocketAddress] = useState("");
@@ -96,8 +94,6 @@ export const ContextMenuProvider = ({ children }) => {
         setSocketPort,
         isSocketConnected,
         setIsSocketConnected,
-        analogUnit,
-        setAnalogUnit,
         changeMode,
         setChangeMode,
         displayAnalogUnit,

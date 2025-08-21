@@ -10,6 +10,10 @@ export function Calib4ma() {
   return window['go']['control']['ControlService']['Calib4ma']();
 }
 
+export function GetGps() {
+  return window['go']['control']['ControlService']['GetGps']();
+}
+
 export function GetMeasureMode() {
   return window['go']['control']['ControlService']['GetMeasureMode']();
 }

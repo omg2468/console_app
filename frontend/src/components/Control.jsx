@@ -21,6 +21,7 @@ import {
   SetRTC,
   SetMeasureMode,
   GetMeasureMode,
+  GetGps,
 } from "../../wailsjs/go/control/ControlService";
 
 import {
@@ -42,6 +43,7 @@ import {
   SetRTC as SetRTCWS,
   SetMeasureMode as SetMeasureModeEthernet,
   GetMeasureMode as GetMeasureModeWS,
+  GetGps as GetGpsWS,
 } from "../../wailsjs/go/workspace/WorkspaceService";
 import { ShowQuestionDialog } from "../../wailsjs/go/main/App";
 
@@ -243,21 +245,6 @@ const Control = () => {
                   />
                 </td>
               </tr>
-
-              <tr>
-                <td className="border-r border-b p-2 text-right">Modem</td>
-                <td className="p-2 border-b text-left">
-                  <div className="w-full h-full flex items-center justify-start">
-                    <input
-                      type="checkbox"
-                      name="modem"
-                      className="w-4 h-4"
-                      checked={context.formData.modem}
-                      onChange={handleChange}
-                    />
-                  </div>
-                </td>
-              </tr>
             </tbody>
           </table>
         </div>
@@ -326,7 +313,10 @@ const Control = () => {
                   width: `${analogData?.length ? barWidth : 0}%`,
                   left: `${loadingPos}%`,
                   transition: "left 0.01s linear",
-                  display: context.displayAnalogUnit && analogData?.length ? "block" : "none",
+                  display:
+                    context.displayAnalogUnit && analogData?.length
+                      ? "block"
+                      : "none",
                 }}
               />
             </div>
@@ -358,13 +348,13 @@ const Control = () => {
                           <td className="p-2 border-box border-b text-left min-w-[150px]"></td>
                         </tr>
                       ))
-                    : analogData.map(({ id, value }) => (
+                    : analogData.map(({ id, value, unit }) => (
                         <tr key={id}>
                           <td className="border-r border-b p-2 text-right min-w-[150px] whitespace-nowrap">
                             Analog input {id}
                           </td>
                           <td className="p-2 border-box border-b text-left min-w-[150px]">
-                            {value.toFixed(2) + context.analogUnit}
+                            {value.toFixed(2) + (unit ? ` ${unit}` : "")}
                           </td>
                         </tr>
                       ))}
@@ -565,6 +555,7 @@ const Control = () => {
                   <option value="set_rtc_manual">Set RTC manual</option>
                   <option value="set_rtc_internet">Set RTC internet</option>
                   <option value="get_rtc">Get RTC</option>
+                  <option value="get_gps">Get GPS</option>
                   <option value="ping">Ping</option>
                 </select>
                 <button
@@ -655,6 +646,17 @@ const Control = () => {
                               context.socketAddress,
                               context.socketPort
                             );
+                          }
+                          break;
+
+                        case "get_gps":
+                          context.setInfoDialog("Getting GPS data...");
+                          if (context.selectedConnection === "serial") {
+                            GetGps();
+                          } else if (
+                            context.selectedConnection === "ethernet"
+                          ) {
+                            GetGpsWS(context.socketAddress, context.socketPort);
                           }
                           break;
 

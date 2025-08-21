@@ -201,7 +201,6 @@ function ConnectComponent({
         case "read_analog":
           if (jsonData.data) {
             context.setAnalogData(jsonData.data);
-            context.setAnalogUnit(jsonData.unit || "V");
           }
           break;
 
@@ -257,12 +256,17 @@ function ConnectComponent({
         case "download_config":
           setFileLoaded("");
           setDataFile(jsonData);
-          ShowInfoDialog("Đã tải xuống cấu hình thành công", "Download Config");
+          ShowInfoDialog(
+            "Đã download về máy bạn thành công",
+            "Download Config"
+          );
           break;
 
         case "upload_config":
           if (jsonData.status === "success") {
             ShowInfoDialog("Upload thành công", "Login");
+            handleDisconnect();
+            // Reset all data after upload
           } else {
             ShowErrorDialog("Upload thất bại");
           }
@@ -293,6 +297,19 @@ function ConnectComponent({
             ShowInfoDialog("Đổi mật khẩu thành công", "Change Password");
           } else {
             ShowErrorDialog(jsonData.message);
+          }
+          break;
+
+        case "reboot":
+          if (jsonData.status === "success") {
+            ShowInfoDialog(
+              "Reboot thành công. App sẽ Disconnect khỏi thiết bị",
+              "Reboot"
+            );
+            handleDisconnect();
+            // Reset all data after reboot
+          } else {
+            ShowErrorDialog("Reboot thất bại");
           }
           break;
 
@@ -394,6 +411,14 @@ function ConnectComponent({
           }
           break;
 
+        case "get_gps":
+          if (jsonData.status === "success") {
+            context.setInfoDialog(jsonData.data || "Không có dữ liệu GPS");
+          } else {
+            context.setInfoDialog("Get GPS thất bại");
+          }
+          break;
+
         default:
           break;
       }
@@ -417,7 +442,7 @@ function ConnectComponent({
           context.setDataTest(result);
           try {
             const jsonData = JSON.parse(result);
-            console.log(jsonData)
+            console.log(jsonData);
             handleDataResponse(jsonData);
           } catch (parseErr) {
             console.log("Non-JSON data received:", latestData);
@@ -710,8 +735,14 @@ function ConnectComponent({
       </div>
       <button
         onClick={() => setShowModal(true)}
-        className="flex-1 px-2 w-full bg-gray-200 text-gray-700 py-1 rounded border border-gray-400 hover:bg-gray-300 text-xs transition"
-        // disabled={!context.isConnected || !context.isLogin}
+        className={`flex-1 px-2 w-full py-1 rounded border text-xs transition
+    ${
+      context.isConnected && context.isLogin
+        ? "bg-gray-200 text-gray-700 border-gray-400 hover:bg-gray-300 cursor-pointer"
+        : "bg-gray-100 text-gray-400 border-gray-300"
+    }
+  `}
+        disabled={!context.isConnected || !context.isLogin}
       >
         Change Password
       </button>
