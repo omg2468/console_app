@@ -24,6 +24,7 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
 
   const readParameter = useCallback(
     (item) => {
+
       switch (item.key) {
         case "rtu_master":
           return (
@@ -1612,42 +1613,43 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                       Value
                     </th>
                   </tr>
-                  <tr className="bg-gray-200">
-                    <th className="px-2 py-1 text-xs text-right min-w-[150px] border-b ">
-                      {item.key.toUpperCase()}
+                  <tr className='bg-gray-200'>
+                    <th className='px-2 py-1 text-xs text-right min-w-[150px] border-b '>
+                      Mode
                     </th>
-                    <th className="px-2 py-1 text-xs text-left w-full border-b font-normal">
-                      {item.idx}
+                    <th className='px-2 py-1 text-xs text-left w-full border-b font-normal'>
                     </th>
                   </tr>
                 </thead>
                 <tbody>
-                  {item.value && (
+                  {item.value?.length > 0 && (
                     <>
-                      <tr className="">
-                        <td className="px-2 py-1 text-xs text-right font-semibold">
-                          Mode
-                        </td>
-                        <td className="px-2 py-1 text-xs">
-                          <select
-                            value={parameter.value.measure_mode}
-                            onChange={(event) => {
-                              handleUpdateParameter({
-                                dataFile,
-                                setDataFile,
-                                key: "ais",
-                                paramKey: "measure_mode",
-                                index: item.idx,
-                                value: Number(event.target.value),
-                              });
-                            }}
-                            className="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg max-w-[150px]"
-                          >
-                            <option value={0}>Current</option>
-                            <option value={1}>Voltage</option>
-                          </select>
-                        </td>
-                      </tr>
+                      {item.value.map((param, idx) => (
+                        <tr className='' key={idx}>
+                          <td className='px-2 py-1 text-xs text-right font-semibold'>
+                          AI.{idx}
+                          </td>
+                          <td className='px-2 py-1 text-xs'>
+                            <select
+                              value={param.measure_mode}
+                              onChange={(event) => {
+                                handleUpdateParameter({
+                                  dataFile,
+                                  setDataFile,
+                                  key: "ais",
+                                  paramKey: "measure_mode",
+                                  index: idx.toString(),
+                                  value: Number(event.target.value),
+                                });
+                              }}
+                              className='bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg max-w-[150px]'
+                            >
+                              <option value={0}>Current</option>
+                              <option value={1}>Voltage</option>
+                            </select>
+                          </td>
+                        </tr>
+                      ))}
                     </>
                   )}
                 </tbody>

@@ -48,17 +48,23 @@ import {
 import { ShowQuestionDialog } from "../../wailsjs/go/main/App";
 
 const Control = () => {
-  const [digitalOutput, setDigitalOutput] = useState(Array(8).fill(false));
   const [loadingPos, setLoadingPos] = useState(0);
-  const [dataCommand, setDataCommand] = useState("");
-  const [selectedCommand, setSelectedCommand] = useState("read_system_info");
-  const [inputType, setInputType] = useState("text");
 
   const barWidth = 40;
 
   const context = useContext(ContextMenuContext);
 
   const analogData = context.analogData || [];
+  
+  // Use states from context instead of local states
+  const digitalOutput = context.digitalOutput;
+  const setDigitalOutput = context.setDigitalOutput;
+  const dataCommand = context.dataCommand;
+  const setDataCommand = context.setDataCommand;
+  const selectedCommand = context.selectedCommand;
+  const setSelectedCommand = context.setSelectedCommand;
+  const inputType = context.inputType;
+  const setInputType = context.setInputType;
 
   const handleChange = (e) => {
     const { name, type, checked, value } = e.target;
@@ -480,25 +486,47 @@ const Control = () => {
               <span className="text-xs font-semibold">
                 Digital output control
               </span>
-              <div className="flex flex-wrap gap-2">
-                {digitalOutput.map((_, index) => (
-                  <label
-                    key={index}
-                    className="flex items-center gap-2 text-xs min-w-[38px] justify-end"
-                  >
-                    <span>{index}</span>
-                    <input
-                      checked={digitalOutput[index]}
-                      onChange={(e) => {
-                        const newDigitalOutput = [...digitalOutput];
-                        newDigitalOutput[index] = e.target.checked;
-                        setDigitalOutput(newDigitalOutput);
-                      }}
-                      type="checkbox"
-                      className="custom"
-                    />
-                  </label>
-                ))}
+              <div className="flex flex-col gap-2 w-full">
+                <div className="flex gap-2 w-full">
+                  {digitalOutput.slice(0, 4).map((_, index) => (
+                    <label
+                      key={index}
+                      className="flex items-center gap-2 text-xs flex-1 justify-center"
+                    >
+                      <span>{index}</span>
+                      <input
+                        checked={digitalOutput[index]}
+                        onChange={(e) => {
+                          const newDigitalOutput = [...digitalOutput];
+                          newDigitalOutput[index] = e.target.checked;
+                          setDigitalOutput(newDigitalOutput);
+                        }}
+                        type="checkbox"
+                        className="custom"
+                      />
+                    </label>
+                  ))}
+                </div>
+                <div className="flex gap-2 w-full">
+                  {digitalOutput.slice(4, 8).map((_, index) => (
+                    <label
+                      key={index + 4}
+                      className="flex items-center gap-2 text-xs flex-1 justify-center"
+                    >
+                      <span>{index + 4}</span>
+                      <input
+                        checked={digitalOutput[index + 4]}
+                        onChange={(e) => {
+                          const newDigitalOutput = [...digitalOutput];
+                          newDigitalOutput[index + 4] = e.target.checked;
+                          setDigitalOutput(newDigitalOutput);
+                        }}
+                        type="checkbox"
+                        className="custom"
+                      />
+                    </label>
+                  ))}
+                </div>
               </div>
               <button
                 disabled={!context.isConnected}
