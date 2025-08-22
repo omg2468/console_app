@@ -69,11 +69,11 @@ export default function Main({ onLoginOut }) {
     let newValue = null;
     if (parameter.key && dataFile) {
       if (Array.isArray(dataFile[parameter.key])) {
-        if(!!parameter.idx) {
-          newValue = dataFile[parameter.key][parameter.idx];
-        } else if(parameter.key === 'ais') {
+        if(parameter.key === 'ais') {
            newValue = dataFile[parameter.key];
-        }        
+        } else {
+          newValue = dataFile[parameter.key][parameter.idx];
+        }
       } else {
         newValue = dataFile[parameter.key];
       }

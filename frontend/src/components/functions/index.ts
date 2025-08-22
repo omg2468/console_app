@@ -18,7 +18,7 @@ export const handleUpdateParameter = ({
   subParamKey,
   value,
 }: FunctionParameter) => {
-  let newDataFile = { ...dataFile };
+  const newDataFile = { ...dataFile };
   
   switch (key) {
     case "rtu_master":
@@ -31,7 +31,7 @@ export const handleUpdateParameter = ({
     }
     case "ftp": {
       if (index < 0) break;
-      if (subParamKey) {
+      if (!!subParamKey) {
         newDataFile[key][index][paramKey][subParamKey] = value;
         break;
       }

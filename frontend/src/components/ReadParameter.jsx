@@ -21,7 +21,7 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
 
     return activeBits.join(" ");
   };
-
+  console.log({parameter})
   const readParameter = useCallback(
     (item) => {
       switch (item.key) {
