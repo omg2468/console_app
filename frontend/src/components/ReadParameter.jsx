@@ -21,7 +21,7 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
 
     return activeBits.join(" ");
   };
-  console.log({parameter})
+
   const readParameter = useCallback(
     (item) => {
       switch (item.key) {
@@ -475,6 +475,50 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                             }}
                             className="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg px-2 py-1 w-full"
                           />
+                        </td>
+                      </tr>
+                       <tr className="">
+                        <td className="px-2 py-1 text-xs text-right font-semibold align-top">
+                          Retry
+                        </td>
+                        <td className="px-2 py-1 text-xs  flex flex-col gap-1">
+                          <input
+                            type="number"
+                            value={parameter.value.retry}
+                            onChange={(e) => {
+                              handleUpdateParameter({
+                                dataFile,
+                                setDataFile,
+                                key: item.key,
+                                paramKey: "retry",
+                                value: Number(e.target.value),
+                              });
+                            }}
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg px-2 py-1 w-full"
+                          />
+                        </td>
+                      </tr>
+                       <tr className="">
+                        <td className="px-2 py-1 text-xs text-right font-semibold align-top">
+                          Connection type
+                        </td>
+                        <td className="px-2 py-1 text-xs  flex flex-col gap-1">
+                         <select
+                            value={parameter.value.conntype}
+                            onChange={(e) =>
+                              handleUpdateParameter({
+                                dataFile,
+                                setDataFile,
+                                key: item.key,
+                                paramKey: "conntype",
+                                value: Number(e.target.value),
+                              })
+                            }
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg max-w-[150px]"
+                          >
+                            <option value={0}>Single</option>
+                            <option value={1}>Multiple</option>
+                          </select>
                         </td>
                       </tr>
                     </>

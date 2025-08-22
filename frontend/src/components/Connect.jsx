@@ -450,7 +450,6 @@ function ConnectComponent({
           context.setDataTest(result);
           try {
             const jsonData = JSON.parse(result);
-            console.log(jsonData);
             handleDataResponse(jsonData);
           } catch (parseErr) {
             console.log("Non-JSON data received:", latestData);
