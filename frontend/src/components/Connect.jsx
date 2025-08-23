@@ -1,4 +1,4 @@
-import { useEffect, useState, useContext, useCallback } from "react";
+import { useEffect, useState, useContext, useCallback, useRef } from "react";
 import * as AuthService from "../../wailsjs/go/auth/AuthService";
 import {
   DownloadConfig,
@@ -39,6 +39,7 @@ function ConnectComponent({
   const [oldPassword, setOldPassword] = useState("");
   const [passwordInput, setPasswordInput] = useState("");
   const [passwordConfirm, setPasswordConfirm] = useState("");
+  const btnRef = useRef(null);
 
   const context = useContext(ContextMenuContext);
 
@@ -127,37 +128,25 @@ function ConnectComponent({
     context.setIsConnected(false);
     context.setIsLogin(false);
     context.setRole("");
-    context.setDisplayAnalogUnit(false)
-    context.setDisplayMemoryView(false)
-    context.setDisplayTagView(false)
-    context.setDigitalOutput([])
+    context.setDisplayAnalogUnit(false);
+    context.setDisplayMemoryView(false);
+    context.setDisplayTagView(false);
+    context.setDigitalOutput([]);
     setStatus("Disconnected");
   };
 
-  const handleSerialDisconnect = () => {
-    if (!context.isConnected) {
-      return;
+  const handleSerialDisconnect = async () => {
+    if (!context.isConnected) return;
+    try {
+      await AuthService.Disconnect();
+      setStatus("Disconnected from serial");
+      context.setSelectedPort("");
+      context.setIsConnected(false);
+      context.setIsLogin(false);
+      context.setRole("");
+    } catch (err) {
+      setStatus("Disconnect error: " + err);
     }
-
-    AuthService.Logout()
-      .then(() => {
-        // Logout successful, now proceed to disconnect
-        AuthService.Disconnect()
-          .then(() => {
-            // Disconnect successful
-            setStatus("Disconnected from serial");
-            context.setSelectedPort("");
-            context.setIsConnected(false);
-            context.setIsLogin(false);
-            context.setRole("");
-          })
-          .catch((err) => {
-            setStatus("Disconnect error: " + err);
-          });
-      })
-      .catch((logoutErr) => {
-        setStatus("Logout error: " + logoutErr);
-      });
   };
 
   const handleSocketDisconnect = async () => {
@@ -268,9 +257,13 @@ function ConnectComponent({
 
         case "upload_config":
           if (jsonData.status === "success") {
-            ShowInfoDialog("Đã upload lên thiết bị thành công", "Upload Config");
-            handleDisconnect();
-            // Reset all data after upload
+            if (btnRef.current) {
+              btnRef.current.click();
+            }
+            ShowInfoDialog(
+              "Đã upload lên thiết bị thành công",
+              "Upload Config"
+            );
           } else {
             ShowErrorDialog("Upload thất bại");
           }
@@ -310,12 +303,14 @@ function ConnectComponent({
 
         case "reboot":
           if (jsonData.status === "success") {
+            if (btnRef.current) {
+              btnRef.current.click();
+            }
             ShowInfoDialog(
               "Reboot thành công. App sẽ Disconnect khỏi thiết bị",
               "Reboot"
             );
-            handleDisconnect();
-            // Reset all data after reboot
+            context.setInfoDialog("");
           } else {
             ShowErrorDialog("Reboot thất bại");
           }
@@ -493,7 +488,7 @@ function ConnectComponent({
       while (isListening) {
         try {
           if (context.selectedConnection === "serial" && context.selectedPort) {
-            const response = await AuthService.GetResponse(100000);
+            const response = await AuthService.GetResponse(1000); // 1 second timeout
             if (response) {
               try {
                 const jsonData = JSON.parse(response);
@@ -724,6 +719,7 @@ function ConnectComponent({
           </button>
         ) : (
           <button
+            ref={btnRef}
             onClick={handleDisconnect}
             className="flex-1 px-2 w-full bg-gray-200 text-gray-700 py-1 rounded border border-gray-400 hover:bg-gray-300 text-xs transition"
           >
