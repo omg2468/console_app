@@ -477,7 +477,7 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                           />
                         </td>
                       </tr>
-                       <tr className="">
+                      <tr className="">
                         <td className="px-2 py-1 text-xs text-right font-semibold align-top">
                           Retry
                         </td>
@@ -498,12 +498,12 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                           />
                         </td>
                       </tr>
-                       <tr className="">
+                      <tr className="">
                         <td className="px-2 py-1 text-xs text-right font-semibold align-top">
                           Connection type
                         </td>
                         <td className="px-2 py-1 text-xs  flex flex-col gap-1">
-                         <select
+                          <select
                             value={parameter.value.conntype}
                             onChange={(e) =>
                               handleUpdateParameter({
@@ -1000,6 +1000,107 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
                             <option value={0}>Normal</option>
                             <option value={1}>Day only</option>
                             <option value={2}>Ignore</option>
+                          </select>
+                        </td>
+                      </tr>
+                      <tr className="">
+                        <td className="px-2 py-1 text-xs text-right font-semibold">
+                          FTP mode
+                        </td>
+                        <td className="px-2 py-1 text-xs">
+                          <select
+                            value={parameter.value.client.fptmode}
+                            onChange={(e) =>
+                              handleUpdateParameter({
+                                dataFile,
+                                setDataFile,
+                                key: item.key,
+                                index: item.idx,
+                                paramKey: "client",
+                                subParamKey: "fptmode",
+                                value: Number(e.target.value),
+                              })
+                            }
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg max-w-[150px]"
+                          >
+                            <option value={0}>Passive</option>
+                            <option value={1}>Active</option>
+                          </select>
+                        </td>
+                      </tr>
+                      <tr className="">
+                        <td className="px-2 py-1 text-xs text-right font-semibold">
+                          Line ending
+                        </td>
+                        <td className="px-2 py-1 text-xs">
+                          <select
+                            value={parameter.value.client.lineending}
+                            onChange={(e) =>
+                              handleUpdateParameter({
+                                dataFile,
+                                setDataFile,
+                                key: item.key,
+                                index: item.idx,
+                                paramKey: "client",
+                                subParamKey: "lineending",
+                                value: Number(e.target.value),
+                              })
+                            }
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg max-w-[150px]"
+                          >
+                            <option value={0}>CRLF</option>
+                            <option value={1}>LF</option>
+                          </select>
+                        </td>
+                      </tr>
+                      <tr className="">
+                        <td className="px-2 py-1 text-xs text-right font-semibold">
+                          Space character
+                        </td>
+                        <td className="px-2 py-1 text-xs">
+                          <select
+                            value={parameter.value.client.spacecharacter}
+                            onChange={(e) =>
+                              handleUpdateParameter({
+                                dataFile,
+                                setDataFile,
+                                key: item.key,
+                                index: item.idx,
+                                paramKey: "client",
+                                subParamKey: "spacecharacter",
+                                value: Number(e.target.value),
+                              })
+                            }
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg max-w-[150px]"
+                          >
+                            <option value={0}>TAB</option>
+                            <option value={1}>COMMA</option>
+                          </select>
+                        </td>
+                      </tr>
+                      <tr className="">
+                        <td className="px-2 py-1 text-xs text-right font-semibold">
+                          Message format
+                        </td>
+                        <td className="px-2 py-1 text-xs">
+                          <select
+                            value={parameter.value.client.messageformat}
+                            onChange={(e) =>
+                              handleUpdateParameter({
+                                dataFile,
+                                setDataFile,
+                                key: item.key,
+                                index: item.idx,
+                                paramKey: "client",
+                                subParamKey: "messageformat",
+                                value: Number(e.target.value),
+                              })
+                            }
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg max-w-[150px]"
+                          >
+                            <option value={0}>0</option>
+                            <option value={1}>1</option>
+                            <option value={2}>2</option>
                           </select>
                         </td>
                       </tr>
@@ -2764,7 +2865,7 @@ const ReadParameter = ({ parameter, setParameter, dataFile, setDataFile }) => {
           return null;
       }
     },
-    [parameter, setParameter]
+    [parameter, setParameter],
   );
 
   return <>{readParameter(parameter)}</>;

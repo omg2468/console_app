@@ -176,7 +176,7 @@ const TreeNode = ({
     } catch (error) {
       setInput("");
       setShowModal({ show: false, action: null });
-      ShowErrorDialog(error);
+      ShowErrorDialog(error.message || "Đã có lỗi xảy ra");
     } finally {
       // Refresh file list after any action that modifies the file system
       setIsLoadFile("");
@@ -472,7 +472,7 @@ const FileTree = ({
     } catch (error) {
       setInput("");
       setShowModal({ show: false, action: null });
-      ShowErrorDialog(error);
+      ShowErrorDialog(error.message || "Đã có lỗi xảy ra");
     }
   };
 

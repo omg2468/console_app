@@ -220,7 +220,11 @@
                 "passwd": "12341234",
                 "port": 21,
                 "remote_prefix": "/vinhtan4khi/KHI1",
-                "user": "test1"
+                "user": "test1",
+                "fptmode": 0,
+                "lineending": 0,
+                "spacecharacter": 0,
+                "messageformat": 0
             },
             "creator": {
                 "district": "NDVT",
@@ -244,7 +248,11 @@
                 "passwd": "12341234",
                 "port": 21,
                 "remote_prefix": "/test1",
-                "user": "test1"
+                "user": "test1",
+                "fptmode": 0,
+                "lineending": 0,
+                "spacecharacter": 0,
+                "messageformat": 0
             },
             "creator": {
                 "district": "NDVT",
@@ -268,7 +276,11 @@
                 "passwd": "passwd",
                 "port": 21,
                 "remote_prefix": "",
-                "user": "user"
+                "user": "user",
+                "fptmode": 0,
+                "lineending": 0,
+                "spacecharacter": 0,
+                "messageformat": 0
             },
             "creator": {
                 "district": "dist",
@@ -292,7 +304,11 @@
                 "passwd": "passwd",
                 "port": 21,
                 "remote_prefix": "",
-                "user": "user"
+                "user": "user",
+                "fptmode": 0,
+                "lineending": 0,
+                "spacecharacter": 0,
+                "messageformat": 0
             },
             "creator": {
                 "district": "dist",
@@ -316,7 +332,11 @@
                 "passwd": "passwd",
                 "port": 21,
                 "remote_prefix": "",
-                "user": "user"
+                "user": "user",
+                "fptmode": 1,
+                "lineending": 1,
+                "spacecharacter": 1,
+                "messageformat": 1
             },
             "creator": {
                 "district": "dist",

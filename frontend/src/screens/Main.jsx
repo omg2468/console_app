@@ -99,7 +99,7 @@ export default function Main({ onLoginOut }) {
       refreshFileList();
       ShowInfoDialog(`${fileName} Import file thành công!`, "Import");
     } catch (error) {
-      ShowErrorDialog(error);
+      ShowErrorDialog(error.message || "Đã có lỗi xảy ra");
     }
   };
 
@@ -121,7 +121,7 @@ export default function Main({ onLoginOut }) {
       await SaveJsonFile(cleanPath, jsonString);
       ShowInfoDialog("Lưu project thành công!", "Save Project");
     } catch (error) {
-      ShowErrorDialog(error);
+      ShowErrorDialog(error.message || "Đã có lỗi xảy ra");
     }
   };
 
@@ -135,10 +135,9 @@ export default function Main({ onLoginOut }) {
       }
       try {
         await SaveJsonToPath(jsonData, filePath);
-        z;
         ShowInfoDialog("Lưu file thành công!", "Save As Project");
       } catch (error) {
-        ShowErrorDialog(error);
+        ShowErrorDialog(error.message);
       }
     });
   };
