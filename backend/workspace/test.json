@@ -221,10 +221,10 @@
                 "port": 21,
                 "remote_prefix": "/vinhtan4khi/KHI1",
                 "user": "test1",
-                "fptmode": 0,
-                "lineending": 0,
-                "spacecharacter": 0,
-                "messageformat": 0
+                "ftp_mode": 0,
+                "line_ending": 0,
+                "space_character": 0,
+                "message_format": 0
             },
             "creator": {
                 "district": "NDVT",
@@ -249,10 +249,10 @@
                 "port": 21,
                 "remote_prefix": "/test1",
                 "user": "test1",
-                "fptmode": 0,
-                "lineending": 0,
-                "spacecharacter": 0,
-                "messageformat": 0
+                "ftp_mode": 0,
+                "line_ending": 0,
+                "space_character": 0,
+                "message_format": 0
             },
             "creator": {
                 "district": "NDVT",
@@ -277,10 +277,10 @@
                 "port": 21,
                 "remote_prefix": "",
                 "user": "user",
-                "fptmode": 0,
-                "lineending": 0,
-                "spacecharacter": 0,
-                "messageformat": 0
+                "ftp_mode": 0,
+                "line_ending": 0,
+                "space_character": 0,
+                "message_format": 0
             },
             "creator": {
                 "district": "dist",
@@ -305,10 +305,10 @@
                 "port": 21,
                 "remote_prefix": "",
                 "user": "user",
-                "fptmode": 0,
-                "lineending": 0,
-                "spacecharacter": 0,
-                "messageformat": 0
+                "ftp_mode": 0,
+                "line_ending": 0,
+                "space_character": 0,
+                "message_format": 0
             },
             "creator": {
                 "district": "dist",
@@ -333,10 +333,10 @@
                 "port": 21,
                 "remote_prefix": "",
                 "user": "user",
-                "fptmode": 1,
-                "lineending": 1,
-                "spacecharacter": 1,
-                "messageformat": 1
+                "ftp_mode": 1,
+                "line_ending": 1,
+                "space_character": 1,
+                "message_format": 1
             },
             "creator": {
                 "district": "dist",
