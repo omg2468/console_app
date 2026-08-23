@@ -131,7 +131,7 @@ function ConnectComponent({
     context.setDisplayAnalogUnit(false);
     context.setDisplayMemoryView(false);
     context.setDisplayTagView(false);
-    context.setDigitalOutput([]);
+    context.setDigitalOutput(Array(8).fill(false));
     setStatus("Disconnected");
   };
 

@@ -134,7 +134,7 @@ const ReadData = ({
               <p className='text-xs pl-2 border-b border-gray-100 bg-gray-200'>
                 AI SETTINGS
               </p>
-              {dataFile.ais && (
+              {dataFile?.ais && (
                 <div
                   onClick={() => {
                     setRightTab("Parameter");
