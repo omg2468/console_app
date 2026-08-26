@@ -639,7 +639,7 @@ const Control = () => {
                           } else if (
                             context.selectedConnection === "ethernet"
                           ) {
-                            SetDigitalOutputEthernet(
+                            SetRTCWS(
                               context.socketAddress,
                               context.socketPort,
                               "internet",
